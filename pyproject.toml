@@ -6,12 +6,21 @@ build-backend = "hatchling.build"
 name = "astra"
 version = "0.1.0"
 description = "Machine learning project for predicting enzyme kinetic parameters."
-readme = "design.md"
+readme = "README.md"
 authors = [
-    { 
-        name = "Maxim Kirby", 
-        email = "maxim.kirby@mail.utoronto.ca" 
-    }
+    { name = "Maxim Kirby", email = "maxim.kirby@mail.utoronto.ca" }
 ]
 requires-python = ">=3.8"
-dependencies = []
+dependencies = [
+    "click>=8.1.8",
+    "pyyaml>=6.0.2",
+    "torch<2.2",
+]
+
+[project.scripts]
+astra = "astra.main:cli"
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.12.0",
+]
