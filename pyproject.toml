@@ -14,22 +14,22 @@ requires-python = ">=3.11"
 dependencies = [
     "click>=8.2.1",
     "pyyaml>=6.0.2",
+    "requests>=2.32.4",
     "torch>=2.7.1",
+]
+
+[dependency-groups]
+dev = [
+    "astra",
+    "pytest>=8.4.1",
+    "ruff>=0.12.0",
 ]
 
 [project.scripts]
 astra = "astra.main:cli"
 
-[project.optional-dependencies]
-dev = [
-    "ruff>=0.12.0",
-]
-
 [tool.ruff]
-# Set the maximum line length. 88 is the standard for the Black formatter.
 line-length = 88
-# Tell Ruff which version of Python you are targeting for syntax compatibility.
-# e.g., "py38" for Python 3.8, "py311" for Python 3.11
 target-version = "py311"
 
 [tool.ruff.lint]
@@ -40,16 +40,19 @@ target-version = "py311"
 # SIM: flake8-simplify suggests simplifications
 select = ["E", "F", "I", "B", "UP", "SIM"]
 
-# You can ignore specific rules if you find them too noisy.
-# E501 (line-too-long) is often handled by the formatter automatically.
+# Ignore E501 (line-too-long). 
+# This is often handled by the formatter automatically.
 ignore = ["E501"]
 
 [tool.ruff.lint.isort]
-# Tells Ruff's import sorter that "astra" is your own local code.
+# Label Astra as local code in ruff sorter.
 known-first-party = ["astra"]
 
 [tool.ruff.format]
-# Optional: Enforce double quotes for strings.
+# Enforce double quotes for strings.
 quote-style = "double"
-# Optional: Format code snippets inside your docstrings.
+# Format code snippets inside your docstrings.
 docstring-code-format = true
+
+[tool.uv.sources]
+astra = { workspace = true }
