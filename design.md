@@ -20,8 +20,6 @@ astra
 │   │   ├── models
 │   │   ├── loss
 │   │   └── optim
-│   ├── __init__.py
-│   └── main.py
 │   ├── pipelines/
 │   │   ├── __init__.py
 │   │   ├── train.py

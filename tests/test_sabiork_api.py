@@ -1,5 +1,3 @@
-# test_sabiork_api.py
-
 import time
 
 import pytest
