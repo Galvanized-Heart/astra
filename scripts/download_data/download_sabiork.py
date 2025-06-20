@@ -5,16 +5,16 @@
 # this database. Prioritize retreiving compound Name, ChEBl ID, PubChem CID 
 # to verify whether 
 
-import requests
-import time
 import os
-from pathlib import Path
+import time
+
+import requests
 
 from astra.constants import PROJECT_ROOT
 
 BASE_URL_REST = "https://sabiork.h-its.org/sabioRestWebServices/"
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, "data", "raw", "sabiork")
-DELAY_SECONDS = 3  # Time to wait between requests (be respectful to the server!)
+DELAY_SECONDS = 3
 
 def make_request_and_save(endpoint, params, filename, method="POST", data=None):
     """Makes a request to the SABIO-RK API and saves the response."""
@@ -23,14 +23,14 @@ def make_request_and_save(endpoint, params, filename, method="POST", data=None):
 
     try:
         if method.upper() == "POST":
-            request = requests.post(full_url, params=params, data=data, timeout=300) # Increased timeout for large requests
+            request = requests.post(full_url, params=params, data=data, timeout=300)
         elif method.upper() == "GET":
             request = requests.get(full_url, params=params, timeout=300)
         else:
             print(f"Unsupported method: {method}")
             return
 
-        request.raise_for_status()  # Raise an exception for HTTP errors
+        request.raise_for_status()
 
         filepath = os.path.join(OUTPUT_DIR, filename)
         with open(filepath, "w", encoding="utf-8") as f:
@@ -40,7 +40,7 @@ def make_request_and_save(endpoint, params, filename, method="POST", data=None):
     except requests.exceptions.HTTPError as e:
         print(f"HTTP Error for {endpoint}: {e}")
         print(f"Response status code: {e.response.status_code}")
-        print(f"Response text: {e.response.text[:500]}...") # Print first 500 chars of error
+        print(f"Response text: {e.response.text[:500]}...")
     except requests.exceptions.RequestException as e:
         print(f"Error requesting {endpoint}: {e}")
     except Exception as e:
@@ -52,7 +52,6 @@ def make_request_and_save(endpoint, params, filename, method="POST", data=None):
 def download_all_kinetic_laws():
     """Downloads all kinetic laws using kineticlawsExportTsv (based on Script 2)."""
     endpoint = 'kineticlawsExportTsv'
-    # Define a comprehensive set of fields. Refer to SABIO-RK documentation for all available fields.
     fields = [
         'EntryID', 'Organism', 'UniprotID', 'ECNumber', 'PubMedID', 'SabioReactionID',
         'Substrate', 'Product', 'Catalyst', 'Cofactor', 'Inhibitor', 'Activator',
@@ -127,7 +126,7 @@ def download_all_enzyme_synonyms():
     endpoint = 'searchEnzymeSynonyms'
     fields = ["ECNumber", "Name", "NameType"]
     query_params = {
-        "ECNumber": "*", # Wildcard for EC numbers
+        "ECNumber": "*",
         "fields[]": fields
     }
     make_request_and_save(endpoint, query_params, "all_enzyme_synonyms.tsv", method="POST") # Script 8 uses POST
@@ -137,7 +136,7 @@ def download_all_pathway_synonyms():
     endpoint = 'searchPathwaySynonyms'
     fields = ["KeggPathwayID", "Name", "NameType"]
     query_params = {
-        "PathwayName": "*", # Wildcard for pathway names
+        "PathwayName": "*",
         "fields[]": fields
     }
     make_request_and_save(endpoint, query_params, "all_pathway_synonyms.tsv", method="POST") # Script 9 uses POST
@@ -145,7 +144,7 @@ def download_all_pathway_synonyms():
 if __name__ == "__main__":
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
-    print(f"Starting SABIO-RK data download. This may take a very long time.")
+    print("Starting SABIO-RK data download. This may take a very long time.")
     print(f"Data will be saved in '{OUTPUT_DIR}' directory.")
     print(f"Delay between requests: {DELAY_SECONDS} seconds.")
     print("Please be patient and respectful of the SABIO-RK servers.")

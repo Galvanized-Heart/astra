@@ -2,6 +2,7 @@ from pathlib import Path
 
 from astra.constants import PROJECT_ROOT
 
+
 def test_project_root_is_correct():
     """
     Tests that the PROJECT_ROOT constant is a Path object, is absolute,
