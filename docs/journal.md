@@ -5,12 +5,12 @@ The model architecture would likely be compared to existing models in the space 
 
 For the multi-task learning, this could look like a couple things and this it more thouroughly thought out at this point in time. The standard in the field right now it to created a model for each kinetic parameter (kcat, Ki, KM) and predict them. A naive approach to multi-task learning could be to predict kcat, Ki, and KM all in a single model with weightings for each loss and masks for which components are being predicted. A more robust approach would look at the components of kcat, Ki, and KM and how they interact: 
 - $k_{cat}=k_{cat}$
-- $K_{i,competitive}=K_D=\frac{k_{-1}}{k_{+1}}$
+- $K_{i,competitive}=K_D= \frac{k_{-1}}{k_{+1}}$
 - $K_M=\frac{k_{-1}+k_{cat}}{k_{+1}}$
 
 From these equations, I noticed you can express kcat, Ki competitive, KD, and KM as compounds of kcat (rate of catalysis), k-1 (rate of unbinding), and k+1 (rate of binding). Additionally, I'm not sure people making these models were accounting for the difference between competitive, non-competitive, and uncompetitive inhibition. It might be smartest to seperate them as different predictions, but this work would just use competitive inhibition since it is most notably binding. I know we definitely aren't predicting how complexes are working in this work of previous work, until something very effective comes out regarding this.
 
-I've also seen Boltz-2 predict IC50 with continuous values and whether something binds as a binary function to get a confidence prediction. The loss could be extended further to predicting the probabilty something binds `$\\hat{P}_{binding} \in \Set{0,1}$` and something gets converted to product `$\\hat{P}_{catalysis} \in \Set{0,1}$`. If we assume that the data passes through the model like this: 
+I've also seen Boltz-2 predict IC50 with continuous values and whether something binds as a binary function to get a confidence prediction. The loss could be extended further to predicting the probabilty something binds $\hat{P}_{binding} \in \Set{0,1}$ and something gets converted to product $\hat{P}_{catalysis} \in \Set{0,1}$. If we assume that the data passes through the model like this: 
 
 [Protein Representation, Ligand Representation] ->
 
