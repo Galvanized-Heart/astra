@@ -29,11 +29,11 @@ $\hat{P}_{catalysis} \in \Set{0,1}$.
 
 Where we recreate kcat, Ki, and KM with the functions outlined earlier, we can create a loss function that looks like this to train the model:
 
-$\mathcal{L} = 
+$`\mathcal{L} = 
 \alpha m_{k_{cat}} MSE(k_{cat},\hat{k}_{cat}) + 
 \beta m_{K_{i}} MSE(K_{i},\hat{K}_{i}) + 
 \gamma m_{K_{M}} MSE(K_{M},\hat{K}_{M}) + 
 \delta m_{binding} BCE(P_{binding},\hat{P}_{binding}) + 
-\epsilon m_{catalysis} BCE(P_{catalysis},\hat{P}_{catalysis})$
+\epsilon m_{catalysis} BCE(P_{catalysis},\hat{P}_{catalysis})`$
 
 Where $\alpha, \beta, \gamma, \delta, \epsilon$ are weights for the individual loss functions and $m_{x} \in \Set {0,1}$ is the mask for whichever prediction is being used since not every entry will have kcat, Ki, and/or KM associated with it. There's a nice paper outlining how to do this: https://arxiv.org/abs/1705.07115.
