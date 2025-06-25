@@ -13,19 +13,27 @@ From these equations, I noticed you can express kcat, Ki competitive, KD, and KM
 I've also seen Boltz-2 predict IC50 with continuous values and whether something binds as a binary function to get a confidence prediction. The loss could be extended further to predicting the probabilty something binds 
 $\hat{P}_{binding} \in \Set{0,1}$
 and something gets converted to product 
-
 $\hat{P}_{catalysis} \in \Set{0,1}$.
-
  If we assume that the data passes through the model like this: 
 
 [Protein Representation, Ligand Representation] ->
 
 -> Model ->
 
--> [$\hat{k}_{cat}$, $\hat{k}_{-1}$, $\hat{k}_{+1}$, $\hat{P}_{binding}$, $\hat{P}_{catalysis}$]
+-> [
+    $\hat{k}_{cat}$, 
+    $\hat{k}_{-1}$, 
+    $\hat{k}_{+1}$, 
+    $\hat{P}_{binding}$, 
+    $\hat{P}_{catalysis}$]
 
 Where we recreate kcat, Ki, and KM with the functions outlined earlier, we can create a loss function that looks like this to train the model:
 
-$\mathcal{L} = \alpha m_{k_{cat}} MSE(k_{cat},\hat{k}_{cat}) + \beta m_{K_{i}} MSE(K_{i},\hat{K}_{i}) + \gamma m_{K_{M}} MSE(K_{M},\hat{K}_{M}) + \delta m_{binding} BCE(P_{binding},\hat{P}_{binding}) + \epsilon m_{catalysis} BCE(P_{catalysis},\hat{P}_{catalysis})$
+$\mathcal{L} = 
+\alpha m_{k_{cat}} MSE(k_{cat},\hat{k}_{cat}) + 
+\beta m_{K_{i}} MSE(K_{i},\hat{K}_{i}) + 
+\gamma m_{K_{M}} MSE(K_{M},\hat{K}_{M}) + 
+\delta m_{binding} BCE(P_{binding},\hat{P}_{binding}) + 
+\epsilon m_{catalysis} BCE(P_{catalysis},\hat{P}_{catalysis})$
 
 Where $\alpha, \beta, \gamma, \delta, \epsilon$ are weights for the individual loss functions and $m_{x} \in \Set {0,1}$ is the mask for whichever prediction is being used since not every entry will have kcat, Ki, and/or KM associated with it. There's a nice paper outlining how to do this: https://arxiv.org/abs/1705.07115.
