@@ -32,4 +32,4 @@ $`\mathcal{L} =
 \delta m_{binding} BCE(P_{binding},\hat{P}_{binding}) + 
 \epsilon m_{catalysis} BCE(P_{catalysis},\hat{P}_{catalysis})`$
 
-Where $\alpha, \beta, \gamma, \delta, \epsilon$ are weights for the individual loss functions and $m_{x} \in \Set {0,1}$ is the mask for whichever prediction is being used since not every entry will have kcat, Ki, and/or KM associated with it. There's a nice paper outlining how to do this: https://arxiv.org/abs/1705.07115. The two types of loss functions are $`MSE()`$ for regression tasks and $`BCE()`$ for binary classification tasks.
+Where $`\alpha, \beta, \gamma, \delta, \epsilon`$ are weights for the individual loss functions and $`m_{x} \in \Set {0,1}`$ is the mask for whichever prediction is being used since not every entry will have kcat, Ki, and/or KM associated with it. There's a nice paper outlining how to do this: https://arxiv.org/abs/1705.07115. The two types of loss functions are $`MSE()`$ for regression tasks and $`BCE()`$ for binary classification tasks.
