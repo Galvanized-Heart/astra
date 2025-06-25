@@ -13,6 +13,8 @@ authors = [
 requires-python = ">=3.11"
 dependencies = [
     "click>=8.2.1",
+    "matplotlib>=3.10.3",
+    "numpy>=2.3.1",
     "pyyaml>=6.0.2",
     "requests>=2.32.4",
     "torch>=2.7.1",
@@ -21,6 +23,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "astra",
+    "ipykernel>=6.29.5",
     "pytest>=8.4.1",
     "ruff>=0.12.0",
 ]
