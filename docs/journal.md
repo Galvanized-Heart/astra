@@ -35,3 +35,57 @@ $`\mathcal{L} =
 Where $`\alpha, \beta, \gamma, \delta, \epsilon`$ are weights for the individual loss functions and $`m_{x} \in \Set {0,1}`$ is the mask for whichever prediction is being used since not every entry will have kcat, Ki, and/or KM associated with it. There's a nice paper outlining how to do this: https://doi.org/10.48550/arXiv.1705.07115. The two types of loss functions are $`MSE()`$ for regression tasks and $`BCE()`$ for binary classification tasks.
 
 I still have to formulate the raw data for this problem. So far, BRENDA, SABIO-RK, and BindingDB are good sources for training data. But I want to find a good strategy for getting good quality data. CPI-Pred has shown that using the pangenomic dataset lead to poorer performance when the dataset was split using sequence similarity, but not when using compound similarity.
+
+
+
+### Jun 26, 2025:
+Today, I thought that the data I got from the SABIO-RK API didn't contain any values for kcat, KM, or Ki and I looked into how to fix that. But I ended up finding out that I had most of the data I needed and I learned about how I could scrape the SABIO-RK website for some missing info that I wanted using this address: https://sabiork.h-its.org/kineticLawEntry.jsp?viewData=true&kinlawid=[SABIO-RK ENTRY ID].
+
+By querying https://sabiork.h-its.org/sabioRestWebServices/searchKineticLaws/entryIDs, I am able to get all the entryIDs from the SABIO-RK API. The step I was taking after that was querying https://sabiork.h-its.org/sabioRestWebServices/kineticLaws with a batch of entryIDs and this gave me what I wanted.
+
+After a while of searching, I came across <a href=https://github.com/KarrLab/datanator/blob/master/datanator/data_source/sabio_rk.py>this repo</a> from the Karr Lab, which uses a combination of webscraping and the API to build their dataset back in 2018. I want to adapt this for my purposes.
+
+Ultimately, I thought about the data I want to collect and this seems sufficient and doable to me.
+
+EntryID (Have by default), 
+
+organismName (Supplement with webscraping using EntryID and https://sabiork.h-its.org/kineticLawEntry.jsp?viewData=true&kinlawid=x), 
+reactionID (search SBML for rdf:li rdf:resource="https://identifiers.org/sabiork.reaction/x), 
+uniprotID (search SBML for rdf:li rdf:resource="https://identifiers.org/uniprot/XXXXXX"), 
+ecClass (search SBML for rdf:li rdf:resource="https://identifiers.org/ec-code/x.x.x.x"), 
+
+reactantIDs (search SBML for <listOfReactants> to get id from species=x, then search SBML for <species id="SPC_1262_Cell" name="NADPH"...>, then find <rdf:li rdf:resource="https://identifiers.org/chebi/CHEBI:XXXXX"/> and/or <rdf:li rdf:resource="https://identifiers.org/kegg.compound/XXXXXX"/> resources), 
+productIDs (repeat reactants step for <listOfProducts>), 
+modifierIDs (repeat reactants step for <listOfModifiers>), 
+
+kcatValue (search SBML for <listOfLocalParameters> and get id=Kcat... & value=x), 
+kcatDeviation (Supplement with webscraping using EntryID and https://sabiork.h-its.org/kineticLawEntry.jsp?viewData=true&kinlawid=x), 
+kcatUnits (search SBML for <listOfLocalParameters> and get id=Kcat... & units=x) (units might look weird -> Mwedgeoneswedgeone = M⁻¹s⁻¹), 
+kcatSpecies (search SBML for <listOfLocalParameters> and it from the id as id=Kcat_XXX_XXXX_XXXX), 
+
+kmValue (repeat kcat steps for id=Km...), 
+kmDeviation, 
+kmSpecies, 
+kmUnits, 
+
+vmaxValue (repeat kcat steps for id=Vmax...), 
+vmaxDeviation, 
+vmaxSpecies, 
+
+kiValue (repeat kcat steps for id=Ki...), 
+kiDeviation, 
+kiUnits, 
+kiSpecies,
+kiType (requires SBML parsing of the <math> block to determine whether Ki is competitive, non-competitive, or mixed) (see below)
+v = Vmax * [S] / (Km * (1 + [I]/Ki) + [S]) is competitive
+v = Vmax * [S] / (Km + [S] * (1 + [I]/Ki)) and v = (Vmax / (1+[I]/Ki)) * [S] / ((Km / (1+[I]/Ki)) + [S]) are uncompetitive
+v = (Vmax / (1 + [I]/Ki)) * [S] / (Km + [S]) is non-competitive
+v = Vmax * [S] / (Km * (1 + [I]/Kic) + [S] * (1 + [I]/Kiu)) is mixed
+
+temperature (search SBML for <sbrk:startValueTemperature>), 
+tempUnits (search SBML for <sbrk:temperatureUnit>), 
+pH (search SBML for <sbrk:startValuepH>), 
+buffer (search SBML for <sbrk:buffer>), 
+pubmedID (search SBML for <rdf:li rdf:resource="https://identifiers.org/pubmed/XXXXXXXX"/>)
+
+I did notice that some entries on the website had something like ([uniprot ID])*n where n was sometimes "n" and sometimes a number, presumably to indicate the number of enzyme subunits in a complex. I couldn't find out where they sourced this information, so I opted not to use it. It would probably be really important to use for future work if it's possible to get that information.
