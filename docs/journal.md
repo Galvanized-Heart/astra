@@ -89,3 +89,35 @@ buffer (search SBML for <sbrk:buffer>),
 pubmedID (search SBML for <rdf:li rdf:resource="https://identifiers.org/pubmed/XXXXXXXX"/>)
 
 I did notice that some entries on the website had something like ([uniprot ID])*n where n was sometimes "n" and sometimes a number, presumably to indicate the number of enzyme subunits in a complex. I couldn't find out where they sourced this information, so I opted not to use it. It would probably be really important to use for future work if it's possible to get that information.
+
+
+
+### Jul 2, 2025:
+Today I had a meeting with some colleagues to pitch the ideas I wrote from Jun 25, 2025. 
+
+For idea number 1, where we use Boltz-2 co-structure generation and SIMG* graphs including orbitals to try and bolster the predictions made by embeddings + XGBoost models and embeddings + attention based models, I was told that this may be adding inductive bias but is the bias going to be informative if we haven't thoroughly identified weakenesses of these current models. From a narrative standpoint, why would we do this work if we haven't seen that these could make any meaningful improvements. Sure we may be providing the model with more information about what it might be working with, but does it need this to make better predictions or has it already been able to infer this?
+
+For idea number 2, where we use multi-task learning with kcat and k-1 and k+1 to predict kinetic parameters, my colleagues were skeptical about whether the relationships held true for Ki and KM and whether the masking would be effective to get models to bridge between kcat and Ki. In most enzyme kinetics courses they teach you about these relationships, but perhaps the field has gotten more complex in this regard and these relationships are more complex. If that is the case, it still might not be impossible to say that framing the predictions like this would lead to improved predictions because this would be the first instance where people are mixing the prediction tasks where the weights could learn from each other. In <a href=https://doi.org/10.48550/arXiv.1705.07115>this paper</a> they find that multi-task learning for related concepts lead to better predictions on individual tasks. The narrative in this case could be to apply this to see if it works for predicting enzyme kinetic parameters. This paper was published on arXiv in 2017, so there might be more development in this field related to multi-task learning.
+
+
+
+### Jul 3, 2025:
+Today, I met with a colleague and we spoke about datasets.
+
+I was talking to them about processing SABIO-RK and how I was processing it. They said they had previously run into problems where they weren't able to decipher which compound was the limiting reagent for a given reaction and I showed them that what I collected seemed to be able to do that. I was also speaking to them about how I thought there wasn't enough reproducible code to acquire the SABIO-RK data out there so I was making the effort to build it up myself. My PI had said to me before to just take the datasets we have and use them for getting results, but I felt like it was a bit hasty since I felt like I wanted to make my work as reproducible as possible. My colleague told me that they agreed with my PI and that I should probably just take some existing data and maybe try to expand it a bit later on. 
+
+I've copied over the CPI-Pred "core" (which I'm coming to understand is just BRENDA's usable data points) and "scrn" (which is the pangenomic expansion of the BRENDA dataset to make use of organism names and EC numbers to identify uniprot IDs and compound SMILES). I'll be combining these datasets to have a signle table containing `protein_sequences, ligand_smiles, k_cat, K_M, K_i` for each the BRENDA and pangenomic BRENDA datasets with names that more accurately reflect this.
+
+### Jul 4, 2025
+Today I'm continuing to create the combined datasets for CPI-Pred.
+
+I went on BRENDA to look for the units used for kcat, KM, and Ki.
+- kcat units: s^-1
+- KM units: mM
+- Ki units: mM
+
+I've been reading up on how kcat, KM, and kcat/KM are recorded because yesterday my senior colleague told me they believed that kcat, KM, and kcat/KM are from different assays but I felt they were from the same assay. My search showed that these values come from Michaelis-Menten kinetics experiments where they measure substrate concentration (M) vs rate of reaction (s^-1). Some main parameters that come from this experiment are Vmax (the rate at which the enzyme is fully saturated with substrate) and KM (the substrate concentration at which the enzyme is experiencing half of Vmax). kcat is a derivative of Vmax and is acquired by $`k_{cat} = \frac{V_{max}}{[E]}`$. Expanding this logic gives us kcat/KM simply by computing the ratio between kcat and KM. I did manage to find that there is a direct assay to determine kcat/KM but it is typically used to predict catalytic efficiency at low substrate concentrations. I did find that <a href=https://doi.org/10.1016/j.tibtech.2007.03.010>this one paper from 2007</a> said using kcat/KM is not a good metric for comparing enzymes since "*higher catalytic efficiency (i.e. kcat/KM value) can, at certain substrate concentrations, actually catalyze an identical reaction at lower rates than one having a lower catalytic efficiency*".
+
+I did manage to investigate the data and found 1076 data points that had kcat/KM, but were missing one of either kcat or KM, so these values could be supplemented. There were 845 data points that had kcat/KM, but were missing both kcat and KM, so these might not be able to be recovered without some kind of imputation. Lastly, there were 4611 data points that had both kcat and KM, but were missing kcat/KM. This wouldn't change much for us as we are mainly predicting kcat and KM, and kcat/KM is a compound metric. I will fill in the blanks for these 5687 (1076 + 4611) data points to have a more complete dataset.
+
+I've created `scripts/download_data/combine_cpipred_data.py` to successfully combine all the kinetic parameters (kcat, KM, kcat/KM, Ki) into a single file with enriched kcat, KM, and kcat/KM. I'm not sure if this is the right place for the script since there is data processing in `src/astra/data_processing`, but I thought that was reserved for `DataLoaders()`. Now that I have something to work with, I can try creating splitting scripts and work on downloading SABIO-RK, BRENDA, and BindingDB in the background. 
