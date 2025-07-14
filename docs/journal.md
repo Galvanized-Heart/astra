@@ -137,6 +137,8 @@ Today I've been thinking more about my reading committee meeting and how inducti
 I've heard that Transformers are GNNs (Graph Neural Networks) a fair bit lately, and that's made me wonder exactly how that's true and if it means GNNs are obsolete as a result. As it so happens, Transformers represent a specific kind of GNN. If a GNN uses graphs with no edge embeddings and is fully connected, it is effectively a Transformer. Albeit, Transformers don't have as strong of an inductive bias for structure as GNNs do since Transformers require positional encodings to more loosely infer the structure of the data. In my mind, it seems more like the relationship between a square and a rectangle. Squares are a single special case rectangle where all the sides are even. The square is like the Transformer in that it is a special case GNN where all the nodes are fully connected. What's interesting is that some sources have said that, because the Transformer needs to learn inductive biases instead having concrete inductive biases in a GNN, Transformers require much more data to learn the structural patterns that a GNN gets for free.
 
 ### Jul 14, 2025
+Today I spoke to my PI about the upgraded kinetic derivations and spoke to my senior colleagues about the data included in the dataset we have on hand. In each data point, only a single substrate is defined and these are the substrates provided by BRENDA. BRENDA doesn't include the reactions by default and kinetic parameters typically isolate for a single limiting reagent. 
+
 
 ```
                 k₁                k₂                k₃
@@ -147,12 +149,26 @@ I've heard that Transformers are GNNs (Graph Neural Networks) a fair bit lately,
   +I  | k₄, k₋₄      +I  | k₅, k₋₅
       |                  |
       v                  v
-      
+
       EI                ESI
 ```
 
 - $`k_{cat}=\frac{k_{+2} k_{+3}}{k_{-2}+k_{+3}+k_{+2}}`$
 - $`K_M=\frac{k_{-1}k_{-2}+k_{-1}k_{+3}+k_{+2}k_{+3}}{k_{+1}(k_{-2}+k_{+3}+k_{+2})}`$
-- $`K_{i,comp}= \frac{k_{-3}}{k_{+3}}`$
-- $`K_{i,uncomp}= \frac{k_{-4}}{k_{+4}}`$
+- $`K_{i,comp}= \frac{k_{-4}}{k_{+4}}`$
+- $`K_{i,uncomp}= \frac{k_{-5}}{k_{+5}}`$
 - $`K_D=\frac{k_{off}}{k_{on}}`$
+
+*In vitro* assays for determining kinetic parameters will always start with [P] = 0 and so the equilibrium always favours the products, making the reactions effectively irreversible even though most enzymatic reactions are reversible. As a result, $`k_{-3}`$ is ignored in the elementary decompositions of these kinetic parameters. 
+
+The irreversible form of the Michaelis-Menten kinetic formula is as follows:
+
+$`v=\frac{V_{max}[S]}{K_M + [S]}`$
+
+The reversible form of the Michaelis-Menten kinetic formula is as follows:
+
+$`v=\frac{S(\frac{V_{max,f}}{K_{M,S}})-P(\frac{V_{max,r}}{K_{M,P}})}{1+\frac{S}{K_{M,S}}+\frac{P}{K_{M,P}}}`$
+
+The reversible case can be constructed from the irreversible case if we consider both the forward and reverse reactions as two 'irreversible' reactions. From *in vitro* kinetic assays, this would require using two different sets of limiting reagents to assay the conversion to substrate and the conversion to product. 
+
+My PI approves of these derivations and thinks I should push forward with building this project out. Yippy!
