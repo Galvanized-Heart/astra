@@ -121,3 +121,38 @@ I've been reading up on how kcat, KM, and kcat/KM are recorded because yesterday
 I did manage to investigate the data and found 1076 data points that had kcat/KM, but were missing one of either kcat or KM, so these values could be supplemented. There were 845 data points that had kcat/KM, but were missing both kcat and KM, so these might not be able to be recovered without some kind of imputation. Lastly, there were 4611 data points that had both kcat and KM, but were missing kcat/KM. This wouldn't change much for us as we are mainly predicting kcat and KM, and kcat/KM is a compound metric. I will fill in the blanks for these 5687 (1076 + 4611) data points to have a more complete dataset.
 
 I've created `scripts/download_data/combine_cpipred_data.py` to successfully combine all the kinetic parameters (kcat, KM, kcat/KM, Ki) into a single file with enriched kcat, KM, and kcat/KM. I'm not sure if this is the right place for the script since there is data processing in `src/astra/data_processing`, but I thought that was reserved for `DataLoaders()`. Now that I have something to work with, I can try creating splitting scripts and work on downloading SABIO-RK, BRENDA, and BindingDB in the background. 
+
+### Jul 11, 2025
+This past week, I presented the idea from Jun 25, 2025 to my PI and he seemed enthusiastic about the idea of having informing the neural network with kinetic rates instead of having them be individual models, one for kcat/one for km/one for ki. He told me he wanted to expand upon the rates I had written since that model assumes E+S forming ES is reversible and ES generating E+P is irreversible. He told me to read through the kinetic chapters in Systems Biology 2nd Ed. by Edda Klipp and Enzyme Kinetics: Behavior and Analysis of Rapid Equilibrium and Steady-State Enzyme Systems 1st Ed. by Irwin Segel to improve the rate equations I had. I've also been trying to get CatPred predictions to work, but it seems like the CatPred repository wasn't designed to be reproduced with external data (at the time of writing) since they don't have documentation to reproduce their training but with splits created by the user. I found bugs in uploading the model in `utils.py` and I have since fixed that bug. But I continue to run into issues. After reading through all the potential arguments the script can take in, the ablation study from the CatPred paper shows that adding ESM features lead to the best model, but when it tries to validate on the model we train, it seems to run into some concatenation error. The student who designed CatPred has since graduted and we are struggling to get the answers to run effective and reproducible training on their architecture, which is unfortunate. I wanted to try offering to make the documentation ourselves as part of this learning process but I was told by my colleague not to edit any of their code since our changes might not be what the original authors want and could cause issues if we publish on their work that we edited. It could be considered sabotage or something like that, so I guess I'm not gonna get involved, even though it's a shame to not be able to reproduce the leading model in this area...
+
+I just spoke to one of my senior colleagues about building up the model for this and they suggested that it is easiest to build from your own architecture instead of trying to build on someone else's model architecture since you would need to get an in-depth understanding of their model, which isn't always worth it in this case.
+
+They also recommended just comparing to the models they will provide and not trying to retrofit their code to my task. I think this is a good approach and honestly what I would've done if I was left to my own devices. 
+
+Since I have the dummy data from CPI-Pred, that I can always expand later on, I should start with that to build very simple models for proof of concept and build up from there. I will still need to try strengthening the kinetic mechanism model that I want to retrofit to if this simple assumption isn't enough.
+
+### Jul 13, 2025
+Today I've been thinking more about my reading committee meeting and how inductive biases are needed to make good use of a GNN, especially for the case where it is fully connected.
+
+I've heard that Transformers are GNNs (Graph Neural Networks) a fair bit lately, and that's made me wonder exactly how that's true and if it means GNNs are obsolete as a result. As it so happens, Transformers represent a specific kind of GNN. If a GNN uses graphs with no edge embeddings and is fully connected, it is effectively a Transformer. Albeit, Transformers don't have as strong of an inductive bias for structure as GNNs do since Transformers require positional encodings to more loosely infer the structure of the data. In my mind, it seems more like the relationship between a square and a rectangle. Squares are a single special case rectangle where all the sides are even. The square is like the Transformer in that it is a special case GNN where all the nodes are fully connected. What's interesting is that some sources have said that, because the Transformer needs to learn inductive biases instead having concrete inductive biases in a GNN, Transformers require much more data to learn the structural patterns that a GNN gets for free.
+
+### Jul 14, 2025
+
+```
+                k₁                k₂                k₃
+     E + S  <-------->   ES   <-------->   EP   <-------->   E + P
+                k₋₁               k₋₂               k₋₃
+      ^                  ^
+      |                  |
+  +I  | k₄, k₋₄      +I  | k₅, k₋₅
+      |                  |
+      v                  v
+      
+      EI                ESI
+```
+
+- $`k_{cat}=\frac{k_{+2} k_{+3}}{k_{-2}+k_{+3}+k_{+2}}`$
+- $`K_M=\frac{k_{-1}k_{-2}+k_{-1}k_{+3}+k_{+2}k_{+3}}{k_{+1}(k_{-2}+k_{+3}+k_{+2})}`$
+- $`K_{i,comp}= \frac{k_{-3}}{k_{+3}}`$
+- $`K_{i,uncomp}= \frac{k_{-4}}{k_{+4}}`$
+- $`K_D=\frac{k_{off}}{k_{on}}`$
