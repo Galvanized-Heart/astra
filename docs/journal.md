@@ -139,7 +139,6 @@ I've heard that Transformers are GNNs (Graph Neural Networks) a fair bit lately,
 ### Jul 14, 2025
 Today I spoke to my PI about the upgraded kinetic derivations and spoke to my senior colleagues about the data included in the dataset we have on hand. In each data point, only a single substrate is defined and these are the substrates provided by BRENDA. BRENDA doesn't include the reactions by default and kinetic parameters typically isolate for a single limiting reagent. 
 
-
 ```
                 k₁                k₂                k₃
      E + S  <-------->   ES   <-------->   EP   <-------->   E + P
@@ -172,3 +171,50 @@ $`v=\frac{S(\frac{V_{max,f}}{K_{M,S}})-P(\frac{V_{max,r}}{K_{M,P}})}{1+\frac{S}{
 The reversible case can be constructed from the irreversible case if we consider both the forward and reverse reactions as two 'irreversible' reactions. From *in vitro* kinetic assays, this would require using two different sets of limiting reagents to assay the conversion to substrate and the conversion to product. 
 
 My PI approves of these derivations and thinks I should push forward with building this project out. Yippy!
+
+### Jul 15, 2025
+Today, I'm learning about how to use wandb for logging model progress and checkpointing. I'm also learning about how to post a model on huggingface for people to be able to download the model down the line once the work is published. 
+
+With wandb, I needed to install it using `uv add wandb`. Then, I added my key as a command line variable `export WANDB_API_KEY=<KEY>`. I was speaking with Gemini 2.5 Pro to learn about how I can make wandb logging optional and it gave me this boilerplate so that people won't be forced to use wandb once it's published.
+```
+# train.py
+import argparse
+from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger
+
+def main(args):
+    # --- Logger Setup ---
+    if args.logger == "wandb":
+        # Check if user is logged in, or prompt them.
+        # This will error out if the key isn't set, which is good.
+        import wandb
+        wandb.login()
+        logger = WandbLogger(project="my-awesome-project", log_model="all")
+    elif args.logger == "tensorboard":
+        logger = TensorBoardLogger("tb_logs", name="my-model")
+    else:
+        # No logger
+        logger = False
+
+    # --- Trainer ---
+    trainer = pl.Trainer(
+        ...,
+        logger=logger  # Pass the configured logger here
+    )
+    trainer.fit(model, datamodule)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    # Add other arguments for hyperparameters etc.
+    parser.add_argument(
+        "--logger",
+        type=str,
+        default="tensorboard", # A safe, local default
+        choices=["wandb", "tensorboard", "none"],
+        help="Logger to use for experiment tracking."
+    )
+    args = parser.parse_args()
+    main(args)
+```
+Having a single project name `WandbLogger(project="my-project")` will log multiple experiments to the same project name. This way, I won't get confused about where each training experiment goes and be able to find the best ones even with different architectures.
+
+In huggingface, the models are stored in a separate repo and it is typically best to upload them as `.bin` files instead of `.ckpt` files because `.ckpt` is Pytorch Lightning specific. It seems like I don't have to worry about this right now though. I can always come back to uploading the model to huggingface later on. For now, I should focus on building the models.
