@@ -1,0 +1,2922 @@
+{
+    "9732": {
+        "entryID": "9732",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "50 mM sodium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9733": {
+        "entryID": "9733",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9734": {
+        "entryID": "9734",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9735": {
+        "entryID": "9735",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9736": {
+        "entryID": "9736",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9737": {
+        "entryID": "9737",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9738": {
+        "entryID": "9738",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9739": {
+        "entryID": "9739",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "974": {
+        "entryID": "974",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.1,
+        "buffer": "50 mM Hepes, 5 mM MgCl2",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9740": {
+        "entryID": "9740",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9741": {
+        "entryID": "9741",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9742": {
+        "entryID": "9742",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9743": {
+        "entryID": "9743",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 4.0,
+        "buffer": "0.1 M citrate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9744": {
+        "entryID": "9744",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 4.5,
+        "buffer": "0.1 M citrate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9745": {
+        "entryID": "9745",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 5.0,
+        "buffer": "0.1 M citrate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9746": {
+        "entryID": "9746",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 4.5,
+        "buffer": "0.1 M formate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9747": {
+        "entryID": "9747",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 5.0,
+        "buffer": "0.1 M formate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9748": {
+        "entryID": "9748",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 5.5,
+        "buffer": "0.1 M formate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9749": {
+        "entryID": "9749",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 4.5,
+        "buffer": "0.1 M propionate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9750": {
+        "entryID": "9750",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 5.0,
+        "buffer": "0.1 M propionate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9751": {
+        "entryID": "9751",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 5.5,
+        "buffer": "0.1 M propionate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9752": {
+        "entryID": "9752",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.0,
+        "buffer": "0.1 M propionate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9753": {
+        "entryID": "9753",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 4.5,
+        "buffer": "0.1 M acetate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9754": {
+        "entryID": "9754",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 5.0,
+        "buffer": "0.1 M acetate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9755": {
+        "entryID": "9755",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.0,
+        "buffer": "0.1 M acetate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9756": {
+        "entryID": "9756",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.0,
+        "buffer": "0.1 M phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9757": {
+        "entryID": "9757",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9758": {
+        "entryID": "9758",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "0.1 M phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9759": {
+        "entryID": "9759",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9760": {
+        "entryID": "9760",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9761": {
+        "entryID": "9761",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.5,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9762": {
+        "entryID": "9762",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 9.0,
+        "buffer": "100 mM Tris/HCl, 2 mM [2,2'-azinobis(3-ethylbenzthiazoline-6-sulphonic acid)],8-9 units horseradish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9763": {
+        "entryID": "9763",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.5,
+        "buffer": "0.1 M Glycine-NaOH",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9764": {
+        "entryID": "9764",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 9.0,
+        "buffer": "0.1 M Glycine-NaOH",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9765": {
+        "entryID": "9765",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9766": {
+        "entryID": "9766",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9767": {
+        "entryID": "9767",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9768": {
+        "entryID": "9768",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9769": {
+        "entryID": "9769",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9770": {
+        "entryID": "9770",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9771": {
+        "entryID": "9771",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9772": {
+        "entryID": "9772",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9773": {
+        "entryID": "9773",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9774": {
+        "entryID": "9774",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9775": {
+        "entryID": "9775",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9776": {
+        "entryID": "9776",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9777": {
+        "entryID": "9777",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9778": {
+        "entryID": "9778",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9779": {
+        "entryID": "9779",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9780": {
+        "entryID": "9780",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9781": {
+        "entryID": "9781",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9782": {
+        "entryID": "9782",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9783": {
+        "entryID": "9783",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9784": {
+        "entryID": "9784",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9785": {
+        "entryID": "9785",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9786": {
+        "entryID": "9786",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9787": {
+        "entryID": "9787",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9788": {
+        "entryID": "9788",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9789": {
+        "entryID": "9789",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "979": {
+        "entryID": "979",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "80 mM potassium phosphate, 100 \u00b5M NADPH",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9790": {
+        "entryID": "9790",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9791": {
+        "entryID": "9791",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9792": {
+        "entryID": "9792",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris/HCl, 0.1 mM dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9793": {
+        "entryID": "9793",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "50 mM sodium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9794": {
+        "entryID": "9794",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM sodium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9795": {
+        "entryID": "9795",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM sodium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9796": {
+        "entryID": "9796",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.7,
+        "buffer": "100 mM Imidazole, 10 mM Mg2+, 20 mM D-Glucose, 2 mM NADP+, 2500 U/l Hexokinase from Saccharomyces cerevisiae, 1500 U/l Glucose-6-phosphate dehydrogenase from Saccharomyces cerevisiae, 5 mM AMP, 20 mM N-Acetyl cysteine",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9797": {
+        "entryID": "9797",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.7,
+        "buffer": "100 mM Imidazole, 10 mM Mg2+, 20 mM D-Glucose, 2 mM NADP+, 2500 U/l Hexokinase from Saccharomyces cerevisiae, 1500 U/l Glucose-6-phosphate dehydrogenase from Saccharomyces cerevisiae, 5 mM AMP, 20 mM N-Acetyl cysteine",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9798": {
+        "entryID": "9798",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.7,
+        "buffer": "100 mM Imidazole, 10 mM Mg2+, 20 mM D-Glucose, 2 mM NADP+, 2500 U/l Hexokinase from Saccharomyces cerevisiae, 1500 U/l Glucose-6-phosphate dehydrogenase from Saccharomyces cerevisiae, 5 mM AMP, 20 mM N-Acetyl cysteine",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9799": {
+        "entryID": "9799",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.7,
+        "buffer": "100 mM Imidazole, 10 mM Mg2+, 20 mM D-Glucose, 2 mM NADP+, 2500 U/l Hexokinase from Saccharomyces cerevisiae, 1500 U/l Glucose-6-phosphate dehydrogenase from Saccharomyces cerevisiae, 5 mM AMP, 20 mM N-Acetyl cysteine",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "98": {
+        "entryID": "98",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "100 mM Tris, 50 mM MES, 50 mM acetic acid",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "980": {
+        "entryID": "980",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "80 mM potassium phosphate, 100 \u00b5M NADPH",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9800": {
+        "entryID": "9800",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "50 mM HEPES",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9801": {
+        "entryID": "9801",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "10 mM potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9802": {
+        "entryID": "9802",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "10 mM potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9803": {
+        "entryID": "9803",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dCTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9804": {
+        "entryID": "9804",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dCTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9805": {
+        "entryID": "9805",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dCTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9806": {
+        "entryID": "9806",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dCTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9807": {
+        "entryID": "9807",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dCTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9808": {
+        "entryID": "9808",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dCTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9809": {
+        "entryID": "9809",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dCTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "981": {
+        "entryID": "981",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "80 mM potassium phosphate, 100 \u00b5M NADPH",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9810": {
+        "entryID": "9810",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dATP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9811": {
+        "entryID": "9811",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dATP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9812": {
+        "entryID": "9812",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dATP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9813": {
+        "entryID": "9813",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dATP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9814": {
+        "entryID": "9814",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dATP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9815": {
+        "entryID": "9815",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dATP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9816": {
+        "entryID": "9816",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dATP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9817": {
+        "entryID": "9817",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dTTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9818": {
+        "entryID": "9818",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dTTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9819": {
+        "entryID": "9819",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dTTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "982": {
+        "entryID": "982",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "80 mM potassium phosphate, 100 \u00b5M NADPH",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9820": {
+        "entryID": "9820",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dTTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9821": {
+        "entryID": "9821",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dTTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9822": {
+        "entryID": "9822",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dTTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9823": {
+        "entryID": "9823",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dTTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9824": {
+        "entryID": "9824",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9825": {
+        "entryID": "9825",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9826": {
+        "entryID": "9826",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9827": {
+        "entryID": "9827",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9828": {
+        "entryID": "9828",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9829": {
+        "entryID": "9829",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "983": {
+        "entryID": "983",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "80 mM potassium phosphate, 100 \u00b5M NADPH",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9830": {
+        "entryID": "9830",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9831": {
+        "entryID": "9831",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9832": {
+        "entryID": "9832",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9833": {
+        "entryID": "9833",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9834": {
+        "entryID": "9834",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9835": {
+        "entryID": "9835",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9836": {
+        "entryID": "9836",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9837": {
+        "entryID": "9837",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dGTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9838": {
+        "entryID": "9838",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dTTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9839": {
+        "entryID": "9839",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dTTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "984": {
+        "entryID": "984",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "80 mM potassium phosphate, 100 \u00b5M NADPH",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9840": {
+        "entryID": "9840",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dTTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9841": {
+        "entryID": "9841",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.8,
+        "buffer": "66 mM Tris-HCl, 17 mM (NH4)2SO4, 10 mM beta-mercaptoethanol, 6.5 mM MgSO4, 10% glycerol, 166 \u00b5g/ml BSA, a 100-fold excess of dTTP",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9842": {
+        "entryID": "9842",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9843": {
+        "entryID": "9843",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9844": {
+        "entryID": "9844",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9845": {
+        "entryID": "9845",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9846": {
+        "entryID": "9846",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9847": {
+        "entryID": "9847",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9848": {
+        "entryID": "9848",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9849": {
+        "entryID": "9849",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "985": {
+        "entryID": "985",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Potassium Phosphate (air-saturated)",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9850": {
+        "entryID": "9850",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9851": {
+        "entryID": "9851",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9852": {
+        "entryID": "9852",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9853": {
+        "entryID": "9853",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9854": {
+        "entryID": "9854",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9855": {
+        "entryID": "9855",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9856": {
+        "entryID": "9856",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9857": {
+        "entryID": "9857",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9858": {
+        "entryID": "9858",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9859": {
+        "entryID": "9859",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris-HCl, 0.1 mM ditiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "986": {
+        "entryID": "986",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM Potassium Phosphate (air-saturated)",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9860": {
+        "entryID": "9860",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "100 mM Tris-HCl, 5 mM MgSO4",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9861": {
+        "entryID": "9861",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "100 mM Tris-HCl, 5 mM MgSO4",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9862": {
+        "entryID": "9862",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "100 mM Tris-HCl, 5 mM MgSO4",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9863": {
+        "entryID": "9863",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "100 mM Tris-HCl, 5 mM MgSO4",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9864": {
+        "entryID": "9864",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "40 mM Tris-HCl, 5 mM MgCl2, 60 mM KCl, 10 mM dithiothreitol, 250 \u00b5g bovine serum albumin, 2.5% glycerol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9865": {
+        "entryID": "9865",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "40 mM Tris-HCl, 5 mM MgCl2, 60 mM KCl, 10 mM dithiothreitol, 250 \u00b5g bovine serum albumin, 2.5% glycerol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9866": {
+        "entryID": "9866",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "40 mM Tris-HCl, 5 mM MgCl2, 60 mM KCl, 10 mM dithiothreitol, 250 \u00b5g bovine serum albumin, 2.5% glycerol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9867": {
+        "entryID": "9867",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "40 mM Tris-HCl, 5 mM MgCl2, 60 mM KCl, 10 mM dithiothreitol, 250 \u00b5g bovine serum albumin, 2.5% glycerol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9868": {
+        "entryID": "9868",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "40 mM Tris-HCl, 5 mM MgCl2, 60 mM KCl, 10 mM dithiothreitol, 250 \u00b5g bovine serum albumin, 2.5% glycerol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9869": {
+        "entryID": "9869",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "40 mM Tris-HCl, 5 mM MgCl2, 60 mM KCl, 10 mM dithiothreitol, 250 \u00b5g bovine serum albumin, 2.5% glycerol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "987": {
+        "entryID": "987",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.9,
+        "buffer": "200 mM Sodium phosphate, 1 mM EDTA",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9870": {
+        "entryID": "9870",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "40 mM Tris-HCl, 5 mM MgCl2, 60 mM KCl, 10 mM dithiothreitol, 250 \u00b5g bovine serum albumin, 2.5% glycerol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9871": {
+        "entryID": "9871",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "40 mM Tris-HCl, 5 mM MgCl2, 60 mM KCl, 10 mM dithiothreitol, 250 \u00b5g bovine serum albumin, 2.5% glycerol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9872": {
+        "entryID": "9872",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9873": {
+        "entryID": "9873",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.5,
+        "buffer": "50 mM Tris",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9874": {
+        "entryID": "9874",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.5,
+        "buffer": "10 mM pyrophosphate, 100 mM KCl, 0.05% o-dianisidine, 40 IU Horse radish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9875": {
+        "entryID": "9875",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.5,
+        "buffer": "10 mM pyrophosphate, 100 mM KCl, 0.05% o-dianisidine, 40 IU Horse radish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9876": {
+        "entryID": "9876",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.5,
+        "buffer": "10 mM pyrophosphate, 100 mM KCl, 0.05% o-dianisidine, 40 IU Horse radish peroxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9877": {
+        "entryID": "9877",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9878": {
+        "entryID": "9878",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9879": {
+        "entryID": "9879",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "988": {
+        "entryID": "988",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.9,
+        "buffer": "200 mM Sodium phosphate, 1 mM EDTA",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9880": {
+        "entryID": "9880",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9881": {
+        "entryID": "9881",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9882": {
+        "entryID": "9882",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9883": {
+        "entryID": "9883",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9884": {
+        "entryID": "9884",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9885": {
+        "entryID": "9885",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9886": {
+        "entryID": "9886",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9887": {
+        "entryID": "9887",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9888": {
+        "entryID": "9888",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9889": {
+        "entryID": "9889",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "989": {
+        "entryID": "989",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.9,
+        "buffer": "200 mM Sodium phosphate, 1 mM EDTA",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9890": {
+        "entryID": "9890",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": null,
+        "buffer": "-",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9891": {
+        "entryID": "9891",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": null,
+        "buffer": "-",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9892": {
+        "entryID": "9892",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": null,
+        "buffer": "-",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9893": {
+        "entryID": "9893",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": null,
+        "buffer": "-",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9894": {
+        "entryID": "9894",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": null,
+        "buffer": "-",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9895": {
+        "entryID": "9895",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": null,
+        "buffer": "-",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9896": {
+        "entryID": "9896",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": null,
+        "buffer": "-",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9897": {
+        "entryID": "9897",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": null,
+        "buffer": "-",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9898": {
+        "entryID": "9898",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": null,
+        "buffer": "-",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9899": {
+        "entryID": "9899",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "99": {
+        "entryID": "99",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "100 mM Tris, 50 mM MES, 50 mM acetic acid",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "990": {
+        "entryID": "990",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.9,
+        "buffer": "200 mM Sodium phosphate, 1 mM EDTA",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9900": {
+        "entryID": "9900",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9901": {
+        "entryID": "9901",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9902": {
+        "entryID": "9902",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9903": {
+        "entryID": "9903",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9904": {
+        "entryID": "9904",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9905": {
+        "entryID": "9905",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9906": {
+        "entryID": "9906",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9907": {
+        "entryID": "9907",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.4,
+        "buffer": "20 mM Tris/HCl, 100 mM NaCl, 1 mM EDTA, 1 mM MgCl2, 250 mM sucrose",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9908": {
+        "entryID": "9908",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9909": {
+        "entryID": "9909",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "991": {
+        "entryID": "991",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.2,
+        "buffer": "100 mM HEPES, 10 \u00b5M Pyridoxal phosphate, 1 mM Dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9910": {
+        "entryID": "9910",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9911": {
+        "entryID": "9911",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9912": {
+        "entryID": "9912",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9913": {
+        "entryID": "9913",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9914": {
+        "entryID": "9914",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9915": {
+        "entryID": "9915",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9916": {
+        "entryID": "9916",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9917": {
+        "entryID": "9917",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9918": {
+        "entryID": "9918",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9919": {
+        "entryID": "9919",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "992": {
+        "entryID": "992",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.8,
+        "buffer": "100 mM HEPES, 10 \u00b5M Pyridoxal phosphate, 1 mM Dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9920": {
+        "entryID": "9920",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9921": {
+        "entryID": "9921",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9922": {
+        "entryID": "9922",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9923": {
+        "entryID": "9923",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9924": {
+        "entryID": "9924",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9925": {
+        "entryID": "9925",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9926": {
+        "entryID": "9926",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9927": {
+        "entryID": "9927",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9928": {
+        "entryID": "9928",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9929": {
+        "entryID": "9929",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "993": {
+        "entryID": "993",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.8,
+        "buffer": "100 mM HEPES, 10 \u00b5M Pyridoxal phosphate, 1 mM Dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9930": {
+        "entryID": "9930",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9931": {
+        "entryID": "9931",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9932": {
+        "entryID": "9932",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9933": {
+        "entryID": "9933",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9934": {
+        "entryID": "9934",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9935": {
+        "entryID": "9935",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9936": {
+        "entryID": "9936",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9937": {
+        "entryID": "9937",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9938": {
+        "entryID": "9938",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9939": {
+        "entryID": "9939",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "994": {
+        "entryID": "994",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.3,
+        "buffer": "100 mM HEPES, 10 \u00b5M Pyridoxal phosphate, 1 mM Dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9940": {
+        "entryID": "9940",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9941": {
+        "entryID": "9941",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9942": {
+        "entryID": "9942",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9943": {
+        "entryID": "9943",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9944": {
+        "entryID": "9944",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9945": {
+        "entryID": "9945",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9946": {
+        "entryID": "9946",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9947": {
+        "entryID": "9947",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9948": {
+        "entryID": "9948",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9949": {
+        "entryID": "9949",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "995": {
+        "entryID": "995",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM HEPES, 10 \u00b5M Pyridoxal phosphate, 1 mM Dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9950": {
+        "entryID": "9950",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9951": {
+        "entryID": "9951",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9952": {
+        "entryID": "9952",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9953": {
+        "entryID": "9953",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9954": {
+        "entryID": "9954",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9955": {
+        "entryID": "9955",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9956": {
+        "entryID": "9956",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9957": {
+        "entryID": "9957",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9958": {
+        "entryID": "9958",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9959": {
+        "entryID": "9959",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "996": {
+        "entryID": "996",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.2,
+        "buffer": "100 mM HEPES, 10 \u00b5M Pyridoxal phosphate, 1 mM Dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9960": {
+        "entryID": "9960",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9961": {
+        "entryID": "9961",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9962": {
+        "entryID": "9962",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9963": {
+        "entryID": "9963",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9964": {
+        "entryID": "9964",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9965": {
+        "entryID": "9965",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9966": {
+        "entryID": "9966",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9967": {
+        "entryID": "9967",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9968": {
+        "entryID": "9968",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9969": {
+        "entryID": "9969",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "997": {
+        "entryID": "997",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM HEPES, 10 \u00b5M Pyridoxal phosphate, 1 mM Dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9970": {
+        "entryID": "9970",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9971": {
+        "entryID": "9971",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9972": {
+        "entryID": "9972",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9973": {
+        "entryID": "9973",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9974": {
+        "entryID": "9974",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9975": {
+        "entryID": "9975",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9976": {
+        "entryID": "9976",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9977": {
+        "entryID": "9977",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9978": {
+        "entryID": "9978",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9979": {
+        "entryID": "9979",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "998": {
+        "entryID": "998",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "100 mM HEPES, 10 \u00b5M Pyridoxal phosphate, 1 mM Dithiothreitol",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9980": {
+        "entryID": "9980",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9981": {
+        "entryID": "9981",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9982": {
+        "entryID": "9982",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9983": {
+        "entryID": "9983",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9984": {
+        "entryID": "9984",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9985": {
+        "entryID": "9985",
+        "pubmedID": null,
+        "temperature": 25.0,
+        "tempUnits": "\u00b0C",
+        "pH": 7.0,
+        "buffer": "0.1 M potassium phosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9986": {
+        "entryID": "9986",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.3,
+        "buffer": "0.1 M Tris, 0.12 mM pyridoxalphosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9987": {
+        "entryID": "9987",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.3,
+        "buffer": "0.1 M Tris, 0.12 mM pyridoxalphosphate",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9988": {
+        "entryID": "9988",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.3,
+        "buffer": "0.1 M Tris, 0.12 mM pyridoxalphosphate, 0.5 mM CuSO4",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9989": {
+        "entryID": "9989",
+        "pubmedID": null,
+        "temperature": 37.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.3,
+        "buffer": "0.1 M Tris, 0.12 mM pyridoxalphosphate, 0.5 mM CuSO4",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "999": {
+        "entryID": "999",
+        "pubmedID": null,
+        "temperature": 20.0,
+        "tempUnits": "\u00b0C",
+        "pH": 8.0,
+        "buffer": "10 mM HEPES",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9990": {
+        "entryID": "9990",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.5,
+        "buffer": "100 mM potassium phosphate, 1 mM ABTS, 2 U/ml peroxidase, 5 -20 mU/ml pyranose oxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9991": {
+        "entryID": "9991",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.5,
+        "buffer": "100 mM potassium phosphate, 1 mM ABTS, 2 U/ml peroxidase, 5 -20 mU/ml pyranose oxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9992": {
+        "entryID": "9992",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.5,
+        "buffer": "100 mM potassium phosphate, 1 mM ABTS, 2 U/ml peroxidase, 5 -20 mU/ml pyranose oxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9993": {
+        "entryID": "9993",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.5,
+        "buffer": "100 mM potassium phosphate, 1 mM ABTS, 2 U/ml peroxidase, 5 -20 mU/ml pyranose oxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9994": {
+        "entryID": "9994",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.5,
+        "buffer": "100 mM potassium phosphate, 1 mM ABTS, 2 U/ml peroxidase, 5 -20 mU/ml pyranose oxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9995": {
+        "entryID": "9995",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.5,
+        "buffer": "100 mM potassium phosphate, 1 mM ABTS, 2 U/ml peroxidase, 5 -20 mU/ml pyranose oxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9996": {
+        "entryID": "9996",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.5,
+        "buffer": "100 mM potassium phosphate, 1 mM ABTS, 2 U/ml peroxidase, 5 -20 mU/ml pyranose oxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9997": {
+        "entryID": "9997",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.5,
+        "buffer": "100 mM potassium phosphate, 1 mM ABTS, 2 U/ml peroxidase, 5 -20 mU/ml pyranose oxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9998": {
+        "entryID": "9998",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.5,
+        "buffer": "100 mM potassium phosphate, 1 mM ABTS, 2 U/ml peroxidase, 5 -20 mU/ml pyranose oxidase",
+        "ecClass": null,
+        "reactionID": null
+    },
+    "9999": {
+        "entryID": "9999",
+        "pubmedID": null,
+        "temperature": 30.0,
+        "tempUnits": "\u00b0C",
+        "pH": 6.5,
+        "buffer": "100 mM potassium phosphate, 1 mM ABTS, 2 U/ml peroxidase, 5 -20 mU/ml pyranose oxidase",
+        "ecClass": null,
+        "reactionID": null
+    }
+}

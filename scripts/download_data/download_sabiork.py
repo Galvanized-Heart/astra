@@ -9,7 +9,6 @@ import requests
 
 from astra.constants import PROJECT_ROOT
 
-
 API_ROOT = "https://sabiork.h-its.org/sabioRestWebServices"
 OUT_DIR = Path.joinpath(PROJECT_ROOT, "data", "raw", "sabiork")
 BATCH_SIZE = 500

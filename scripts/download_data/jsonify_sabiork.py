@@ -1,5 +1,6 @@
 import json
 import re
+
 from lxml import etree
 
 XML_PATH = '../../data/raw/sabiork/sabio_batch_00152.xml'
@@ -169,7 +170,7 @@ def main():
     try:
         tree = etree.parse(XML_PATH)
         root = tree.getroot()
-    except IOError:
+    except OSError:
         print(f"Error: The file '{XML_PATH}' was not found.")
         return
     except etree.XMLSyntaxError as e:

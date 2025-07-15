@@ -1,6 +1,7 @@
-import pandas as pd
-import numpy as np
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
 
 PROJECT_ROOT = Path('.')
 CPI_CSV_PATH = Path.joinpath(PROJECT_ROOT, "data", "interim", "cpipred")
@@ -73,7 +74,7 @@ def verify_counts(merged_df, original_dfs):
             if original_count == final_count:
                 print("MATCH!")
             else:
-                print(f"MISMATCH! Data may have been duplicated or lost.")
+                print("MISMATCH! Data may have been duplicated or lost.")
                 all_checks_passed = False
     
     if all_checks_passed:
