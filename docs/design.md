@@ -54,7 +54,7 @@ astra = "astra.main:cli"
 ```
 and will include flags for customizing predictions. The CLI will be built using <a href=https://click.palletsprojects.com/en/stable/>click</a>.
 
-Additionally, there will be a `data_processing` folder for harbouring all the data required for this project. Python scripts will be used to clean this data, split it, and handle data processing in reproducible ways (e.g.converting data formats, featurizing data).
+Additionally, there will be a `data_processing` folder for harbouring all the data processing required for this project. Python scripts will be used to clean this data, split it, and handle data processing in reproducible ways (e.g.converting data formats, featurizing data).
 
 There will be a `model` folder for keeping all the logic related to model architecture. This would include Python files for creating layers in PyTorch, modules built from these layers, model architectures built from these modules, desired metrics, customizable loss functions, and customizable optimizer settings.
 
@@ -82,7 +82,16 @@ It might also be wise to use <a href=https://docs.pydantic.dev/latest/>Pydantic<
 - TODO: Look into Pydantic for configs.
 
 ### scripts
-In `scripts`, there will be logic used to run preconfigured pipelines within this repository at a high level. This will involve downloading raw data, downloading model weights, processing the raw data, training a model from scratch, fine-tuning a pretrained model, running inference on a model, evaluating a model on a given dataset. This will help streamline many of the processes involved in experimenting and also help users experiment with the code once it is published.
+In `scripts`, there will be logic used to run preconfigured pipelines within this repository at a high level. This will involve:
+1. downloading raw data, 
+2. downloading model weights, 
+3. processing the raw data, 
+4. training a model from scratch, 
+5. fine-tuning a pretrained model, 
+6. running inference on a model, 
+7. evaluating a model on a given dataset. 
+
+This will help streamline many of the processes involved in experimenting and also help users experiment with the code once it is published.
 
 ### tests
 `tests` will be a folder containing test scripts for ensuring components from this repository work as intented. This could look at testing layers, loss functions, data processing, model on example data as a method of verifying that the program runs smoothly. This development will be done using <a href=https://docs.pytest.org/en/7.1.x/contents.html>pytest</a>.

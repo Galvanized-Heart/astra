@@ -218,3 +218,8 @@ if __name__ == "__main__":
 Having a single project name `WandbLogger(project="my-project")` will log multiple experiments to the same project name. This way, I won't get confused about where each training experiment goes and be able to find the best ones even with different architectures.
 
 In huggingface, the models are stored in a separate repo and it is typically best to upload them as `.bin` files instead of `.ckpt` files because `.ckpt` is Pytorch Lightning specific. It seems like I don't have to worry about this right now though. I can always come back to uploading the model to huggingface later on. For now, I should focus on building the models.
+
+### Jul 16, 2025
+Today I worked on building up the `DataModule` class by reading through the <a herf=https://lightning.ai/docs/pytorch/stable/data/datamodule.html#setup>lightning docs</a> and the <a href=https://github.com/jwohlwend/boltz>boltz repository</a> to get an idea of how I could cleanly handle the data processing logic.
+
+Reading through the boltz repository (at the time of writing), it seems like the boltz group created a custom class for their training config that parses their raw training YAML file into a useable format inside the `BoltzTrainingDataModule` class and use this class inside their `train()` function. The `train()` function takes some of the config arguments to setup hyperparameters, loading pretrained weights, checkpointing with a `Trainer()` callback (i.e. `ModelCheckpoint()`), and `WandbLogger()` for logging experimental progress.
