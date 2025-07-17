@@ -42,7 +42,6 @@ uv sync
 ```
 - `--locked` flag is used to sync environment from `uv.lock`. 
 <br>
-<br>
 
 Update lockfile
 ```
