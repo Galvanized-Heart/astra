@@ -212,3 +212,7 @@ __marimo__/
 data/
 results/
 experiments/
+
+# Exceptions
+!configs/data/
+!configs/experiments/
