@@ -30,7 +30,7 @@ uv add pandas
 ```
 <br>
 
-Remove dependencies
+Remove dependencies from `pyproject.toml` and `uv.lock`
 ```
 uv remove pandas
 ```
