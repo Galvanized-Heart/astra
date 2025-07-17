@@ -1,12 +1,22 @@
-# astra
+# Astra
+Astra is a multi-task model for predicting Michaelis-Menten kinetic parameters from elementary kinetic rate decompositions.
 
-## Command Line Interface (CLI)
-- If you are installing as a user, `pip install -e .` then activate the virtual environment using `source .venv/bin/activate`. You can then run the CLI through `astra hello`.
+## Getting Started
+Astra uses `uv` for development. To install `uv`, you can follow the instructions <a href=https://docs.astral.sh/uv/getting-started/installation>here</a> for updated instructions. At the time of writing, you can follow the instructions below to install `uv` and create the correct environment:
+```
+# Download and install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-- If you are installing as a developer with uv, use `uv sync` for synchronizing your environment (uv.lock file is provided in the repository). You can run the CLI through `uv run astra hello`.
-    - Note: you can still activate the virtual environment once uv is synchronized and activate and run the same as the user.
+# Create .venv
+uv venv
 
-## Testing
-- Tests are kept in in the `tests` directory. To run these tests, nagivate to the root directory (i.e. `astra`, not `astra/src/astra`) and run `uv run pytest` in the command line.
-- To run a specific test, run `uv run pytest -q <TEST SCRIPT>` (e.g. `uv run pytest -q test_constants.py`)
+# Sync uv .venv with uv.lock
+uv sync --locked
+
+# Sync addtional dev dependencies
+uv sync --dev
+```
+
+## Brief Tutorial for uv Usage
+To run a script using 
 
