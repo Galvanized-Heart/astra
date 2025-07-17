@@ -18,5 +18,34 @@ uv sync --dev
 ```
 
 ## Brief Tutorial for uv Usage
-To run a script using 
+Run scripts
+```
+uv run hello_world.py
+```
+<br>
 
+Add dependencies to `pyproject.toml`
+```
+uv add pandas
+```
+<br>
+
+Remove dependencies
+```
+uv remove pandas
+```
+<br>
+
+Sync environment with dependencies from `pyproject.toml`
+```
+uv sync
+```
+- `--locked` flag is used to sync environment from `uv.lock`. 
+<br>
+<br>
+
+Update lockfile
+```
+uv lock
+```
+<br>
