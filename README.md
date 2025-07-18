@@ -20,19 +20,19 @@ uv sync --dev
 ## Brief Tutorial for uv Usage
 Run scripts
 ```
-uv run hello_world.py
+uv run <COMMAND>
 ```
 <br>
 
 Add dependencies to `pyproject.toml`
 ```
-uv add pandas
+uv add <PACKAGE>
 ```
 <br>
 
 Remove dependencies from `pyproject.toml` and `uv.lock`
 ```
-uv remove pandas
+uv remove <PACKAGE>>
 ```
 <br>
 
