@@ -18,7 +18,7 @@ uv sync --dev
 ```
 
 ## Brief Tutorial for uv Usage
-Run scripts
+Run scripts (e.g. Python or shell commands)
 ```
 uv run <COMMAND>
 ```
