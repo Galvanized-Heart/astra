@@ -3,7 +3,7 @@ import torch
 
 def elemtary_to_michaelis_menten_basic(rates: torch.Tensor) -> torch.Tensor:
     """
-    Converts a batch of elementary rate constants to Michaelis-Menten parameters using vectorized PyTorch operations for GPU compatibility.
+    Converts a batch of five elementary rate constants to Michaelis-Menten parameters using vectorized PyTorch operations for GPU compatibility.
     """
     # Unpack for clarity
     k_plus_1, k_minus_1, k_plus_2 = rates.unbind(dim=-1)
@@ -20,7 +20,7 @@ def elemtary_to_michaelis_menten_basic(rates: torch.Tensor) -> torch.Tensor:
 
 def elemtary_to_michaelis_menten_advanced(rates: torch.Tensor) -> torch.Tensor:
     """
-    Converts a batch of elementary rate constants to Michaelis-Menten parameters using vectorized PyTorch operations for GPU compatibility.
+    Converts a batch of three elementary rate constants to Michaelis-Menten parameters using vectorized PyTorch operations for GPU compatibility.
     """
     # Unpack for clarity
     k_plus_1, k_minus_1, k_plus_2, k_minus_2, k_plus_3 = rates.unbind(dim=-1)
