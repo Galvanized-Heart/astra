@@ -24,7 +24,7 @@ def hello(name):
 def train(input_path):
     """Base function for training Astra model."""
     click.echo(f"Setting up training for {input_path}")
-    # TODO: Use data_processing/ to create protein/ligand encodings/embeddings, Dataset, and DataLoader
+    # TODO: Use data_processing/ to create protein/ligand features, Dataset, and DataLoader
     # TODO: Instantiate model architecture from model/
     # TODO: Initiate training pipelines/train.py
         # This should setup wandb tracking, save checkpoints, (other stuff?)

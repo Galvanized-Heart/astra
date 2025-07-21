@@ -5,7 +5,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import lightning as L
 
-from astra.model.layer.function_wrapper_layer import FunctionWrapperLayer
+import xgboost as xgb
+import numpy as np
+from sklearn.metrics import mean_squared_error
 
 class AstraModule(L.LightningModule):
     def __init__(self, model: nn.Module, recomposition_func: Optional[Callable] = None, lr: float = 1e-3 ):
@@ -63,23 +65,16 @@ class AstraModule(L.LightningModule):
         x_hat = self(x)
         test_loss = self.loss_func(x_hat, x)
         self.log("test_loss", test_loss)
-    
 # Example usage
 """ 
-trainer = L.Trainer()
+trainer = L.Trainer(accelerator='gpu', devices=1)
 trainer.fit(model, train_loader, valid_loader)
 
 trainer.test(model, dataloaders=DataLoader(test_set)) 
 """
 
 
-import pytorch_lightning as pl
-import xgboost as xgb
-import torch
-import numpy as np
-from sklearn.metrics import mean_squared_error
-
-class XGBoostLightning(pl.LightningModule):
+class XGBoostLightning(L.LightningModule):
     def __init__(self, xgb_params: dict):
         super().__init__()
         # Save hyperparameters
@@ -172,3 +167,28 @@ class XGBoostLightning(pl.LightningModule):
     def configure_optimizers(self):
         # No optimizer required for XGBoost
         return None
+    
+# Example usage
+"""
+trainer = L.Trainer(
+    max_epochs=1, # Only need 1 epoch to collect all data and train the model
+    accelerator='gpu',
+    devices=1 # Number of GPUs you want to run it on
+)
+
+xgb_params = {
+    'objective': 'reg:squarederror',
+    'eval_metric': 'mse',
+    'n_estimators': 150,
+    'learning_rate': 0.05,
+    'max_depth': 4,
+    'tree_method': 'gpu_hist',
+    'seed': 42
+}
+xgb_lightning_model = XGBoostRegressionLightning(xgb_params=xgb_params)
+trainer.fit(xgb_lightning_model, train_dataloaders=train_loader, val_dataloaders=val_loader)
+trainer.test(xgb_lightning_model, dataloaders=test_loader)
+
+TODO: Consider how to use multiple regression with XGBoost 
+- sklearn has MultipleOutputRegressor wrapper that creates ensemble
+"""
