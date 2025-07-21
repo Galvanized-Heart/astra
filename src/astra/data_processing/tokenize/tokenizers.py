@@ -1,8 +1,8 @@
 import re
 from collections import defaultdict
-from tqdm import tqdm
 
 import torch
+from tqdm import tqdm
 
 
 class BaseTokenizer:

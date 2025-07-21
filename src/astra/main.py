@@ -20,10 +20,12 @@ def hello(name):
 
 # Training script for Astra
 @cli.command()
-@click.option('--input_path', default=Path.joinpath(PROJECT_ROOT, "data", "interim", "cpipred", "CPI_all_brenda_core_enriched.csv"), help='The path to data you want to train on.')
-def train(input_path):
+@click.option('--train_path', default=Path.joinpath(PROJECT_ROOT, "data", "interim", "cpipred", "CPI_all_brenda_core_enriched.csv"), help='The path to data you want to train on.')
+@click.option('--valid_path', default=Path.joinpath(PROJECT_ROOT, "data", "interim", "cpipred", "CPI_all_brenda_core_enriched.csv"), help='The path to data you want to validate on.')
+def train(train_path, valid_path):
     """Base function for training Astra model."""
-    click.echo(f"Setting up training for {input_path}")
+    click.echo(f"Setting up training for {train_path}.")
+    click.echo(f"Using {valid_path} for validation.")
     # TODO: Use data_processing/ to create protein/ligand features, Dataset, and DataLoader
     # TODO: Instantiate model architecture from model/
     # TODO: Initiate training pipelines/train.py

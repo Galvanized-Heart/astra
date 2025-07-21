@@ -41,9 +41,6 @@ class AstraDataModule(L.LightningDataModule):
         When `Trainer()` calls `fit`, `validate`, `test`, `predict` attributes, these setup the data prior to calling `*_dataloader()`. 
         """
         # TODO: Splitting needs to be optional so users can provide their own training splits (possibly in config)
-        
-        #mnist_full = MNIST(self.data_dir, train=True)
-        #self.mnist_train, self.mnist_val = random_split(mnist_full, [55000, 5000], generator=torch.Generator().manual_seed(42))
 
         if stage == "fit":
             print("Setting up training dataset...")

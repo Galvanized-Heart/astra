@@ -1,16 +1,16 @@
-from typing import Optional, Callable
+from collections.abc import Callable
 
+import lightning as L
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import lightning as L
-
 import xgboost as xgb
-import numpy as np
 from sklearn.metrics import mean_squared_error
 
+
 class AstraModule(L.LightningModule):
-    def __init__(self, model: nn.Module, recomposition_func: Optional[Callable] = None, lr: float = 1e-3 ):
+    def __init__(self, model: nn.Module, recomposition_func: Callable | None = None, lr: float = 1e-3 ):
         """
         A flexible LightningModule that can optionally apply a final
         transformation function to the base model's output.
@@ -190,5 +190,5 @@ trainer.fit(xgb_lightning_model, train_dataloaders=train_loader, val_dataloaders
 trainer.test(xgb_lightning_model, dataloaders=test_loader)
 
 TODO: Consider how to use multiple regression with XGBoost 
-- sklearn has MultipleOutputRegressor wrapper that creates ensemble
+- sklearn has MultiOutputRegressor wrapper that creates ensemble
 """
