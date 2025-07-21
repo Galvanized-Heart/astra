@@ -7,6 +7,13 @@ Astra uses `uv` for development. To install `uv`, you can follow the instruction
 # Download and install uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
+# Download and install mmseqs2
+wget https://mmseqs.com/latest/mmseqs-linux-avx2.tar.gz
+tar xvfz mmseqs-linux-avx2.tar.gz
+export PATH=$(pwd)/mmseqs/bin/:$PATH
+mv mmseqs/bin/mmseqs ~/.local/bin/
+rm -rf mmseqs mmseqs-linux-avx2.tar.gz
+
 # Create .venv
 uv venv
 
@@ -67,14 +74,18 @@ Writing TODOs:
 - Implement feedback
 
 Software TODOs:
-- Build training logic
-	- Needs to accept train_path, valid_path
-- Create loss logic
-- Create splitting logic (mmseqs2, tanimoto, random)
-	- Splitting happens outside of DataModule
-- Create model architectures
-- Compare ablations (individual, naive combined, basic recomp, advanced recomp)
-	- XGBoost can't do multiple regression, it just uses more models.
+- Build training logic.
+	- Needs to accept train_path, valid_path.
+- Create loss logic.
+- Create splitting logic (mmseqs2, tanimoto, random).
+	- Splitting happens outside of DataModule.
+- Create model architectures.
+- Optimize hyperparameters.
+
+Experimental TODOs:
+- Compare ablations (individual, naive combined, basic recomp, advanced recomp).
+	- XGBoost can't do multiple regression, it just uses more models (sklearn `MultiOutputRegression` is an option for this).
+- Run interpretability analysis on linear model and attention values.
 
 Optional TODOs:
-- Create featurizations (optional)
+- Create featurizations.
