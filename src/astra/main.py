@@ -19,8 +19,8 @@ def hello(name):
 
 # Training script for Astra
 @cli.command()
-@click.option('--train_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "cpipred", "pangenomic", "train.csv"), help='The path to data you want to train on.')
-@click.option('--valid_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "cpipred", "pangenomic", "valid.csv"), help='The path to data you want to validate on.')
+@click.option('--train_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "cpipred", "pangenomic", "mmseqs", "train.csv"), help='The path to data you want to train on.')
+@click.option('--valid_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "cpipred", "pangenomic", "mmseqs", "valid.csv"), help='The path to data you want to validate on.')
 @click.option('--batch_size', default=32, help='The batch size you want to train with.')
 def train(train_path, valid_path, batch_size):
     """Base function for training Astra model."""
@@ -29,22 +29,29 @@ def train(train_path, valid_path, batch_size):
 
     # TODO: Write train.py to contain all this logic instead
         # NOTE: Having these as global imports slows the entire CLI signifiantly!!!
-    import lightning as L
+    #import lightning as L this is a BIG import
     from astra.data_processing.datamodules import AstraDataModule
-    from astra.model.models import AstraModule
+    #from astra.model.models import AstraModule
 
     # TODO: Use data_processing/ to create protein/ligand features, Dataset, and DataLoader
     # TODO: Instantiate model architecture from model/
     # TODO: Initiate training pipelines/train.py
         # This should setup wandb tracking, save checkpoints, (other stuff?)
 
-    trainer = L.Trainer()
+    #trainer = L.Trainer()
     #model = AstraModule()
     datamodule = AstraDataModule(train_path=train_path, valid_path=valid_path, batch_size=batch_size)
+    datamodule.setup("fit")
+    hi = datamodule.train_dataloader()
+    print(next(iter(hi)))
     #trainer.fit()
 
-    print(trainer)
     print(datamodule)
+
+
+def predict(test_path):
+    # TODO: Use Trainer.validate() for inference on individual predictions and for testing datasets
+    pass
 
 if __name__ == '__main__':
     cli()

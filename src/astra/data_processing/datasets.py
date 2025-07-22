@@ -85,7 +85,7 @@ class ProteinLigandDataset(Dataset):
         self.ligand_encodings = self.ligand_tokenizer.batch_encode_plus(ligand_smiles)
         print("Tokenization complete.")
 
-        # TODO: Implement data featurization
+        # TODO: Implement data featurization ESM2 and Morgan Fingerprints
 
     def __len__(self):
         """Returns the total number of samples in the dataset."""

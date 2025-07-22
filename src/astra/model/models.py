@@ -46,8 +46,8 @@ class AstraModule(L.LightningModule):
         return self.optimizer(self.parameters(), lr=self.lr)
 
     def training_step(self, batch, batch_idx):
-        # training_step defines the train loop.
-        x, _ = batch
+        print(batch)
+        return
         x = x.view(x.size(0), -1)
         x_hat = self(x) # Forward pass inside AstraModule
         loss = self.loss_func(x_hat, x)
