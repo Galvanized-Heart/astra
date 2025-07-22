@@ -119,6 +119,6 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                              | Subtasks                                                                                                                                                         | Deadline        | Status |
 | :-------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
-| **Run Baseline Experiments**      | - Run "individual models" experiment.<br>- Run "naive combined" experiment.<br>- Save all model checkpoints and a `results.json` summary for each run.               | **Fri, Aug 9**  |   ☐    |
-| **Run Core Method Experiments**   | - Run "basic recomp" experiment.<br>- Run "advanced recomp" experiment.<br>- Document all results in the experiment tracking system.                               | **Wed, Aug 14** |   ☐    |
+| **Run Baseline Experiments**      | - Run "individual models" experiment.<br>- Run "naive combined" experiment.<br>- Save all model checkpoints and a `results.json` summary for each run.               | **Fri, Aug 8**  |   ☐    |
+| **Run Core Method Experiments**   | - Run "basic recomp" experiment.<br>- Run "advanced recomp" experiment.<br>- Document all results in the experiment tracking system.                               | **Fri, Aug 8** |   ☐    |
 | **Run Interpretability Analysis** | - Write a script to load a trained model and a data sample.<br>- Extract and save feature coefficients/importance from linear/XGBoost models.<br>- Extract and visualize attention weights from attention-based models. | **Fri, Aug 16** |   ☐    |
