@@ -151,7 +151,7 @@ def analyze_and_plot_clusters(clusters: dict, size_threshold: int, output_dir: s
 # SECTION 3: Main Orchestration Function
 # ==============================================================================
 
-def split_data_into_files(
+def mmseqs2_split_data_into_files(
     input_csv_path: str,
     output_dir: str,
     seq_col: str = "protein_sequence",
@@ -266,7 +266,7 @@ if __name__ == '__main__':
     
     # --- Run the main function if MMseqs2 is available ---
     if shutil.which("mmseqs"):
-        split_data_into_files(
+        mmseqs2_split_data_into_files(
             input_csv_path=dummy_input_csv,
             output_dir=OUTPUT_DIRECTORY,
             seq_col="SEQ",
