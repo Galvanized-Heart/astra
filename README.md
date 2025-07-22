@@ -57,35 +57,62 @@ uv lock
 <br>
 
 ## NeurIPs 2025 Worshop Planning:
-NeurIPs 2025 Workshop Dates:
-- Suggested Paper Submission - Aug 22nd, 2025
-- Mandatory Accept/Reject - Sep 22, 2025
-- Conference - Dec 2, 2025 to Dec 6, 2025
+
+### Key Milestones
+
+| Milestone                              | Date              |
+| :------------------------------------- | :---------------- |
+| **Target Submission Deadline**         | **Fri, Aug 22**   |
+| Mandatory Accept/Reject Notification   | **Mon, Sep 22**   |
+| NeurIPS 2025 Conference                | **Dec 2 - Dec 6** |
+
+<br>
 
 NeurIPs 2025 Potential Workshops:
 - <a href=https://icml.cc/virtual/2025/workshop/39959>2nd Workshop on Multi-modal Foundation Models and Large Language Models for Life Sciences</a> (temporary link)
 - <a href=https://ai4sciencecommunity.github.io/neurips25>AI for Science: The Reach and Limits of AI for Scientific Discovery</a>
 
-Writing TODOs:
-- Write abstract
-- Write paper outline
-- Write first draft
-- Get first draft feedback
-- Implement feedback
+<br>
+This plan outlines the necessary tasks, subtasks, and deadlines to prepare a submission for the NeurIPS 2025 workshop by **August 22, 2025**.
 
-Software TODOs:
-- Build training logic.
-	- Needs to accept train_path, valid_path.
-- Create loss logic.
-- Create splitting logic (mmseqs2, tanimoto, random).
-	- Splitting happens outside of DataModule.
-- Create model architectures.
-- Optimize hyperparameters.
+### ✍️ Writing & Publication
 
-Experimental TODOs:
-- Compare ablations (individual, naive combined, basic recomp, advanced recomp).
-	- XGBoost can't do multiple regression, it just uses more models (sklearn `MultiOutputRegression` is an option for this).
-- Run interpretability analysis on linear model and attention values.
+| Task                            | Subtasks                                                                                                                                                             | Deadline        | Status |
+| :------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
+| **Conduct Literature Review**   | - Identify and summarize 10-15 key papers.<br>- Create an annotated bibliography.<br>- Clearly define how our work is positioned relative to existing literature.         | **Wed, Jul 24** |   ☐    |
+| **Write Detailed Paper Outline**| - Draft section headers (problem statement, proposed methods, and expected results).<br>- Write 2-4 bullet points of key content for each section.<br>- Explicitly list the paper's 3-4 key contributions.   | **Thu, Jul 25** |   ☐    |
+| **Write Abstract**              | - Draft one sentence for: context, problem, method, result, and implication.<br>- Refine into a cohesive paragraph under the word limit.                                 | **Fri, Jul 26** |   ☐    |
+| **Write First Draft**           | - Draft **Method** section first.<br>- Draft **Introduction** and **Related Work**.<br>- Draft **Experiments** section with planned setup.<br>- Create placeholders for all figures and tables. | **Fri, Aug 1**  |   ☐    |
+| **Get & Implement Feedback**    | - Identify 2-3 reviewers and send the draft.<br>- Consolidate all feedback into a single document.<br>- Triage changes (Critical, High-Priority, Minor).<br>- Systematically implement revisions. | **Tue, Aug 19** |   ☐    |
+| **Generate Figures & Tables**   | - Create a script (`plots.py`) to generate all visuals from saved results.<br>- Generate main performance and ablation tables.<br>- Generate interpretability plots.<br>- Write clear captions for everything. | **Wed, Aug 20** |   ☐    |
+| **Final Proofread and Polish**  | - Perform a full grammar and spelling check.<br>- Read the entire paper aloud to catch awkward phrasing.<br>- Ensure formatting matches the workshop's style guide.  | **Thu, Aug 21** |   ☐    |
 
-Optional TODOs:
-- Create featurizations.
+---
+
+### 🏗️ Data & Infrastructure
+
+| Task                                | Subtasks                                                                                                                                                                        | Deadline        | Status |
+| :---------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------- | :----: |
+| **Data Curation & Preprocessing**   | - Write scripts to download and parse raw data.<br>- Standardize data formats; handle missing values.<br>- Save the final, processed datasets to be used in training.              | **Mon, Jul 29** |   ☐    |
+| **Create Data Splitting Logic**     | - Implement the random splitting function.<br>- Implement `mmseqs2` wrapper and cluster-based splitting.<br>- Write tests to ensure no data leakage between train/validation sets. | **Tue, Jul 30** |   ☐    |
+| **Setup Experiment Tracking**       | - Initialize a Weights & Biases project.<br>- Define standard metrics to log (loss, accuracy, F1, etc.).<br>- Ensure hyperparameters are automatically logged on every run. | **Wed, Jul 31** |   ☐    |
+
+---
+
+### 💻 Software Implementation
+
+| Task                            | Subtasks                                                                                                                                                                 | Deadline        | Status |
+| :------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
+| **Create Model Architectures**  | - Implement the baseline model(s) (e.g., XGBoost, Linear).<br>- Implement the `sklearn.multioutput.MultiOutputRegressor` wrapper for XGBoost.<br>- ~~Implement the "advanced recomp" model as a PyTorch `nn.Module`~~.<br>- Add clear docstrings explaining input/output shapes. | **Fri, Aug 2**  |   ☐    |
+| **Build Training & Loss Logic** | - ~~Create PyTorch `Dataset` and `DataLoader` classes.~~<br>- Build the main training script with `argparse` for key parameters.<br>- Implement training and validation loops.<br>- Integrate experiment tracking calls within the loops. | **Tue, Aug 6**  |   ☐    |
+| **Optimize Hyperparameters**    | - Define the hyperparameter search space (learning rate, weight decay, etc.).<br>- Set up and run a sweep using a tool like Optuna or W&B Sweeps.<br>- Analyze results to find the best configuration. | **Wed, Aug 20** |   ☐    |
+
+---
+
+### 🔬 Experiments & Analysis
+
+| Task                              | Subtasks                                                                                                                                                         | Deadline        | Status |
+| :-------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
+| **Run Baseline Experiments**      | - Run "individual models" experiment.<br>- Run "naive combined" experiment.<br>- Save all model checkpoints and a `results.json` summary for each run.               | **Fri, Aug 9**  |   ☐    |
+| **Run Core Method Experiments**   | - Run "basic recomp" experiment.<br>- Run "advanced recomp" experiment.<br>- Document all results in the experiment tracking system.                               | **Wed, Aug 14** |   ☐    |
+| **Run Interpretability Analysis** | - Write a script to load a trained model and a data sample.<br>- Extract and save feature coefficients/importance from linear/XGBoost models.<br>- Extract and visualize attention weights from attention-based models. | **Fri, Aug 16** |   ☐    |
