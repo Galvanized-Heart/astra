@@ -109,9 +109,9 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                            | Subtasks                                                                                                                                                                 | Deadline        | Status |
 | :------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
-| **Create Model Architectures**  | - Implement the baseline model(s) (e.g., XGBoost, Linear).<br>- Implement the `sklearn.multioutput.MultiOutputRegressor` wrapper for XGBoost.<br>- ~~Implement the "advanced recomp" model as a PyTorch `nn.Module`~~.<br>- Add clear docstrings explaining input/output shapes. | **Fri, Aug 2**  |   ☐    |
-| **Build Training & Loss Logic** | - ~~Create PyTorch `Dataset` and `DataLoader` classes.~~<br>- Build the main training script with `argparse` for key parameters.<br>- Implement training and validation loops.<br>- Integrate experiment tracking calls within the loops. | **Tue, Aug 6**  |   ☐    |
-| **Optimize Hyperparameters**    | - Define the hyperparameter search space (learning rate, weight decay, etc.).<br>- Set up and run a sweep using a tool like Optuna or W&B Sweeps.<br>- Analyze results to find the best configuration. | **Wed, Aug 20** |   ☐    |
+| **Create Model Architectures**  | - Implement the baseline model(s) (e.g., XGBoost, Linear).<br>- Implement the `sklearn.multioutput.MultiOutputRegressor` wrapper for XGBoost.<br>- ~~Implement the "advanced recomp" model as a PyTorch `nn.Module`~~.<br>- Add clear docstrings explaining input/output shapes. | **Fri, Aug 1**  |   ☐    |
+| **Build Training & Loss Logic** | - ~~Create PyTorch `Dataset` and `DataLoader` classes.~~<br>- Build the main training script with `argparse` for key parameters.<br>- Implement training and validation loops.<br>- Integrate experiment tracking calls within the loops. | **Fri, Aug 1**  |   ☐    |
+| **Optimize Hyperparameters**    | - Define the hyperparameter search space (learning rate, weight decay, etc.).<br>- Set up and run a sweep using a tool like Optuna or W&B Sweeps.<br>- Analyze results to find the best configuration. | **Wed, Aug 13** |   ☐    |
 
 ---
 
@@ -119,6 +119,6 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                              | Subtasks                                                                                                                                                         | Deadline        | Status |
 | :-------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
-| **Run Baseline Experiments**      | - Run "individual models" experiment.<br>- Run "naive combined" experiment.<br>- Save all model checkpoints and a `results.json` summary for each run.               | **Fri, Aug 9**  |   ☐    |
-| **Run Core Method Experiments**   | - Run "basic recomp" experiment.<br>- Run "advanced recomp" experiment.<br>- Document all results in the experiment tracking system.                               | **Wed, Aug 14** |   ☐    |
-| **Run Interpretability Analysis** | - Write a script to load a trained model and a data sample.<br>- Extract and save feature coefficients/importance from linear/XGBoost models.<br>- Extract and visualize attention weights from attention-based models. | **Fri, Aug 16** |   ☐    |
+| **Run Baseline Experiments**      | - Run "individual models" experiment.<br>- Run "naive combined" experiment.<br>- Save all model checkpoints and a `results.json` summary for each run.               | **Fri, Aug 8**  |   ☐    |
+| **Run Core Method Experiments**   | - Run "basic recomp" experiment.<br>- Run "advanced recomp" experiment.<br>- Document all results in the experiment tracking system.                               | **Fri, Aug 8** |   ☐    |
+| **Run Interpretability Analysis** | - Write a script to load a trained model and a data sample.<br>- Extract and save feature coefficients/importance from linear/XGBoost models.<br>- Extract and visualize attention weights from attention-based models. | **Fri, Aug 15** |   ☐    |
