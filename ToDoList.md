@@ -3,6 +3,7 @@
 ### **Rana**
 - [x] Write Overleaf paper outline
 - [x] Put together NeurIPS submission template
+- [ ] Test XGBoost on dataloader
 - [ ] Design a few different model architectures (won't touch derivation)
 - [ ] Run interpretability analysis on:
   - Linear model coefficients
