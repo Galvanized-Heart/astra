@@ -38,8 +38,8 @@
 # 🔔 Discussion Points
 
 - Timeline?
-
 - Authorship?
+- Name? (Astra vs others?)
 
 ---
 
