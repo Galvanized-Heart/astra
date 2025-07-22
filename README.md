@@ -109,9 +109,9 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                            | Subtasks                                                                                                                                                                 | Deadline        | Status |
 | :------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
-| **Create Model Architectures**  | - Implement the baseline model(s) (e.g., XGBoost, Linear).<br>- Implement the `sklearn.multioutput.MultiOutputRegressor` wrapper for XGBoost.<br>- ~~Implement the "advanced recomp" model as a PyTorch `nn.Module`~~.<br>- Add clear docstrings explaining input/output shapes. | **Fri, Aug 2**  |   ☐    |
-| **Build Training & Loss Logic** | - ~~Create PyTorch `Dataset` and `DataLoader` classes.~~<br>- Build the main training script with `argparse` for key parameters.<br>- Implement training and validation loops.<br>- Integrate experiment tracking calls within the loops. | **Tue, Aug 6**  |   ☐    |
-| **Optimize Hyperparameters**    | - Define the hyperparameter search space (learning rate, weight decay, etc.).<br>- Set up and run a sweep using a tool like Optuna or W&B Sweeps.<br>- Analyze results to find the best configuration. | **Wed, Aug 20** |   ☐    |
+| **Create Model Architectures**  | - Implement the baseline model(s) (e.g., XGBoost, Linear).<br>- Implement the `sklearn.multioutput.MultiOutputRegressor` wrapper for XGBoost.<br>- ~~Implement the "advanced recomp" model as a PyTorch `nn.Module`~~.<br>- Add clear docstrings explaining input/output shapes. | **Fri, Aug 1**  |   ☐    |
+| **Build Training & Loss Logic** | - ~~Create PyTorch `Dataset` and `DataLoader` classes.~~<br>- Build the main training script with `argparse` for key parameters.<br>- Implement training and validation loops.<br>- Integrate experiment tracking calls within the loops. | **Tue, Aug 1**  |   ☐    |
+| **Optimize Hyperparameters**    | - Define the hyperparameter search space (learning rate, weight decay, etc.).<br>- Set up and run a sweep using a tool like Optuna or W&B Sweeps.<br>- Analyze results to find the best configuration. | **Wed, Aug 13** |   ☐    |
 
 ---
 
