@@ -71,9 +71,15 @@ uv lock
 NeurIPs 2025 Potential Workshops:
 - <a href=https://icml.cc/virtual/2025/workshop/39959>2nd Workshop on Multi-modal Foundation Models and Large Language Models for Life Sciences</a> (temporary link)
 - <a href=https://ai4sciencecommunity.github.io/neurips25>AI for Science: The Reach and Limits of AI for Scientific Discovery</a>
+    - Abstract Submission - Aug 18, 2025
+    - Paper Submission - Aug 25, 2025
+    - Review Bidding Period - Aug 25, 2025 to Aug 27, 2025
+    - Review Deadline - Sep 18, 2025
+    - Accept/Reject Notification - Sep 22, 2025
+    - Workshop - Dec 6, 2025 to Dec 7, 2025 
 
 <br>
-This plan outlines the necessary tasks, subtasks, and deadlines to prepare a submission for the NeurIPS 2025 workshop by **August 22, 2025**.
+This plan outlines the necessary tasks, subtasks, and deadlines to prepare a submission for the NeurIPS 2025 workshop by August 22, 2025 .
 
 ### ✍️ Writing & Publication
 
@@ -95,7 +101,7 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 | :---------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------- | :----: |
 | **Data Curation & Preprocessing**   | - Write scripts to download and parse raw data.<br>- Standardize data formats; handle missing values.<br>- Save the final, processed datasets to be used in training.              | **Mon, Jul 29** |   ☐    |
 | **Create Data Splitting Logic**     | - Implement the random splitting function.<br>- Implement `mmseqs2` wrapper and cluster-based splitting.<br>- Write tests to ensure no data leakage between train/validation sets. | **Tue, Jul 30** |   ☐    |
-| **Setup Experiment Tracking**       | - Initialize a Weights & Biases project.<br>- Define standard metrics to log (loss, accuracy, F1, etc.).<br>- Ensure hyperparameters are automatically logged on every run. | **Wed, Jul 31** |   ☐    |
+| **Setup Experiment Tracking**       | - ~~Initialize a Weights & Biases project.~~<br>- Define standard metrics to log (loss, accuracy, F1, etc.).<br>- Ensure hyperparameters are automatically logged on every run. | **Wed, Jul 31** |   ☐    |
 
 ---
 

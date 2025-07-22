@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error
 
 
 class AstraModule(L.LightningModule):
-    def __init__(self, model: nn.Module, recomposition_func: Callable | None = None, lr: float = 1e-3 ):
+    def __init__(self, model: nn.Module, optimizer: torch.optim = None, lr: float = 1e-3, loss_func = None, recomposition_func: Callable = None):
         """
         A flexible LightningModule that can optionally apply a final
         transformation function to the base model's output.
@@ -18,17 +18,20 @@ class AstraModule(L.LightningModule):
         Args:
             model (nn.Module): The core model. It can either output the final
                                     parameters or intermediate rates.
-            recomposition_func (callable, optional): A function to transform
-                                    the model's output. If None, the output
-                                    is returned directly. Defaults to None.
+            optimizer (torch.optim): A PyTorch optimizer used to train the model.
             lr (float): The learning rate for the optimizer.
+            loss_func: A PyTorch loss function used to compute model performance 
+                       and update gradients during training.
+            recomposition_func (callable, optional): A function to transform
+                        the model's output. If None, the output
+                        is returned directly. Defaults to None.
         """
         super().__init__()
         self.model = model
-        self.recomposition_func = recomposition_func
-        self.lr = lr
         self.optimizer = torch.optim.Adam
+        self.lr = lr
         self.loss_func = F.mse_loss
+        self.recomposition_func = recomposition_func
 
     def forward(self, x):
         """
@@ -58,13 +61,6 @@ class AstraModule(L.LightningModule):
         val_loss = self.loss_func(x_hat, x)
         self.log("val_loss", val_loss)
 
-    def test_step(self, batch, batch_idx):
-        # this is the test loop
-        x, _ = batch
-        x = x.view(x.size(0), -1)
-        x_hat = self(x)
-        test_loss = self.loss_func(x_hat, x)
-        self.log("test_loss", test_loss)
 # Example usage
 """ 
 trainer = L.Trainer(accelerator='gpu', devices=1)
@@ -98,6 +94,10 @@ class XGBoostLightning(L.LightningModule):
             
         predictions = self.model.predict(x.cpu().numpy())
         return torch.from_numpy(predictions).to(self.device)
+
+    def configure_optimizers(self):
+        # No optimizer required for XGBoost
+        return None
 
     def training_step(self, batch, batch_idx):
         """
@@ -143,30 +143,6 @@ class XGBoostLightning(L.LightningModule):
         mse = mean_squared_error(y_np, preds_np)        
         self.log('test_mse', mse, on_step=False, on_epoch=True)
         return mse
-
-    def test_step(self, batch, batch_idx):
-        x, y = batch
-
-        # Ensure the model is trained
-        if self.model is None:
-            return
-
-        preds_np = self.model.predict(x.cpu().numpy())
-        y_np = y.cpu().numpy()
-        mse = mean_squared_error(y_np, preds_np)        
-        self.log('test_mse', mse, on_step=False, on_epoch=True)
-        return mse
-        
-    def predict_step(self, batch, batch_idx, dataloader_idx=0):
-        """
-        For inference without labels or logging.
-        """
-        x, _ = batch # Assume batch has (x, y), might be just x
-        return self(x)
-
-    def configure_optimizers(self):
-        # No optimizer required for XGBoost
-        return None
     
 # Example usage
 """
