@@ -7,7 +7,7 @@ from typing import Dict, List
 
 from safetensors.torch import save_file
 
-from astra.data_processing.featurizers import Featurizer, ESMFeaturizer, MorganFeaturizer
+from astra.data_processing.featurizers import Featurizer
 from astra.data_processing.utils import preprocess_and_validate_data
 
 
@@ -51,7 +51,7 @@ def generate_and_save_features(
 
 def create_manifests(
         split_files: Dict[str, str],
-        output_dir: str,
+        output_dir: Path,
         protein_featurizer: Featurizer,
         ligand_featurizer: Featurizer
     ) -> Dict[str, Path]:
@@ -61,7 +61,7 @@ def create_manifests(
     Args:
         split_files (Dict[str, str]): A dictionary mapping split names (e.g. 'train', 'val')
                                         to their corresponding raw CSV file paths.
-        output_dir (str): The directory where manifests and feature sub-folders will be saved.
+        output_dir (Path): The directory where manifests and feature sub-folders will be saved.
         protein_featurizer (Featurizer): Protein featurizer object.
         ligand_featurizer (Featurizer): Ligand featurizer object.
 
@@ -69,9 +69,8 @@ def create_manifests(
         manifest_files (Dict[str, Path]): A dictionary mapping split names (e.g. 'train', 'val')
                                         to their corresponding manifest CSV file paths.
     """
-    output_path = Path(output_dir)
-    protein_features_dir = output_path / protein_featurizer.name
-    ligand_features_dir = output_path / ligand_featurizer.name
+    protein_features_dir = output_dir / protein_featurizer.name
+    ligand_features_dir = output_dir / ligand_featurizer.name
     protein_features_dir.mkdir(parents=True, exist_ok=True)
     ligand_features_dir.mkdir(parents=True, exist_ok=True)
 
@@ -119,7 +118,7 @@ def create_manifests(
         manifest_df = split_df[['protein_feature_path', 'ligand_feature_path', 'kcat', 'KM', 'Ki']].dropna()
 
         # Save manifest files and their paths
-        manifest_path = output_path / f"manifest_{split_name}.csv"
+        manifest_path = output_dir / f"manifest_{split_name}.csv"
         manifest_df.to_csv(manifest_path, index=False)
         manifest_files[split_name] = manifest_path
         print(f"Saved {split_name} manifest ({len(manifest_df)} samples) to {manifest_path}")
