@@ -42,7 +42,7 @@ def main():
 
     # Output directory for storing and verifying embeddings 
     # TODO: Discuss as a group which dir to store on Balam to avoid having multiple embedding copies
-    output_dir = Path("./data")
+    output_dir = Path("./manifest/data")
 
     # Create dict (i.e. manifest_files) with paths to precomputed protein and ligand embeddings, and target values
     manifest_files = create_manifests(split_files=predefined_splits, output_dir=output_dir)
@@ -54,12 +54,16 @@ def main():
     
     # Create dataloader from dataset
     train_dataloader = DataLoader(train_dataset, batch_size=2, shuffle=True, num_workers=0)
-    first_batch = next(iter(train_dataloader)) # This is a dict
+    first_batch = next(iter(train_dataloader)) # first_batch is a dict
 
     # Seperate batches by key
     x_prot = first_batch['protein_embedding']
     x_lig = first_batch['ligand_embedding']
     y = first_batch['targets']
+
+    print(f"Protein Example:\n{x_prot.shape}")
+    print(f"Ligand Example:\n{x_lig.shape}")
+    print(f"Targets Example:\n{y.shape}")
     
     # y_hat = model(x_prot, x_lig)
     # loss = loss_func(y, y_hat)
