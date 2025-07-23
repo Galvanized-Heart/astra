@@ -7,12 +7,12 @@ from torch.utils.data import Dataset
 class ProteinLigandDataset(Dataset):
     """
     Dataset that loads pre-computed protein and ligand embeddings
-    stored as .safetensors files.
+    stored as safetensors files.
     """
     def __init__(self, manifest_path):
         """
         Args:
-            manifest_path (str): Pth to CSV file with precomputed safetensor paths.
+            manifest_path (str): Path to CSV file with precomputed safetensor paths.
         """
         print(f"Loading manifest from {manifest_path}...")
         self.manifest = pd.read_csv(manifest_path)

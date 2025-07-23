@@ -15,7 +15,8 @@ def generate_and_save_features(
     items: List[str],
     featurizer: Featurizer,
     output_dir: Path,
-    feature_name: str = "embedding"
+    feature_name: str = "embedding",
+    batch_size: int = 32
 ) -> Dict[str, str]:
     """
     Generic function to generate, save, and cache features for a list of items.
@@ -34,6 +35,7 @@ def generate_and_save_features(
 
     print(f"Found {len(items_to_process)} new items to featurize.")
     if not items_to_process:
+        # Return if there are no items to process
         return item_to_path_map
 
     # Generate features for unsaved items
@@ -45,6 +47,21 @@ def generate_and_save_features(
     for item, tensor in tqdm(newly_computed_features.items(), desc="Saving"):
         path_str = item_to_path_map[item]
         save_file({feature_name: tensor}, path_str)
+
+    print(f"Generating new features in batches of {batch_size}...")
+    
+    # Iterate through the items_to_process list in chunks of `batch_size`
+    for i in tqdm(range(0, len(items_to_process), batch_size), desc="Processing Batches"):
+        # Create a batch of items
+        batch_items = items_to_process[i : i + batch_size]
+        
+        # Generate features for batch
+        newly_computed_features = featurizer.featurize(batch_items)
+        
+        # Save the features for this batch immediately to free up memory
+        for item, tensor in newly_computed_features.items():
+            path_str = item_to_path_map[item]
+            save_file({feature_name: tensor}, path_str)
         
     return item_to_path_map
 
@@ -53,7 +70,8 @@ def create_manifests(
         split_files: Dict[str, str],
         output_dir: Path,
         protein_featurizer: Featurizer,
-        ligand_featurizer: Featurizer
+        ligand_featurizer: Featurizer,
+        batch_size: int = 32
     ) -> Dict[str, Path]:
     """
     Generates precomputed features and separate manifests for predefined data splits.
@@ -100,8 +118,8 @@ def create_manifests(
 
     # Run feature generation process
     print("\n--- Step 3: Generating features ---")
-    protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, "embedding")
-    ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, "embedding")
+    protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, "embedding", 32)
+    ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, "embedding", 32)
 
     # Create final manifests
     print("\n--- Step 4: Creating final manifest files ---")
