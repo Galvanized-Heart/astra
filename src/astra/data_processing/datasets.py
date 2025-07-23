@@ -40,8 +40,9 @@ class ProteinLigandDataset(Dataset):
         protein_embedding = protein_tensors["embedding"]
         ligand_embedding = ligand_tensors["embedding"] 
 
+        # Create dictionary for multi-modal data
         item = {
-            "protein_embedding": protein_embedding, 
+            "protein_embedding": protein_embedding,
             "ligand_embedding": ligand_embedding,
             "targets": self.target_values[idx]
         }
