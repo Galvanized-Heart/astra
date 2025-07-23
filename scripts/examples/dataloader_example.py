@@ -7,6 +7,7 @@ from pathlib import Path
 
 from astra.data_processing.manifests.manifest import create_manifests
 from astra.data_processing.datasets import ProteinLigandDataset
+from astra.data_processing.featurizers import ESMFeaturizer, MorganFeaturizer
 
 
 def setup_dummy_data():
@@ -44,8 +45,20 @@ def main():
     # TODO: Discuss as a group which dir to store on Balam to avoid having multiple embedding copies
     output_dir = Path("./manifest/data")
 
+    # Setup device
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Running on device: {device}.")
+
+    # Setup batch size
+    batch_size = 32
+    print(f"Using batch_size = {batch_size} to precompute features.")
+
+    # Instatiate feturizers
+    protein_featurizer = ESMFeaturizer(model_name="facebook/esm2_t6_8M_UR50D", device=device)
+    ligand_featurizer = MorganFeaturizer(radius=2, fp_size=2048)
+
     # Create dict (i.e. manifest_files) with paths to precomputed protein and ligand embeddings, and target values
-    manifest_files = create_manifests(split_files=predefined_splits, output_dir=output_dir)
+    manifest_files = create_manifests(split_files=predefined_splits, output_dir=output_dir, protein_featurizer=protein_featurizer, ligand_featurizer=ligand_featurizer, batch_size=batch_size)
 
     # Create dataset from manifest CSV path
     train_path = manifest_files['train']

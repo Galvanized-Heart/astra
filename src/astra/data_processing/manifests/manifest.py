@@ -118,8 +118,8 @@ def create_manifests(
 
     # Run feature generation process
     print("\n--- Step 3: Generating features ---")
-    protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, "embedding", 32)
-    ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, "embedding", 32)
+    protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, "embedding", batch_size)
+    ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, "embedding", batch_size)
 
     # Create final manifests
     print("\n--- Step 4: Creating final manifest files ---")
