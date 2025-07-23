@@ -1,9 +1,11 @@
-
+from pathlib import Path
 
 import lightning as L
 from torch.utils.data import DataLoader
 
 from astra.data_processing.datasets import ProteinLigandDataset
+from astra.data_processing.featurize.manifest import create_feature_manifest
+from astra.constants import PROJECT_ROOT
 
 
 class AstraDataModule(L.LightningDataModule):
@@ -18,9 +20,11 @@ class AstraDataModule(L.LightningDataModule):
         I suppose.
         """
         super().__init__()
-        # TODO: Path to data, Instantiate `Dataset`s, Train/Inference configs (possibly split function or seperate train/valid sets in config)
-        self.train_path = train_path
-        self.valid_path = valid_path
+        # TODO: Create manifest.csv, Train/Inference configs (possibly split function or seperate train/valid sets in config)
+        create_feature_manifest(train_path, Path.join(PROJECT_ROOT, "data", "manifest"))
+        create_feature_manifest(valid_path, Path.join(PROJECT_ROOT, "data", "manifest"))
+
+
         self.batch_size = batch_size
 
     def prepare_data(self):

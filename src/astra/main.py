@@ -18,6 +18,13 @@ def hello(name):
     """A simple hello command to test the CLI setup."""
     click.echo(f"Hello, {name}!")
 
+@cli.command()
+@click.option('--input_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "cpipred", "pangenomic", "mmseqs", "train.csv"), help='The path to data you want to train on.')
+def manifest(input_path):
+    # TODO: Use create_feature_manifest() to convert protein sequences and 
+    # ligand SMILES to features and save feature paths inside manifest.csv
+    pass
+
 # Training script for Astra
 @cli.command()
 @click.option('--train_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "cpipred", "pangenomic", "mmseqs", "train.csv"), help='The path to data you want to train on.')
