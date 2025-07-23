@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Dict
 
 import lightning as L
 from torch.utils.data import DataLoader
@@ -10,22 +11,29 @@ from astra.constants import PROJECT_ROOT
 
 class AstraDataModule(L.LightningDataModule):
     """DataModule for Astra."""
-    def __init__(self, train_path=None, valid_path=None, batch_size: int = 32):
+    def __init__(self, data_paths: Dict[str, str] = None, batch_size: int = 32):
         """
         Meant to instantiate states for `torch.utils.data.Dataset` classes.
 
         It appears that this is intended to intake paths to the data and that
-        the`Dataset` class handles the loading via `__getitem__()` for tokenizing,
-        cropping, and featurizing. Also, it would take configs for training,
-        I suppose.
+        the `Dataset` class handles the loading via `__getitem__()` for featurizing. 
+        Also, it would take configs for training, I suppose.
         """
         super().__init__()
-        # TODO: Create manifest.csv, Train/Inference configs (possibly split function or seperate train/valid sets in config)
-        create_feature_manifest(train_path, Path.join(PROJECT_ROOT, "data", "manifest"))
-        create_feature_manifest(valid_path, Path.join(PROJECT_ROOT, "data", "manifest"))
 
+        # Create manifest features
+        manifest_files = create_feature_manifest(data_paths, PROJECT_ROOT/"data"/"manifest")
 
+        # Set file paths if they exist
+        self.train_path = manifest_files.get("train")
+        self.valid_path = manifest_files.get("valid")
+        self.test_path = manifest_files.get("test")
+
+        # Set configs
         self.batch_size = batch_size
+
+        # TODO: Train/Inference configs (possibly split function or seperate train/valid sets in config)
+
 
     def prepare_data(self):
         """

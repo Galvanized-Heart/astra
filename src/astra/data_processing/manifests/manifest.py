@@ -15,7 +15,7 @@ def generate_and_save_features(
     items: List[str],
     featurizer: Featurizer,
     output_dir: Path,
-    feature_name: str
+    feature_name: str = "embedding"
 ) -> Dict[str, str]:
     """
     Generic function to generate, save, and cache features for a list of items.
@@ -101,7 +101,7 @@ def create_manifests(split_files: Dict[str, str], output_dir: str):
     # Run feature generation process
     print("\n--- Step 3: Generating features ---")
     protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, "embedding")
-    ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, "fingerprint")
+    ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, "embedding")
 
     # Create final manifests
     print("\n--- Step 4: Creating final manifest files ---")
