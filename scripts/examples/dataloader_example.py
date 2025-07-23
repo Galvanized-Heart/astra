@@ -42,7 +42,7 @@ def main():
 
     # Output directory for storing and verifying embeddings 
     # TODO: Discuss as a group which dir to store on Balam to avoid having multiple embedding copies
-    output_dir = Path("./precomputed_data")
+    output_dir = Path("./data")
 
     # Create dict (i.e. manifest_files) with paths to precomputed protein and ligand embeddings, and target values
     manifest_files = create_manifests(split_files=predefined_splits, output_dir=output_dir)
