@@ -61,9 +61,9 @@ def main():
     x_lig = first_batch['ligand_embedding']
     y = first_batch['targets']
 
-    print(f"Protein Example:\n{x_prot.shape}")
-    print(f"Ligand Example:\n{x_lig.shape}")
-    print(f"Targets Example:\n{y.shape}")
+    print(f"Protein Features:\n{x_prot.shape}")
+    print(f"Ligand Features:\n{x_lig.shape}")
+    print(f"Targets:\n{y.shape}")
     
     # y_hat = model(x_prot, x_lig)
     # loss = loss_func(y, y_hat)
