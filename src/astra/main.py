@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import click
 
 from astra.constants import PROJECT_ROOT
@@ -51,6 +52,11 @@ def train(train_path, valid_path, batch_size):
 
 def predict(test_path):
     # TODO: Use Trainer.validate() for inference on individual predictions and for testing datasets
+    pass
+
+def manifest(input_path):
+    # TODO: Use create_feature_manifest() to convert protein sequences and 
+    # ligand SMILES to features and save feature paths inside manifest.csv
     pass
 
 if __name__ == '__main__':

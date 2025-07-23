@@ -1,10 +1,8 @@
 
-from pathlib import Path
 
 import lightning as L
 from torch.utils.data import DataLoader
 
-from astra.constants import PROJECT_ROOT
 from astra.data_processing.datasets import ProteinLigandDataset
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 End-to-End Dataset Splitting via Sequence Clustering with MMseqs2.
 
@@ -185,7 +184,7 @@ def mmseqs2_split_data_into_files(
     
     # --- 1. Validation and Setup ---
     if not os.path.exists(input_csv_path): raise FileNotFoundError(f"Input not found: {input_csv_path}")
-    if not shutil.which("mmseqs"): raise EnvironmentError("MMseqs2 not found in PATH.")
+    if not shutil.which("mmseqs"): raise OSError("MMseqs2 not found in PATH.")
     if split_ratios is None: split_ratios = {'train': 0.8, 'valid': 0.1, 'test': 0.1}
     if abs(sum(split_ratios.values()) - 1.0) > 1e-6: raise ValueError("Split ratios must sum to 1.0.")
 
@@ -196,7 +195,7 @@ def mmseqs2_split_data_into_files(
     with tempfile.NamedTemporaryFile(mode='w', suffix=".fasta", delete=False) as fasta_file:
         fasta_path = fasta_file.name
     try:
-        print(f"1. Creating temporary FASTA file...")
+        print("1. Creating temporary FASTA file...")
         create_fasta_from_csv(input_csv_path, seq_col, fasta_path)
 
         print("2. Clustering sequences with MMseqs2...")

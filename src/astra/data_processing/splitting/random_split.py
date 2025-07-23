@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Dataset Splitting via Random Sampling.
 
@@ -16,6 +15,7 @@ strategies like the sequence-based clustering split.
 
 import os
 import random
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
