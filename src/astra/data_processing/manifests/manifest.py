@@ -7,7 +7,7 @@ from typing import Dict, List
 
 from safetensors.torch import save_file
 
-from astra.data_processing.featurizers import Featurizer, ESMFeaturizer, MorganFeaturizer
+from astra.data_processing.featurizers import Featurizer
 from astra.data_processing.utils import preprocess_and_validate_data
 
 
@@ -15,7 +15,8 @@ def generate_and_save_features(
     items: List[str],
     featurizer: Featurizer,
     output_dir: Path,
-    feature_name: str = "embedding"
+    feature_name: str = "embedding",
+    batch_size: int = 32
 ) -> Dict[str, str]:
     """
     Generic function to generate, save, and cache features for a list of items.
@@ -34,6 +35,7 @@ def generate_and_save_features(
 
     print(f"Found {len(items_to_process)} new items to featurize.")
     if not items_to_process:
+        # Return if there are no items to process
         return item_to_path_map
 
     # Generate features for unsaved items
@@ -45,26 +47,48 @@ def generate_and_save_features(
     for item, tensor in tqdm(newly_computed_features.items(), desc="Saving"):
         path_str = item_to_path_map[item]
         save_file({feature_name: tensor}, path_str)
+
+    print(f"Generating new features in batches of {batch_size}...")
+    
+    # Iterate through the items_to_process list in chunks of `batch_size`
+    for i in tqdm(range(0, len(items_to_process), batch_size), desc="Processing Batches"):
+        # Create a batch of items
+        batch_items = items_to_process[i : i + batch_size]
+        
+        # Generate features for batch
+        newly_computed_features = featurizer.featurize(batch_items)
+        
+        # Save the features for this batch immediately to free up memory
+        for item, tensor in newly_computed_features.items():
+            path_str = item_to_path_map[item]
+            save_file({feature_name: tensor}, path_str)
         
     return item_to_path_map
 
 
-def create_manifests(split_files: Dict[str, str], output_dir: str):
+def create_manifests(
+        split_files: Dict[str, str],
+        output_dir: Path,
+        protein_featurizer: Featurizer,
+        ligand_featurizer: Featurizer,
+        batch_size: int = 32
+    ) -> Dict[str, Path]:
     """
     Generates precomputed features and separate manifests for predefined data splits.
 
     Args:
         split_files (Dict[str, str]): A dictionary mapping split names (e.g. 'train', 'val')
                                         to their corresponding raw CSV file paths.
-        output_dir (str): The directory where manifests and feature sub-folders will be saved.
+        output_dir (Path): The directory where manifests and feature sub-folders will be saved.
+        protein_featurizer (Featurizer): Protein featurizer object.
+        ligand_featurizer (Featurizer): Ligand featurizer object.
 
     Returns:
-        manifest_files (Dict[str, str]): A dictionary mapping split names (e.g. 'train', 'val')
+        manifest_files (Dict[str, Path]): A dictionary mapping split names (e.g. 'train', 'val')
                                         to their corresponding manifest CSV file paths.
     """
-    output_path = Path(output_dir)
-    protein_features_dir = output_path / "protein_features"
-    ligand_features_dir = output_path / "ligand_features"
+    protein_features_dir = output_dir / protein_featurizer.name
+    ligand_features_dir = output_dir / ligand_featurizer.name
     protein_features_dir.mkdir(parents=True, exist_ok=True)
     ligand_features_dir.mkdir(parents=True, exist_ok=True)
 
@@ -92,16 +116,10 @@ def create_manifests(split_files: Dict[str, str], output_dir: str):
     unique_ligands = clean_df ["ligand_smiles"].dropna().unique()
     print(f"Found {len(unique_proteins)} unique proteins and {len(unique_ligands)} unique ligands.")
 
-    # Initialize featurizers
-    print("\n--- Step 2: Initializing featurizers ---")
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    protein_featurizer = ESMFeaturizer(model_name="facebook/esm2_t6_8M_UR50D", device=device)
-    ligand_featurizer = MorganFeaturizer(radius=2, fp_size=2048)
-
     # Run feature generation process
     print("\n--- Step 3: Generating features ---")
-    protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, "embedding")
-    ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, "embedding")
+    protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, "embedding", 32)
+    ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, "embedding", 32)
 
     # Create final manifests
     print("\n--- Step 4: Creating final manifest files ---")
@@ -118,7 +136,7 @@ def create_manifests(split_files: Dict[str, str], output_dir: str):
         manifest_df = split_df[['protein_feature_path', 'ligand_feature_path', 'kcat', 'KM', 'Ki']].dropna()
 
         # Save manifest files and their paths
-        manifest_path = output_path / f"manifest_{split_name}.csv"
+        manifest_path = output_dir / f"manifest_{split_name}.csv"
         manifest_df.to_csv(manifest_path, index=False)
         manifest_files[split_name] = manifest_path
         print(f"Saved {split_name} manifest ({len(manifest_df)} samples) to {manifest_path}")

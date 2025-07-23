@@ -5,13 +5,15 @@ import lightning as L
 from torch.utils.data import DataLoader
 
 from astra.data_processing.datasets import ProteinLigandDataset
-from astra.data_processing.featurize.manifest import create_feature_manifest
+from astra.data_processing.manifests import create_feature_manifest
+from astra.data_processing.featurizers import Featurizer
 from astra.constants import PROJECT_ROOT
+
 
 
 class AstraDataModule(L.LightningDataModule):
     """DataModule for Astra."""
-    def __init__(self, data_paths: Dict[str, str] = None, batch_size: int = 32):
+    def __init__(self, data_paths: Dict[str, str] = None, protein_featurizer: Featurizer = None, ligand_featurizer: Featurizer = None, batch_size: int = 32):
         """
         Meant to instantiate states for `torch.utils.data.Dataset` classes.
 
@@ -19,12 +21,13 @@ class AstraDataModule(L.LightningDataModule):
         the `Dataset` class handles the loading via `__getitem__()` for featurizing. 
         Also, it would take configs for training, I suppose.
         """
+
         super().__init__()
 
         # Create manifest features
-        manifest_files = create_feature_manifest(data_paths, PROJECT_ROOT/"data"/"manifest")
+        manifest_files = create_feature_manifest(data_paths, PROJECT_ROOT/"data"/"manifest", protein_featurizer, ligand_featurizer)
 
-        # Set file paths if they exist
+        # Set file paths if they exist, else set to None
         self.train_path = manifest_files.get("train")
         self.valid_path = manifest_files.get("valid")
         self.test_path = manifest_files.get("test")
@@ -82,10 +85,10 @@ class AstraDataModule(L.LightningDataModule):
         """Called by `Trainer().test`."""
         print("AstraDataModule.test_dataloader() is not yet implenmented!")
         pass
-        return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=False, num_workers=4)
+        #return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=False, num_workers=4)
 
     def predict_dataloader(self):
         """Called by `Trainer().predict`."""
         print("AstraDataModule.predict_dataloader() is not yet implenmented!")
         pass
-        return DataLoader(self.predict_dataset, batch_size=self.batch_size, shuffle=False, num_workers=4)
+        #return DataLoader(self.predict_dataset, batch_size=self.batch_size, shuffle=False, num_workers=4)

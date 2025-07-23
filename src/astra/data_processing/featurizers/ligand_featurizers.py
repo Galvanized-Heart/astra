@@ -6,11 +6,18 @@ from rdkit.Chem import rdFingerprintGenerator
 
 from astra.data_processing.featurizers.base import Featurizer
 
+
 class MorganFeaturizer(Featurizer):
     """Featurizer for ligand SMILES using Morgan Fingerprints."""
     def __init__(self, radius: int, fp_size: int):
         print(f"Initializing Morgan Fingerprint generator (radius={radius}, size={fp_size})")
+        self.radius = radius
+        self.fp_size = fp_size
         self.generator = rdFingerprintGenerator.GetMorganGenerator(radius=radius, fpSize=fp_size)
+
+    @property
+    def name(self) -> str:
+        return f"morgan_r{self.radius}_s{self.fp_size}"
 
     def featurize(self, smiles_list: List[str]) -> Dict[str, torch.Tensor]:
         results = {}
