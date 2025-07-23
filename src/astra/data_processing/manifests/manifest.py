@@ -49,7 +49,12 @@ def generate_and_save_features(
     return item_to_path_map
 
 
-def create_manifests(split_files: Dict[str, str], output_dir: str):
+def create_manifests(
+        split_files: Dict[str, str],
+        output_dir: str,
+        protein_featurizer: Featurizer,
+        ligand_featurizer: Featurizer
+    ) -> Dict[str, Path]:
     """
     Generates precomputed features and separate manifests for predefined data splits.
 
@@ -57,14 +62,16 @@ def create_manifests(split_files: Dict[str, str], output_dir: str):
         split_files (Dict[str, str]): A dictionary mapping split names (e.g. 'train', 'val')
                                         to their corresponding raw CSV file paths.
         output_dir (str): The directory where manifests and feature sub-folders will be saved.
+        protein_featurizer (Featurizer): Protein featurizer object.
+        ligand_featurizer (Featurizer): Ligand featurizer object.
 
     Returns:
-        manifest_files (Dict[str, str]): A dictionary mapping split names (e.g. 'train', 'val')
+        manifest_files (Dict[str, Path]): A dictionary mapping split names (e.g. 'train', 'val')
                                         to their corresponding manifest CSV file paths.
     """
     output_path = Path(output_dir)
-    protein_features_dir = output_path / "protein_features"
-    ligand_features_dir = output_path / "ligand_features"
+    protein_features_dir = output_path / protein_featurizer.name
+    ligand_features_dir = output_path / ligand_featurizer.name
     protein_features_dir.mkdir(parents=True, exist_ok=True)
     ligand_features_dir.mkdir(parents=True, exist_ok=True)
 
@@ -91,12 +98,6 @@ def create_manifests(split_files: Dict[str, str], output_dir: str):
     unique_proteins = clean_df ["protein_sequence"].dropna().unique()
     unique_ligands = clean_df ["ligand_smiles"].dropna().unique()
     print(f"Found {len(unique_proteins)} unique proteins and {len(unique_ligands)} unique ligands.")
-
-    # Initialize featurizers
-    print("\n--- Step 2: Initializing featurizers ---")
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    protein_featurizer = ESMFeaturizer(model_name="facebook/esm2_t6_8M_UR50D", device=device)
-    ligand_featurizer = MorganFeaturizer(radius=2, fp_size=2048)
 
     # Run feature generation process
     print("\n--- Step 3: Generating features ---")

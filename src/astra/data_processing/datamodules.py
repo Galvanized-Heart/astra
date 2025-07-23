@@ -19,6 +19,13 @@ class AstraDataModule(L.LightningDataModule):
         the `Dataset` class handles the loading via `__getitem__()` for featurizing. 
         Also, it would take configs for training, I suppose.
         """
+
+        # Initialize featurizers
+        print("\n--- Step 2: Initializing featurizers ---")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        protein_featurizer = ESMFeaturizer(model_name="facebook/esm2_t6_8M_UR50D", device=device) # These can be defined else
+        ligand_featurizer = MorganFeaturizer(radius=2, fp_size=2048)
+
         super().__init__()
 
         # Create manifest features
