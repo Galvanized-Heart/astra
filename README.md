@@ -7,6 +7,17 @@ Astra uses `uv` for development. To install `uv`, you can follow the instruction
 # Download and install uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
+```
+Note that you might need to set your uv to be in all areas and not just per-user bin system. To do this, run: 
+```
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+```
+Next, run the following: 
+
+```
+
 # Download and install mmseqs2
 wget https://mmseqs.com/latest/mmseqs-linux-avx2.tar.gz
 tar xvfz mmseqs-linux-avx2.tar.gz
