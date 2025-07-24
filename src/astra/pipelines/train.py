@@ -1,7 +1,12 @@
 import torch
+import lightning as L
+from L.loggers import WandbLogger
+from L.callbacks import ModelCheckpoint
 
 from astra.data_processing.featurizers import ESMFeaturizer, MorganFeaturizer
 from astra.data_processing.datamodules import AstraDataModule
+from astra.model.models import AstraModule
+from astra.model.loss.masked_mse_loss import MaskedMSELoss
 
 
 def train(train_path: str, valid_path: str, batch_size: int = 32, device: str = None):
@@ -24,12 +29,42 @@ def train(train_path: str, valid_path: str, batch_size: int = 32, device: str = 
     # Add data paths to dict
     data_paths = {'train': train_path, "valid": valid_path}
 
-    # Create DataModule
+    # Instatiate DataModule
     datamodule = AstraDataModule(data_paths, protein_featurizer, ligand_featurizer, batch_size) 
 
-    # Create Module
+    model = torch.nn.Linear(-1, 3)
+    loss_func = MaskedMSELoss()
+
+    # Instatiate Module
+    module = AstraModule(model=model, loss_func=loss_func)
 
 
-    # Trainer()
-    # Checkpoint and W&B callbacks
+
+    # Instantiate WandbLogger
+    wandb_logger = WandbLogger(
+        name="pl-test-run-1", # Name of this specific run (we can change this)
+        project="astra", # The project to log to
+        entity="lmse-university-of-toronto", # Your team entity
+        log_model="all" # Log model checkpoints as W&B Artifacts
+    )
+
+    # Instatiate ModelCheckpoint
+    checkpoint_callback = ModelCheckpoint(
+        monitor="valid_loss", # Metric to monitor
+        dirpath="checkpoints/",          # Directory to save checkpoints
+        filename="sample-model-{epoch:02d}-{valid_loss:.2f}", # Checkpoint file name
+        save_top_k=1,                    # Save the best k models
+        mode="min",                      # 'min' for loss, 'max' for accuracy
+        save_last=True,                  # Also save the last checkpoint
+    )
+
+    # Instantiate Trainer
+    trainer = L.Trainer(
+        max_epochs=10,
+        logger=wandb_logger, # Use W&B logger
+        callbacks=[checkpoint_callback], # Add the checkpoint callback
+    )
+
+    # Run training loop
+    trainer.fit(module, datamodule)
     pass
