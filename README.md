@@ -99,7 +99,6 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                            | Subtasks                                                                                                                                                             | Deadline        | Status |
 | :------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
-| **Conduct Literature Review**   | - Identify and summarize 10-15 key papers.<br>- Create an annotated bibliography.<br>- Clearly define how our work is positioned relative to existing literature.         | **Wed, Jul 24** |   ☐    |
 | **Write Detailed Paper Outline**| - Draft section headers (problem statement, proposed methods, and expected results).<br>- Write 2-4 bullet points of key content for each section.<br>- Explicitly list the paper's 3-4 key contributions.   | **Thu, Jul 25** |   ☐    |
 | **Write Abstract**              | - Draft one sentence for: context, problem, method, result, and implication.<br>- Refine into a cohesive paragraph under the word limit.                                 | **Fri, Jul 26** |   ☐    |
 | **Write First Draft**           | - Draft **Method** section first.<br>- Draft **Introduction** and **Related Work**.<br>- Draft **Experiments** section with planned setup.<br>- Create placeholders for all figures and tables. | **Fri, Aug 1**  |   ☐    |
@@ -113,7 +112,6 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                                | Subtasks                                                                                                                                                                        | Deadline        | Status |
 | :---------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------- | :----: |
-| **Data Curation & Preprocessing**   | - Write scripts to download and parse raw data.<br>- Standardize data formats; handle missing values.<br>- Save the final, processed datasets to be used in training.              | **Mon, Jul 29** |   ☐    |
 | **Create Data Splitting Logic**     | - Implement the random splitting function.<br>- Implement `mmseqs2` wrapper and cluster-based splitting.<br>- Write tests to ensure no data leakage between train/validation sets. | **Tue, Jul 30** |   ☐    |
 | **Setup Experiment Tracking**       | - ~~Initialize a Weights & Biases project.~~<br>- Define standard metrics to log (loss, accuracy, F1, etc.).<br>- Ensure hyperparameters are automatically logged on every run. | **Wed, Jul 31** |   ☐    |
 
