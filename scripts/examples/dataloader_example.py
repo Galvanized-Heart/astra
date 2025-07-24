@@ -1,5 +1,6 @@
 # demo_dataloader.py
 
+import os
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
@@ -13,6 +14,9 @@ from astra.data_processing.featurizers import ESMFeaturizer, MorganFeaturizer
 def setup_dummy_data():
     """Creates dummy raw data files for demonstration purposes."""
     print("--- Step 1: Setting up dummy data files ---")
+    
+    # Create the directory for example data
+    os.makedirs("data/example_data", exist_ok=True)
     
     # Training data with two valid pairs
     train_data = {
