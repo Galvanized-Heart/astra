@@ -26,7 +26,7 @@ mv mmseqs/bin/mmseqs ~/.local/bin/
 rm -rf mmseqs mmseqs-linux-avx2.tar.gz
 
 # Create .venv
-uv venv
+uv venv --python 3.11
 
 # Sync uv .venv with uv.lock
 uv sync --locked
