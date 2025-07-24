@@ -39,11 +39,11 @@ def main():
     setup_dummy_data()
 
     # IMPORTANT: These keys must be "train", "valid", and/or "test" to use AstraDataModule
-    predefined_splits = {"train": "train_raw.csv", "valid": "val_raw.csv"}
+    predefined_splits = {"train": "./data/example_data/train_raw.csv", "valid": "./data/example_data/val_raw.csv"}
 
     # Output directory for storing and verifying embeddings 
     # TODO: Discuss as a group which dir to store on Balam to avoid having multiple embedding copies
-    output_dir = Path("./manifest/data")
+    output_dir = Path("./data/example_data/manifest")
 
     # Setup device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
