@@ -20,7 +20,7 @@ def setup_dummy_data():
         "ligand_smiles": ["CCO", "CC(=O)O", "CNC"],
         "kcat": [1.0, 3.0, 5.0], "KM": [0.1, 0.3, 0.5], "Ki": [10.0, 30.0, 50.0]
     }
-    pd.DataFrame(train_data).to_csv("train_raw.csv", index=False)
+    pd.DataFrame(train_data).to_csv("data/example_data/train_raw.csv", index=False)
 
     # Validation data with one repeated pair, one new valid pair, and one invalid protein
     val_data = {
@@ -28,8 +28,8 @@ def setup_dummy_data():
         "ligand_smiles": ["CCO", "CN", "CCC"],
         "kcat": [1.0, 4.0, 6.0], "KM": [0.1, 0.4, 0.6], "Ki": [10.0, 40.0, 60.0]
     }
-    pd.DataFrame(val_data).to_csv("val_raw.csv", index=False)
-    print("Dummy files 'train_raw.csv' and 'val_raw.csv' created.")
+    pd.DataFrame(val_data).to_csv("data/example_data/val_raw.csv", index=False)
+    print("Dummy files 'data/example_data/train_raw.csv' and 'data/example_data/val_raw.csv' created.")
 
 
 def main():
