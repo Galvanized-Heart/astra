@@ -25,8 +25,11 @@ export PATH=$(pwd)/mmseqs/bin/:$PATH
 mv mmseqs/bin/mmseqs ~/.local/bin/
 rm -rf mmseqs mmseqs-linux-avx2.tar.gz
 
-# Create .venv
-uv venv --python 3.11
+# Create virtual environment for python version 3.11
+uv venv --python 3.11 .venv-<YOUR NAME>
+
+# Set your uv to use personal environment for development
+export UV_PROJECT_ENVIRONMENT=".venv-<YOUR NAME>"
 
 # Sync uv .venv with uv.lock
 uv sync --locked
