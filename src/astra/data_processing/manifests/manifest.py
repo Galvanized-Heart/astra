@@ -9,6 +9,7 @@ from safetensors.torch import save_file
 
 from astra.data_processing.featurizers import Featurizer
 from astra.data_processing.utils import preprocess_and_validate_data
+from astra.constants import EMB_PATH, DATA_PATH
 
 
 def generate_and_save_features(
@@ -68,9 +69,10 @@ def generate_and_save_features(
 
 def create_manifests(
         split_files: Dict[str, str],
-        output_dir: Path,
-        protein_featurizer: Featurizer,
-        ligand_featurizer: Featurizer,
+        emb_dir: Path = None,
+        output_dir: Path = None,
+        protein_featurizer: Featurizer = None,
+        ligand_featurizer: Featurizer = None,
         batch_size: int = 32
     ) -> Dict[str, Path]:
     """
@@ -87,8 +89,22 @@ def create_manifests(
         manifest_files (Dict[str, Path]): A dictionary mapping split names (e.g. 'train', 'val')
                                         to their corresponding manifest CSV file paths.
     """
-    protein_features_dir = output_dir / protein_featurizer.name
-    ligand_features_dir = output_dir / ligand_featurizer.name
+    # Set default embedding directory
+    if emb_dir is None:
+        emb_dir = EMB_PATH
+        assert emb_dir.exists(), "Please define an existing path for emb_dir."
+    
+
+    # Set default output directory
+    if output_dir is None:
+        output_dir = DATA_PATH/"manifest"
+    
+    # Create output directory
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+
+    protein_features_dir = EMB_PATH / protein_featurizer.name
+    ligand_features_dir = EMB_PATH / ligand_featurizer.name
     protein_features_dir.mkdir(parents=True, exist_ok=True)
     ligand_features_dir.mkdir(parents=True, exist_ok=True)
 
