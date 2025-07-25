@@ -7,4 +7,4 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_PATH = PROJECT_ROOT/"data"
 
 # Define path to embeddings on Balam scratch (internal use only)
-EMB_PATH = PROJECT_ROOT/".."/".."/"maxkirby"/"astra-embeddings"
+EMB_PATH = PROJECT_ROOT.parent.parent/"maxkirby"/"astra-embeddings"
