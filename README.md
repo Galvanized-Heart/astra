@@ -2,6 +2,16 @@
 Astra is a multi-task model for predicting Michaelis-Menten kinetic parameters from elementary kinetic rate decompositions.
 
 ## Getting Started
+
+You can clone the astra-copy repository as follows:
+```
+# Clone repository
+git clone https://github.com/Galvanized-Heart/astra-copy.git
+
+# (Optional) rename repository
+mv astra-copy astra
+```
+
 Astra uses `uv` for development. To install `uv`, you can follow the instructions <a href=https://docs.astral.sh/uv/getting-started/installation>here</a> for updated instructions. At the time of writing, you can follow the instructions below to install `uv` and create the correct environment:
 ```
 # Download and install uv
@@ -14,7 +24,7 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 
 ```
-Next, run the following: 
+Next, run the following inside the repo: 
 
 ```
 
@@ -26,10 +36,7 @@ mv mmseqs/bin/mmseqs ~/.local/bin/
 rm -rf mmseqs mmseqs-linux-avx2.tar.gz
 
 # Create virtual environment for python version 3.11
-uv venv --python 3.11 .venv-<YOUR NAME>
-
-# Set your uv to use personal environment for development
-export UV_PROJECT_ENVIRONMENT=".venv-<YOUR NAME>"
+uv venv --python 3.11
 
 # Sync uv .venv with uv.lock
 uv sync --locked
