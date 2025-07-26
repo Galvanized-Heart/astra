@@ -32,40 +32,75 @@ class AstraModule(L.LightningModule):
         self.lr = lr
         self.loss_func = F.mse_loss
         self.recomposition_func = recomposition_func
-
-    def forward(self, x):
-        """
-        The forward pass with conditional logic.
-        """
-        x = self.model(x)
-        if self.recomposition_func is not None:
-            x = self.recomposition_func(x)
-        return x
     
     def configure_optimizers(self):
         return self.optimizer(self.parameters(), lr=self.lr)
+    
+    def _shared_step(self, batch):
+        # Can use this to reduce replicate code in training_step() and validation_step()
+
+        # Get inputs from batch
+        x_prot = batch['protein_embedding']
+        x_lig = batch['ligand_embedding']
+
+        # Get targets from batch
+        y = batch['targets']
+        
+        # Make predictions
+        output = self.model(x_prot, x_lig)
+
+        # Compute kinetic recomposition
+        if self.recomposition_func:
+            y_hat = self.recomposition_func(output)
+        else:
+            y_hat = output
+        
+        # Return loss
+        return self.loss_func(y_hat, y)
 
     def training_step(self, batch, batch_idx):
-        print(batch)
-        return
-        x = x.view(x.size(0), -1)
-        x_hat = self(x) # Forward pass inside AstraModule
-        loss = self.loss_func(x_hat, x)
+        """Functionality for training loop."""
+        # Compute shared step
+        loss = self._shared_step(batch)
+
+        # Log results
+        self.log('train/loss_step', loss, prog_bar=True) # Default on_step=True, on_epoch=False
+
+        # Optionally accumulate per epoch metrics for on_training_epoch_end()
+        #self.train_metric.update(logits, y)
+        # NOTE: This requires a torchmetrics to be set in __init__()
+
+        # Alternatively set on_step=False for easy to compute metrics
+        #self.log('train/loss_epoch', loss, on_step=False, on_epoch=True, prog_bar=True)
+
+        # Return loss for optimizer
         return loss
+
+    def on_training_epoch_end(self):
+        # Can be used to log accumulated metrics from training_step()
+        #epoch_metric = self.train_metric.compute()
+        #self.log("train/metric_epoch", epoch_metric)
+        #self.train_metric.reset()
+        pass
     
     def validation_step(self, batch, batch_idx):
-        # this is the validation loop
-        x, _ = batch
-        x = x.view(x.size(0), -1)
-        x_hat = self(x)
-        val_loss = self.loss_func(x_hat, x)
-        self.log("val_loss", val_loss)
+        """Functionality for prediction validation."""
+        # Compute shared step
+        loss = self._shared_step(batch)
+
+        # Log results
+        self.log('valid_loss', loss, on_step=False, on_epoch=True, prog_bar=True)
+
+    def on_validation_epoch_end(self, outputs):
+        # Can be used to log accumulated metrics from validation_step()
+        # NOTE: outputs is a list of dicts from output from validation_step()
+        pass
 
 # Example usage
 """ 
-trainer = L.Trainer(accelerator='gpu', devices=1)
-trainer.fit(model, train_loader, valid_loader)
-
+model = AstraModule()
+trainer = L.Trainer()
+trainer.fit(model, datamodule)
 trainer.test(model, dataloaders=DataLoader(test_set)) 
 """
 

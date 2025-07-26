@@ -1,11 +1,12 @@
 import torch
 import lightning as L
-from L.loggers import WandbLogger
-from L.callbacks import ModelCheckpoint
+from lightning.pytorch.loggers import WandbLogger
+from lightning.pytorch.callbacks import ModelCheckpoint
 
 from astra.data_processing.featurizers import ESMFeaturizer, MorganFeaturizer
 from astra.data_processing.datamodules import AstraDataModule
 from astra.model.models import AstraModule
+from astra.model.models.dummy_model import DummyModel
 from astra.model.loss.masked_mse_loss import MaskedMSELoss
 
 
@@ -32,13 +33,11 @@ def train(train_path: str, valid_path: str, batch_size: int = 32, device: str = 
     # Instatiate DataModule
     datamodule = AstraDataModule(data_paths, protein_featurizer, ligand_featurizer, batch_size) 
 
-    model = torch.nn.Linear(-1, 3)
+    model_architecture = DummyModel()
     loss_func = MaskedMSELoss()
 
     # Instatiate Module
-    module = AstraModule(model=model, loss_func=loss_func)
-
-
+    model = AstraModule(model=model_architecture, loss_func=loss_func)
 
     # Instantiate WandbLogger
     wandb_logger = WandbLogger(
@@ -66,5 +65,4 @@ def train(train_path: str, valid_path: str, batch_size: int = 32, device: str = 
     )
 
     # Run training loop
-    trainer.fit(module, datamodule)
-    pass
+    trainer.fit(model, datamodule)
