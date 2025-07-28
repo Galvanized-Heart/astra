@@ -39,16 +39,6 @@ def generate_and_save_features(
         # Return if there are no items to process
         return item_to_path_map
 
-    # Generate features for unsaved items
-    print("Generating new features...")
-    newly_computed_features = featurizer.featurize(items_to_process)
-    
-    # Save featurized items
-    print("Saving new features to disk...")
-    for item, tensor in tqdm(newly_computed_features.items(), desc="Saving"):
-        path_str = item_to_path_map[item]
-        save_file({feature_name: tensor}, path_str)
-
     print(f"Generating new features in batches of {batch_size}...")
     
     # Iterate through the items_to_process list in chunks of `batch_size`
@@ -118,8 +108,7 @@ def create_manifests(
             all_dfs.append(df)
 
         except (FileNotFoundError, ValueError) as e:
-            print(f"ERROR processing {file_path}: {e}. Aborting.")
-            return
+            raise type(e)(f"ERROR processing {file_path}: {e}. Aborting.") from e
     
     full_df = pd.concat(all_dfs, ignore_index=True)
     print(f"Consolidated {len(full_df)} total rows from {len(split_files)} files.")

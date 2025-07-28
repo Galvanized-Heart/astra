@@ -5,7 +5,7 @@ import lightning as L
 from torch.utils.data import DataLoader
 
 from astra.data_processing.datasets import ProteinLigandDataset
-from astra.data_processing.manifests import create_feature_manifest
+from astra.data_processing.manifests.manifest import create_manifests
 from astra.data_processing.featurizers import Featurizer
 from astra.constants import PROJECT_ROOT
 
@@ -25,7 +25,7 @@ class AstraDataModule(L.LightningDataModule):
         super().__init__()
 
         # Create manifest features
-        manifest_files = create_feature_manifest(data_paths, PROJECT_ROOT/"data"/"manifest", protein_featurizer, ligand_featurizer)
+        manifest_files = create_manifests(split_files=data_paths, output_dir=PROJECT_ROOT/"data"/"manifest", protein_featurizer=protein_featurizer, ligand_featurizer=ligand_featurizer)
 
         # Set file paths if they exist, else set to None
         self.train_path = manifest_files.get("train")
