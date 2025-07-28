@@ -6,9 +6,11 @@ class DummyModel(nn.Module):
     A dummy model that ignores inputs and returns a zero tensor of shape
     (batch_size, 3). Useful for testing the training pipeline.
     """
-    def __init__(self):
+    def __init__(self, protein_emb_dim: int = 320, ligand_emb_dim: int = 2048, output_dim: int = 3):
         super().__init__()
+        total_input_dim = protein_emb_dim + ligand_emb_dim
+        self.fc1 = nn.Linear(total_input_dim, output_dim)
 
     def forward(self, x_prot: torch.Tensor, x_lig: torch.Tensor) -> torch.Tensor:
-        batch_size = x_prot.shape[0]
-        return torch.zeros((batch_size, 3), device=x_prot.device)
+        combined_features = torch.cat((x_prot, x_lig), dim=1)
+        return self.fc1(combined_features)

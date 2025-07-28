@@ -30,15 +30,15 @@ def manifest(input_path):
 
 # Training script for Astra
 @cli.command()
-@click.option('--train_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "cpipred", "pangenomic", "mmseqs", "train.csv"), help='The path to data you want to train on.')
-@click.option('--valid_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "cpipred", "pangenomic", "mmseqs", "valid.csv"), help='The path to data you want to validate on.')
+@click.option('--train_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "train.csv"), help='The path to data you want to train on.')
+@click.option('--valid_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "valid.csv"), help='The path to data you want to validate on.')
 @click.option('--batch_size', default=32, help='The batch size you want to train with.')
 def train(train_path, valid_path, batch_size):
     """Base function for training Astra model."""
     click.echo(f"Setting up training for {train_path}.")
     click.echo(f"Using {valid_path} for validation.")
 
-    # Import large libraries locally
+    # Import locally
     from astra.pipelines.train import train
 
     # Run training script

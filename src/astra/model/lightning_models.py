@@ -126,7 +126,7 @@ class AstraModule(L.LightningModule):
         #self.train_metric.reset()
         pass
 
-    def on_validation_epoch_end(self, outputs):
+    def on_validation_epoch_end(self): # NOTE: If you want to use this, include outputs as an argument!
         # Can be used to log accumulated metrics from validation_step()
         # NOTE: outputs is a list of dicts from output from validation_step()
         pass
