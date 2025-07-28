@@ -5,7 +5,7 @@ from lightning.pytorch.callbacks import ModelCheckpoint
 
 from astra.data_processing.featurizers import ESMFeaturizer, MorganFeaturizer
 from astra.data_processing.datamodules import AstraDataModule
-from astra.model.models import AstraModule
+from astra.model.lightning_models import AstraModule
 from astra.model.models.dummy_model import DummyModel
 from astra.model.loss.masked_mse_loss import MaskedMSELoss
 

@@ -103,8 +103,8 @@ def create_manifests(
     output_dir.mkdir(parents=True, exist_ok=True)
 
 
-    protein_features_dir = EMB_PATH / protein_featurizer.name
-    ligand_features_dir = EMB_PATH / ligand_featurizer.name
+    protein_features_dir = EMB_PATH / str(protein_featurizer.name)
+    ligand_features_dir = EMB_PATH / str(ligand_featurizer.name)
     protein_features_dir.mkdir(parents=True, exist_ok=True)
     ligand_features_dir.mkdir(parents=True, exist_ok=True)
 

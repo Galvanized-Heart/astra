@@ -4,8 +4,6 @@ import click
 
 from astra.constants import PROJECT_ROOT
 
-from astra.pipelines.train import train
-
 DATA_PATH = Path.joinpath(PROJECT_ROOT, "data", "interim", "cpipred", "CPI_all_brenda_core_enriched.csv")
 
 @click.group()
@@ -37,13 +35,17 @@ def manifest(input_path):
 @click.option('--batch_size', default=32, help='The batch size you want to train with.')
 def train(train_path, valid_path, batch_size):
     """Base function for training Astra model."""
+    from astra.pipelines.train import train
+
     click.echo(f"Setting up training for {train_path}.")
     click.echo(f"Using {valid_path} for validation.")
+
     # TODO: Write train.py to contain all this logic instead
     # NOTE: Having these as global imports slows the entire CLI signifiantly!!!
     #import lightning as L this is a BIG import
     #from astra.model.models import AstraModule
     train(train_path, valid_path, batch_size)
+
     click.echo("Training complete!")
 
 
