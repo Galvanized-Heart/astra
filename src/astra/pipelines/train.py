@@ -37,11 +37,16 @@ def train(train_path: str, valid_path: str, batch_size: int = 32, device: str = 
     loss_func = MaskedMSELoss()
 
     # Instatiate Module
-    model = AstraModule(model=model_architecture, loss_func=loss_func)
+    model = AstraModule(
+        model=model_architecture,
+        lr=1e-3,
+        loss_func=loss_func,
+        optimizer_class=torch.optim.AdamW
+    )
 
     # Instantiate WandbLogger
     wandb_logger = WandbLogger(
-        name="pl-test-run-1", # Name of this specific run (we can change this)
+        name="train-pipeline-test1", # Name of this specific run (we can change this)
         project="astra", # The project to log to
         entity="lmse-university-of-toronto", # Your team entity
         log_model="all" # Log model checkpoints as W&B Artifacts
@@ -49,7 +54,7 @@ def train(train_path: str, valid_path: str, batch_size: int = 32, device: str = 
 
     # Instatiate ModelCheckpoint
     checkpoint_callback = ModelCheckpoint(
-        monitor="valid_loss", # Metric to monitor
+        monitor="valid_loss", # Metric to monitor (this needs to match validation_step() inside AstraModule())
         dirpath="checkpoints/",          # Directory to save checkpoints
         filename="sample-model-{epoch:02d}-{valid_loss:.2f}", # Checkpoint file name
         save_top_k=1,                    # Save the best k models

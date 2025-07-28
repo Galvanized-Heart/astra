@@ -12,12 +12,13 @@ from sklearn.metrics import mean_squared_error
 
 class AstraModule(L.LightningModule):
     def __init__(self, 
-                 model: nn.Module, 
-                 loss_func: nn.Module = None, 
-                 recomposition_func: Optional[Callable] = None, 
-                 optimizer_class: Type[torch.optim.Optimizer] = torch.optim.AdamW, 
-                 lr_scheduler_class: Optional[Type[torch.optim.lr_scheduler._LRlr_scheduler]] = None, 
-                 lr_scheduler_kwargs: Optional[dict] = None
+                model: nn.Module, 
+                lr: float,
+                loss_func: nn.Module, 
+                optimizer_class: Type[torch.optim.Optimizer],
+                recomposition_func: Optional[Callable] = None,  
+                lr_scheduler_class: Optional[Type] = None, 
+                lr_scheduler_kwargs: Optional[dict] = None
             ):
         """
         A flexible LightningModule that can optionally apply a final
@@ -26,11 +27,11 @@ class AstraModule(L.LightningModule):
         Args:
             model (nn.Module): The core model architecture.
             lr (float): The learning rate.
-            recomposition_func (Optional[Callable]): A function to transform model output.
-            optimizer_class (Type[torch.optim.Optimizer]): The class of the optimizer to use.
-                Example: torch.optim.Adam, torch.optim.SGD.
             loss_func (nn.Module): An instance of the loss function to use.
                 Defaults to a MaskedMSELoss that handles NaNs.
+            optimizer_class (Type[torch.optim.Optimizer]): The class of the optimizer to use.
+                Example: torch.optim.Adam, torch.optim.SGD.
+            recomposition_func (Optional[Callable]): A function to transform model output.
             lr_scheduler_class (Optional[Type]): The class of the LR lr_scheduler to use.
                 Example: torch.optim.lr_scheduler.ReduceLROnPlateau.
             lr_scheduler_kwargs (Optional[dict]): A dictionary of arguments for the lr_scheduler.
@@ -62,7 +63,7 @@ class AstraModule(L.LightningModule):
             return {
                 "optimizer": optimizer,
                 "lr_scheduler": {
-                    "lr_scheduler": lr_scheduler,
+                    "scheduler": lr_scheduler,
                     "monitor": self.lr_scheduler_kwargs.get("monitor", "val_loss"),
                     "interval": "epoch",
                     "frequency": 1,
@@ -98,7 +99,7 @@ class AstraModule(L.LightningModule):
         loss = self._shared_step(batch)
 
         # Log results
-        self.log('train/loss_step', loss, prog_bar=True) # Default on_step=True, on_epoch=False
+        self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True) 
 
         # Optionally accumulate per epoch metrics for on_training_epoch_end()
         #self.train_metric.update(logits, y)
@@ -116,7 +117,7 @@ class AstraModule(L.LightningModule):
         loss = self._shared_step(batch)
 
         # Log results
-        self.log('valid/loss_step', loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log('valid_loss', loss, on_step=False, on_epoch=True, prog_bar=True)
 
     def on_training_epoch_end(self):
         # Can be used to log accumulated metrics from training_step()
