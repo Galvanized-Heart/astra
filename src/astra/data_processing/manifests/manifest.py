@@ -103,8 +103,8 @@ def create_manifests(
     output_dir.mkdir(parents=True, exist_ok=True)
 
 
-    protein_features_dir = EMB_PATH / str(protein_featurizer.name)
-    ligand_features_dir = EMB_PATH / str(ligand_featurizer.name)
+    protein_features_dir = EMB_PATH / protein_featurizer.name
+    ligand_features_dir = EMB_PATH / ligand_featurizer.name
     protein_features_dir.mkdir(parents=True, exist_ok=True)
     ligand_features_dir.mkdir(parents=True, exist_ok=True)
 
@@ -118,8 +118,7 @@ def create_manifests(
             all_dfs.append(df)
 
         except (FileNotFoundError, ValueError) as e:
-            print(f"ERROR processing {file_path}: {e}. Aborting.")
-            return
+            raise type(e)(f"ERROR processing {file_path}: {e}. Aborting.") from e
     
     full_df = pd.concat(all_dfs, ignore_index=True)
     print(f"Consolidated {len(full_df)} total rows from {len(split_files)} files.")

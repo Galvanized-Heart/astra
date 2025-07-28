@@ -25,7 +25,7 @@ class AstraDataModule(L.LightningDataModule):
         super().__init__()
 
         # Create manifest features
-        manifest_files = create_manifests(data_paths, PROJECT_ROOT/"data"/"manifest", protein_featurizer, ligand_featurizer)
+        manifest_files = create_manifests(split_files=data_paths, output_dir=PROJECT_ROOT/"data"/"manifest", protein_featurizer=protein_featurizer, ligand_featurizer=ligand_featurizer)
 
         # Set file paths if they exist, else set to None
         self.train_path = manifest_files.get("train")

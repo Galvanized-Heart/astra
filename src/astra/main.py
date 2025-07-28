@@ -35,17 +35,14 @@ def manifest(input_path):
 @click.option('--batch_size', default=32, help='The batch size you want to train with.')
 def train(train_path, valid_path, batch_size):
     """Base function for training Astra model."""
-    from astra.pipelines.train import train
-
     click.echo(f"Setting up training for {train_path}.")
     click.echo(f"Using {valid_path} for validation.")
 
-    # TODO: Write train.py to contain all this logic instead
-    # NOTE: Having these as global imports slows the entire CLI signifiantly!!!
-    #import lightning as L this is a BIG import
-    #from astra.model.models import AstraModule
-    train(train_path, valid_path, batch_size)
+    # Import large libraries locally
+    from astra.pipelines.train import train
 
+    # Run training script
+    train(train_path, valid_path, batch_size)
     click.echo("Training complete!")
 
 
