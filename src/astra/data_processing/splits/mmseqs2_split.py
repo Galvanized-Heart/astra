@@ -97,7 +97,114 @@ def cluster_and_split(fasta_path: str, seq_id: float, split_ratios: dict,
 
 
 # ==============================================================================
-# SECTION 2: Visualization & Reporting Helpers
+# SECTION 2: Kinetic Parameter Analysis & Visualization Helpers
+# ==============================================================================
+
+def analyze_kinetic_parameters(df: pd.DataFrame, kinetic_cols: list = None):
+    """
+    Analyzes the distribution of kinetic parameters in the dataset.
+    
+    Args:
+        df (pd.DataFrame): The dataframe to analyze
+        kinetic_cols (list): List of kinetic parameter column names. 
+                           Defaults to ['kcat', 'km', 'ki']
+    
+    Returns:
+        dict: Dictionary containing analysis results
+    """
+    if kinetic_cols is None:
+        kinetic_cols = ['kcat', 'KM', 'Ki']
+    
+    total_rows = len(df)
+    results = {
+        'total_samples': total_rows,
+        'parameter_counts': {},
+        'parameter_percentages': {},
+        'samples_with_any_param': 0,
+        'samples_with_all_params': 0
+    }
+    
+    # Check which columns actually exist in the dataframe
+    existing_cols = [col for col in kinetic_cols if col in df.columns]
+    
+    if not existing_cols:
+        print(f"Warning: None of the kinetic parameter columns {kinetic_cols} found in dataframe")
+        return results
+    
+    # Count non-null values for each parameter
+    for col in existing_cols:
+        non_null_count = df[col].notna().sum()
+        results['parameter_counts'][col] = non_null_count
+        results['parameter_percentages'][col] = (non_null_count / total_rows) * 100 if total_rows > 0 else 0
+    
+    # Count samples with any parameter
+    if existing_cols:
+        has_any_param = df[existing_cols].notna().any(axis=1).sum()
+        results['samples_with_any_param'] = has_any_param
+        results['samples_with_any_param_percentage'] = (has_any_param / total_rows) * 100 if total_rows > 0 else 0
+        
+        # Count samples with all parameters
+        has_all_params = df[existing_cols].notna().all(axis=1).sum()
+        results['samples_with_all_params'] = has_all_params
+        results['samples_with_all_params_percentage'] = (has_all_params / total_rows) * 100 if total_rows > 0 else 0
+    
+    return results
+
+
+def print_kinetic_analysis(analysis_results: dict, dataset_name: str = "Dataset"):
+    """
+    Prints a formatted report of kinetic parameter analysis.
+    
+    Args:
+        analysis_results (dict): Results from analyze_kinetic_parameters
+        dataset_name (str): Name of the dataset for the report header
+    """
+    print(f"\n--- {dataset_name} Kinetic Parameter Analysis ---")
+    print(f"Total samples: {analysis_results['total_samples']:,}")
+    
+    if analysis_results['parameter_counts']:
+        print("\nParameter availability:")
+        for param, count in analysis_results['parameter_counts'].items():
+            percentage = analysis_results['parameter_percentages'][param]
+            print(f"  - {param.upper()}: {count:,} samples ({percentage:.1f}%)")
+        
+        print(f"\nSamples with any parameter: {analysis_results['samples_with_any_param']:,} ({analysis_results['samples_with_any_param_percentage']:.1f}%)")
+        print(f"Samples with all parameters: {analysis_results['samples_with_all_params']:,} ({analysis_results['samples_with_all_params_percentage']:.1f}%)")
+    else:
+        print("No kinetic parameters found in dataset")
+    print("-" * 50)
+
+
+def analyze_kinetic_distribution_by_split(df: pd.DataFrame, kinetic_cols: list = None):
+    """
+    Analyzes kinetic parameter distribution across train/valid/test splits.
+    
+    Args:
+        df (pd.DataFrame): Dataframe with 'split' column and kinetic parameters
+        kinetic_cols (list): List of kinetic parameter column names
+    
+    Returns:
+        dict: Analysis results by split
+    """
+    if kinetic_cols is None:
+        kinetic_cols = ['kcat', 'km', 'ki']
+    
+    splits = df['split'].unique()
+    split_analysis = {}
+    
+    print("\n--- Kinetic Parameter Distribution by Split ---")
+    
+    for split in ['train', 'valid', 'test']:  # Ensure consistent order
+        if split in splits:
+            split_df = df[df['split'] == split]
+            split_analysis[split] = analyze_kinetic_parameters(split_df, kinetic_cols)
+            print_kinetic_analysis(split_analysis[split], f"{split.capitalize()} Split")
+    
+    return split_analysis
+
+
+# ==============================================================================
+# SECTION 3: Visualization Helpers
 # ==============================================================================
 
 def plot_cluster_size_distribution_capped(clusters: dict, output_path: str, xlim_max: int):
@@ -147,7 +254,7 @@ def analyze_and_plot_clusters(clusters: dict, size_threshold: int, output_dir: s
 
 
 # ==============================================================================
-# SECTION 3: Main Orchestration Function
+# SECTION 4: Main Orchestration Function
 # ==============================================================================
 
 def mmseqs2_split_data_into_files(
@@ -161,7 +268,8 @@ def mmseqs2_split_data_into_files(
     cluster_mode: int = 0,
     threads: int = 4,
     seed: int = 42,
-    cluster_size_cap: int = 50
+    cluster_size_cap: int = 50,
+    kinetic_cols: list = None
 ):
     """
     Orchestrates the full data splitting and analysis workflow.
@@ -179,6 +287,8 @@ def mmseqs2_split_data_into_files(
         seed (int): Random seed for reproducible splitting.
         cluster_size_cap (int): Threshold for reporting large clusters and
                                 for capping the visualization plot.
+        kinetic_cols (list): List of kinetic parameter column names to analyze.
+                           Defaults to ['kcat', 'km', 'ki'].
     """
     print("--- Starting Data Splitting and Analysis Process ---")
     
@@ -191,26 +301,31 @@ def mmseqs2_split_data_into_files(
     os.makedirs(output_dir, exist_ok=True)
     df = pd.read_csv(input_csv_path)
 
-    # --- 2. Create FASTA and Run Clustering ---
+    # --- 2. Analyze Original Dataset Kinetic Parameters ---
+    print("2. Analyzing original dataset kinetic parameter distribution...")
+    original_analysis = analyze_kinetic_parameters(df, kinetic_cols)
+    print_kinetic_analysis(original_analysis, "Original Dataset")
+
+    # --- 3. Create FASTA and Run Clustering ---
     with tempfile.NamedTemporaryFile(mode='w', suffix=".fasta", delete=False) as fasta_file:
         fasta_path = fasta_file.name
     try:
-        print("1. Creating temporary FASTA file...")
+        print("3. Creating temporary FASTA file...")
         create_fasta_from_csv(input_csv_path, seq_col, fasta_path)
 
-        print("2. Clustering sequences with MMseqs2...")
+        print("4. Clustering sequences with MMseqs2...")
         split_map, cluster_map, stats, clusters = cluster_and_split(
             fasta_path, seq_id, split_ratios, coverage, cov_mode, threads, cluster_mode, seed
         )
     finally:
         if os.path.exists(fasta_path): os.remove(fasta_path)
 
-    # --- 3. Analyze and Visualize Cluster Distribution ---
-    print(f"3. Analyzing cluster distribution with a size cap of {cluster_size_cap}...")
+    # --- 5. Analyze and Visualize Cluster Distribution ---
+    print(f"5. Analyzing cluster distribution with a size cap of {cluster_size_cap}...")
     analyze_and_plot_clusters(clusters, cluster_size_cap, output_dir)
         
-    # --- 4. Assign Splits and Save Data Files ---
-    print("4. Assigning splits and saving partitioned CSV files...")
+    # --- 6. Assign Splits and Save Data Files ---
+    print("6. Assigning splits and saving partitioned CSV files...")
     df['cluster_id'] = df.index.astype(str).map(cluster_map)
     df['split'] = df.index.astype(str).map(split_map)
     
@@ -225,7 +340,11 @@ def mmseqs2_split_data_into_files(
         split_df.to_csv(output_path, index=False)
         output_files[split_name] = {'path': output_path, 'count': len(split_df)}
 
-    # --- 5. Final Report ---
+    # --- 7. Analyze Kinetic Parameter Distribution by Split ---
+    print("7. Analyzing kinetic parameter distribution across splits...")
+    split_analysis = analyze_kinetic_distribution_by_split(df, kinetic_cols)
+
+    # --- 8. Final Report ---
     print("\n--- Process Complete ---")
     print("Clustering Statistics:")
     for key, value in stats.items(): print(f"  - {key.replace('_', ' ').title()}: {value}")
@@ -238,7 +357,7 @@ def mmseqs2_split_data_into_files(
     print("------------------------\n")
 
 # ==============================================================================
-# SECTION 4: Example Usage
+# SECTION 5: Example Usage
 # ==============================================================================
 
 if __name__ == '__main__':
