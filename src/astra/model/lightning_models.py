@@ -117,7 +117,7 @@ class AstraModule(L.LightningModule):
         loss = self._shared_step(batch)
 
         # Log results
-        self.log('valid_loss', loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log('valid_loss', loss, on_step=True, on_epoch=True, prog_bar=True)
 
     def on_training_epoch_end(self):
         # Can be used to log accumulated metrics from training_step()
