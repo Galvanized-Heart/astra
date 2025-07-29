@@ -19,6 +19,7 @@ import random
 import shutil
 import subprocess
 import tempfile
+from copy import deepcopy
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -568,6 +569,265 @@ def create_nfold_cross_validation_splits(df: pd.DataFrame, n_folds: int, output_
     return fold_info
 
 
+def calculate_kinetic_distribution(df: pd.DataFrame, kinetic_cols: list[str]) -> dict[str, float]:
+    """Calculate the percentage of non-null values for each kinetic parameter."""
+    distribution = {}
+    if len(df) == 0:
+        return {col: 0.0 for col in kinetic_cols if col in df.columns}
+    
+    for col in kinetic_cols:
+        if col in df.columns:
+            distribution[col] = (df[col].notna().sum() / len(df)) * 100
+        else:
+            distribution[col] = 0.0
+    return distribution
+
+
+def calculate_distribution_deviation(target_dist: dict[str, float], 
+                                   current_dist: dict[str, float]) -> float:
+    """Calculate the total absolute deviation from target distribution."""
+    total_deviation = 0.0
+    for param in target_dist:
+        if param in current_dist:
+            total_deviation += abs(target_dist[param] - current_dist[param])
+    return total_deviation
+
+
+def evaluate_fold_assignment(df: pd.DataFrame, 
+                           fold_assignments: dict[str, int], 
+                           n_folds: int, 
+                           target_distribution: dict[str, float],
+                           kinetic_cols: list[str]) -> tuple[float, dict]:
+    """
+    Evaluate how well the current fold assignment preserves kinetic parameter distribution.
+    Returns total deviation and detailed fold statistics.
+    """
+    fold_stats = {}
+    total_deviation = 0.0
+    
+    for fold_idx in range(n_folds):
+        # Get samples assigned to this fold
+        fold_clusters = [cluster for cluster, fold in fold_assignments.items() if fold == fold_idx]
+        fold_df = df[df['cluster_id'].isin(fold_clusters)]
+        
+        # Calculate distribution for this fold
+        fold_distribution = calculate_kinetic_distribution(fold_df, kinetic_cols)
+        
+        # Calculate deviation from target
+        fold_deviation = calculate_distribution_deviation(target_distribution, fold_distribution)
+        total_deviation += fold_deviation
+        
+        fold_stats[fold_idx] = {
+            'size': len(fold_df),
+            'distribution': fold_distribution,
+            'deviation': fold_deviation
+        }
+    
+    return total_deviation, fold_stats
+
+
+def greedy_fold_assignment(df: pd.DataFrame, 
+                          cluster_ids: list[str], 
+                          n_folds: int, 
+                          target_distribution: dict[str, float],
+                          kinetic_cols: list[str],
+                          max_iterations: int = 1000,
+                          seed: int = 42) -> dict[str, int]:
+    """
+    Greedily assign clusters to folds to minimize kinetic parameter distribution deviation.
+    """
+    rng = random.Random(seed)
+    
+    # Initialize with random assignment
+    fold_assignments = {}
+    for i, cluster_id in enumerate(cluster_ids):
+        fold_assignments[cluster_id] = i % n_folds
+    
+    # Calculate initial score
+    best_score, _ = evaluate_fold_assignment(df, fold_assignments, n_folds, target_distribution, kinetic_cols)
+    best_assignments = deepcopy(fold_assignments)
+    
+    print(f"  Initial distribution deviation: {best_score:.2f}")
+    
+    improvements = 0
+    for iteration in range(max_iterations):
+        # Try swapping clusters between random folds
+        cluster1, cluster2 = rng.sample(cluster_ids, 2)
+        
+        if fold_assignments[cluster1] == fold_assignments[cluster2]:
+            continue  # Skip if already in same fold
+        
+        # Try the swap
+        original_fold1 = fold_assignments[cluster1]
+        original_fold2 = fold_assignments[cluster2]
+        
+        fold_assignments[cluster1] = original_fold2
+        fold_assignments[cluster2] = original_fold1
+        
+        # Evaluate new assignment
+        new_score, _ = evaluate_fold_assignment(df, fold_assignments, n_folds, target_distribution, kinetic_cols)
+        
+        if new_score < best_score:
+            best_score = new_score
+            best_assignments = deepcopy(fold_assignments)
+            improvements += 1
+        else:
+            # Revert the swap
+            fold_assignments[cluster1] = original_fold1
+            fold_assignments[cluster2] = original_fold2
+        
+        # Print progress every 200 iterations
+        if (iteration + 1) % 200 == 0:
+            print(f"  Iteration {iteration + 1}: Best deviation = {best_score:.2f} (improvements: {improvements})")
+    
+    print(f"  Final distribution deviation: {best_score:.2f} (total improvements: {improvements})")
+    return best_assignments
+
+
+def create_balanced_nfold_cross_validation_splits(df: pd.DataFrame, 
+                                                n_folds: int, 
+                                                output_dir: str,
+                                                seed: int = 42, 
+                                                kinetic_cols: list = None,
+                                                max_iterations: int = 1000):
+    """
+    Creates N-fold cross-validation splits with kinetic parameter distribution constraints.
+    Uses greedy search to minimize deviation from original dataset distribution.
+    """
+    print(f"\n--- Creating Balanced {n_folds}-Fold Cross-Validation Splits ---")
+    
+    if n_folds < 2:
+        raise ValueError("Number of folds must be at least 2")
+    
+    if len(df) < n_folds:
+        raise ValueError(f"Dataset has {len(df)} samples, which is less than {n_folds} folds")
+    
+    if kinetic_cols is None:
+        kinetic_cols = ['kcat', 'KM', 'Ki']
+    
+    # Filter to existing columns
+    existing_kinetic_cols = [col for col in kinetic_cols if col in df.columns]
+    if not existing_kinetic_cols:
+        print("Warning: No kinetic parameter columns found. Using standard random assignment.")
+        return create_nfold_cross_validation_splits(df, n_folds, output_dir, seed, kinetic_cols)
+    
+    print(f"Optimizing distribution for parameters: {existing_kinetic_cols}")
+    
+    # Calculate target distribution from original dataset
+    target_distribution = calculate_kinetic_distribution(df, existing_kinetic_cols)
+    print("Target distribution:")
+    for param, pct in target_distribution.items():
+        print(f"  {param.upper()}: {pct:.1f}%")
+    
+    # Get unique cluster IDs
+    cluster_ids = df['cluster_id'].unique().tolist()
+    print(f"Total clusters to assign: {len(cluster_ids)}")
+    
+    # Use greedy search to find optimal fold assignments
+    print(f"Running greedy optimization with {max_iterations} iterations...")
+    fold_assignments = greedy_fold_assignment(
+        df, cluster_ids, n_folds, target_distribution, existing_kinetic_cols, max_iterations, seed
+    )
+    
+    # Create CV folds directory
+    cv_output_dir = os.path.join(output_dir, 'cv_folds_balanced')
+    os.makedirs(cv_output_dir, exist_ok=True)
+    
+    fold_info = {}
+    fold_analyses = {}
+    
+    # Create folds based on optimized cluster assignments
+    for fold_idx in range(n_folds):
+        # Test set is current fold's clusters
+        test_clusters = [cluster for cluster, fold in fold_assignments.items() if fold == fold_idx]
+        # Train set is all other clusters
+        train_clusters = [cluster for cluster, fold in fold_assignments.items() if fold != fold_idx]
+        
+        # Create train and test sets
+        fold_test_df = df[df['cluster_id'].isin(test_clusters)].copy()
+        fold_train_df = df[df['cluster_id'].isin(train_clusters)].copy()
+        
+        # Save train and test sets
+        train_filename = f"fold_{fold_idx}_train.csv"
+        test_filename = f"fold_{fold_idx}_test.csv"
+        
+        train_path = os.path.join(cv_output_dir, train_filename)
+        test_path = os.path.join(cv_output_dir, test_filename)
+        
+        fold_train_df.to_csv(train_path, index=False)
+        fold_test_df.to_csv(test_path, index=False)
+        
+        # Store fold information
+        fold_info[f'fold_{fold_idx}'] = {
+            'train_path': train_path,
+            'test_path': test_path,
+            'train_count': len(fold_train_df),
+            'test_count': len(fold_test_df)
+        }
+        
+        print(f"  -> Fold {fold_idx}: Train {len(fold_train_df):,} samples, Test {len(fold_test_df):,} samples")
+        
+        # Analyze kinetic parameters for this fold
+        train_analysis = analyze_kinetic_parameters(fold_train_df, existing_kinetic_cols)
+        test_analysis = analyze_kinetic_parameters(fold_test_df, existing_kinetic_cols)
+        
+        fold_analyses[f'fold_{fold_idx}'] = {
+            'train': train_analysis,
+            'test': test_analysis
+        }
+        
+        # Analyze overlap for this fold
+        train_overlap = analyze_kinetic_parameter_overlap(fold_train_df, existing_kinetic_cols)
+        test_overlap = analyze_kinetic_parameter_overlap(fold_test_df, existing_kinetic_cols)
+        
+        # Create Venn diagrams for this fold
+        if train_overlap and 'venn_data' in train_overlap:
+            train_venn_path = os.path.join(cv_output_dir, f"fold_{fold_idx}_train_overlap.png")
+            create_kinetic_parameter_venn_diagram(train_overlap, train_venn_path, f"Fold {fold_idx} Train")
+        
+        if test_overlap and 'venn_data' in test_overlap:
+            test_venn_path = os.path.join(cv_output_dir, f"fold_{fold_idx}_test_overlap.png")
+            create_kinetic_parameter_venn_diagram(test_overlap, test_venn_path, f"Fold {fold_idx} Test")
+    
+    # Print detailed kinetic parameter analysis across folds
+    if fold_analyses:
+        print(f"\n--- Balanced Kinetic Parameter Distribution Across {n_folds} Folds ---")
+        
+        # Calculate original parameter percentages for comparison
+        original_analysis = analyze_kinetic_parameters(df, existing_kinetic_cols)
+        
+        param_deviations = {param: [] for param in existing_kinetic_cols}
+        
+        for fold_name, fold_data in fold_analyses.items():
+            fold_num = fold_name.split('_')[1]
+            print(f"\nFold {fold_num}:")
+            print(f"  Train: {fold_data['train']['total_samples']:,} samples")
+            print(f"  Test:  {fold_data['test']['total_samples']:,} samples")
+            
+            for param in existing_kinetic_cols:
+                train_pct = fold_data['train']['parameter_percentages'].get(param, 0)
+                test_pct = fold_data['test']['parameter_percentages'].get(param, 0)
+                original_pct = original_analysis['parameter_percentages'].get(param, 0)
+                
+                train_dev = abs(train_pct - original_pct)
+                test_dev = abs(test_pct - original_pct)
+                
+                param_deviations[param].extend([train_dev, test_dev])
+                
+                print(f"    {param.upper()} - Train: {train_pct:.1f}% (dev: {train_dev:.1f}%), Test: {test_pct:.1f}% (dev: {test_dev:.1f}%)")
+        
+        # Print overall deviation summary
+        print(f"\n--- Overall Balanced CV Parameter Distribution Quality ---")
+        for param, deviations in param_deviations.items():
+            if deviations:  # Only if we have data for this parameter
+                avg_deviation = np.mean(deviations)
+                std_deviation = np.std(deviations)
+                print(f"  {param.upper()}: Avg deviation {avg_deviation:.1f}% ± {std_deviation:.1f}%")
+    
+    print(f"\nCreated {n_folds} balanced cross-validation folds with total {len(df):,} samples")
+    
+    return fold_info
+
 # ==============================================================================
 # SECTION 3: Visualization Helpers
 # ==============================================================================
@@ -622,7 +882,7 @@ def analyze_and_plot_clusters(clusters: dict, size_threshold: int, output_dir: s
 # SECTION 4: Main Orchestration Function
 # ==============================================================================
 
-def mmseqs2_split_data_into_files(
+def mmseqs2_split_data_w_ratio_into_files(
     input_csv_path: str,
     output_dir: str,
     seq_col: str = "protein_sequence",
@@ -635,7 +895,10 @@ def mmseqs2_split_data_into_files(
     seed: int = 42,
     cluster_size_cap: int = 50,
     kinetic_cols: list = None,
-    n_folds: int = None
+    n_folds: int = None,
+    use_balanced_cv: bool = True,
+    max_cv_iterations: int = 1000,
+    compare_cv_methods: bool = True
 ):
     """
     Orchestrates the full data splitting and analysis workflow.
@@ -657,6 +920,11 @@ def mmseqs2_split_data_into_files(
                            Defaults to ['kcat', 'KM', 'Ki'].
         n_folds (int): Number of folds for cross-validation of training data.
                       If None, no cross-validation splits are created.
+        use_balanced_cv (bool): Whether to use balanced cross-validation that 
+                               preserves kinetic parameter distribution.
+        max_cv_iterations (int): Maximum iterations for greedy search optimization.
+        compare_cv_methods (bool): Whether to create both original and balanced CV
+                                  for comparison.
     """
     print("--- Starting Data Splitting and Analysis Process ---")
     
@@ -682,7 +950,6 @@ def mmseqs2_split_data_into_files(
         create_fasta_from_csv(input_csv_path, seq_col, fasta_path)
 
         print("4. Clustering sequences with MMseqs2...")
-        # MMseqs2 clustering on all data
         split_map, cluster_map, stats, clusters = cluster_and_split(
             fasta_path, seq_id, split_ratios, coverage, cov_mode, threads, cluster_mode, seed
         )
@@ -694,8 +961,7 @@ def mmseqs2_split_data_into_files(
     analyze_and_plot_clusters(clusters, cluster_size_cap, output_dir)
         
     # --- 6. Assign Splits and Save Data Files ---
-    # After clustering but before train/valid/test split
-    print("6. Assigning train/valid/test splits and saving partitioned CSV files...")
+    print("6. Assigning splits and saving partitioned CSV files...")
     df['cluster_id'] = df.index.astype(str).map(cluster_map)
     df['split'] = df.index.astype(str).map(split_map)
     
@@ -727,31 +993,58 @@ def mmseqs2_split_data_into_files(
     overlap_results = analyze_kinetic_parameter_overlap(df, kinetic_cols)
     print_overlap_analysis(overlap_results, "Original Dataset")
     create_kinetic_parameter_venn_diagram(overlap_results, os.path.join(output_dir, "kinetic_parameter_overlap.png"), "Original Dataset")
-
-    # --- 9. Create N-Fold Cross-Validation Splits (Optional) ---
+    
+    # --- 9. MODIFIED N-Fold Cross-Validation Section ---
     fold_info = None
     if n_folds is not None and n_folds > 1:
-        print(f"9. Creating {n_folds}-fold cross-validation splits using all clustered data...")
-        fold_info = create_nfold_cross_validation_splits(
-            df,
-            n_folds,
-            output_dir,
-            seed,
-            kinetic_cols
-        )
+        if compare_cv_methods:
+            print(f"\n{'='*60}")
+            print("CREATING BOTH ORIGINAL AND BALANCED CROSS-VALIDATION")
+            print(f"{'='*60}")
+            
+            # First create original CV splits
+            print(f"9a. Creating ORIGINAL {n_folds}-fold cross-validation splits...")
+            fold_info = create_nfold_cross_validation_splits(
+                df, n_folds, output_dir, seed, kinetic_cols
+            )
+            
+            if use_balanced_cv:
+                # Then create balanced CV splits
+                print(f"\n9b. Creating BALANCED {n_folds}-fold cross-validation splits...")
+                balanced_fold_info = create_balanced_nfold_cross_validation_splits(
+                    df, n_folds, output_dir, seed, kinetic_cols, max_cv_iterations
+                )
+                
+                print(f"\n{'='*60}")
+                print("CROSS-VALIDATION COMPARISON COMPLETE")
+                print(f"{'='*60}")
+                print("Original CV files saved in: cv_folds/")
+                print("Balanced CV files saved in: cv_folds_balanced/")
+                print("Compare the 'Overall CV Parameter Distribution Quality' metrics above!")
+                print(f"{'='*60}")
+        else:
+            # Create only the requested type
+            if use_balanced_cv:
+                print(f"9. Creating BALANCED {n_folds}-fold cross-validation splits...")
+                fold_info = create_balanced_nfold_cross_validation_splits(
+                    df, n_folds, output_dir, seed, kinetic_cols, max_cv_iterations
+                )
+            else:
+                print(f"9. Creating ORIGINAL {n_folds}-fold cross-validation splits...")
+                fold_info = create_nfold_cross_validation_splits(
+                    df, n_folds, output_dir, seed, kinetic_cols
+                )
 
-    # --- 10. Final Report ---
+    # --- 10. Final Report (update to include balanced CV info) ---
     print("\n--- Process Complete ---")
     print("Clustering Statistics:")
-    for key, value in stats.items(): print(f"  - {key.replace('_', ' ').title()}: {value}")
+    for key, value in stats.items(): 
+        print(f"  - {key.replace('_', ' ').title()}: {value}")
     
     print("\nOutput Files:")
-    for split_name, info in output_files.items(): print(f"  - {info['path']} ({info['count']} rows)")
+    for split_name, info in output_files.items(): 
+        print(f"  - {info['path']} ({info['count']} rows)")
     print(f"  - {os.path.join(output_dir, f'cluster_dist_capped_at_{cluster_size_cap}.png')}")
-    # if os.path.exists(os.path.join(output_dir, 'large_clusters_report.csv')):
-    #     print(f"  - {os.path.join(output_dir, 'large_clusters_report.csv')}")
-    # if os.path.exists(os.path.join(output_dir, "kinetic_parameter_overlap.png")):
-    #     print(f"  - {os.path.join(output_dir, "kinetic_parameter_overlap.png")}")
     
     # Report split-specific overlap diagrams
     for split_name in ['train', 'valid', 'test']:
@@ -761,22 +1054,14 @@ def mmseqs2_split_data_into_files(
     
     # Report cross-validation folds if created
     if fold_info:
-        print(f"\nCross-Validation Folds ({n_folds}-fold):")
-        total_fold_samples = 0
+        cv_type = "Balanced" if use_balanced_cv and not compare_cv_methods else "Original"
+        print(f"\n{cv_type} Cross-Validation Folds ({n_folds}-fold):")
         for fold_name, info in fold_info.items():
             print(f"  - {info['train_path']} ({info['train_count']} rows)")
             print(f"  - {info['test_path']} ({info['test_count']} rows)")
-            total_fold_samples += info['train_count'] + info['test_count']
             
-            # Report fold-specific overlap diagrams if they exist
-            fold_idx = fold_name.split('_')[1]
-            train_venn = os.path.join(output_dir, 'cv_folds', f"fold_{fold_idx}_train_overlap.png")
-            test_venn = os.path.join(output_dir, 'cv_folds', f"fold_{fold_idx}_test_overlap.png")
-            if os.path.exists(train_venn):
-                print(f"  - {train_venn}")
-            if os.path.exists(test_venn):
-                print(f"  - {test_venn}")
-                
-        print(f"  Total samples in folds: {total_fold_samples:,}")
+        if compare_cv_methods and use_balanced_cv:
+            print(f"\nAdditional Balanced CV files in: cv_folds_balanced/")
     
     print("------------------------\n")
+    

@@ -1,33 +1,24 @@
 """
-MMseqs2 Dataset Split Example
+MMseqs2 Dataset Split Example with Balanced Cross-Validation
 
-Splits sequence datasets into train/validation/test sets while 
-avoiding similarity bias with MMseqs2 clustering.
+This script demonstrates the enhanced MMseqs2 splitting functionality that includes
+balanced cross-validation with kinetic parameter distribution preservation.
 
-Features:
-
-- Main Split
-  - Cluster sequences by identity
-  - 80% train, 10% validation, 10% test
-  - Keep similar sequences in the same split
-
-- Cross‑Validation
-  - Generate 5 folds from the training set
-  - Keep clusters intact across folds
-
-- Analysis & Visualization
-  - Summarize kinetic parameters (kcat, KM, Ki)
-  - Plot cluster size distributions
-  - Draw Venn diagrams of parameter overlap
+The balanced CV approach uses greedy optimization to minimize deviation from the
+original dataset's kinetic parameter distribution (kcat, KM, Ki) when creating
+cross-validation folds. This ensures that each fold maintains similar proportions
+of samples with different kinetic parameters, leading to more reliable model
+evaluation.
 
 Outputs:
-- `train.csv`, `valid.csv`, `test.csv`
-- `cv_folds/` (5 cross‑validation splits)
-- `results/cv_splits_pangenomic/` (plots and reports)
+- Standard train/valid/test splits
+- Original CV folds (cv_folds/)
+- Balanced CV folds (cv_folds_balanced/) 
+- Kinetic parameter overlap visualizations (Venn diagrams)
+- Distribution quality metrics for comparison
 
-Requirements:
-- MMseqs2 installed and in your PATH  
-- Input CSV with sequence and kinetic parameter columns
+Usage:
+    python mmseqs2_splits_w_ratio_example.py
 """
 
 import sys
@@ -46,9 +37,9 @@ OUTPUT_DIR = ROOT_DIR / "results" / f"cv_splits_{TYPE}"
 # Add module path
 sys.path.append(str(ASTRA_DIR))
 
-from astra.data_processing.splits.mmseqs2_split import mmseqs2_split_data_into_files
+from astra.data_processing.splits.mmseqs2_split_w_ratio import mmseqs2_split_data_w_ratio_into_files
 
-def run_mmseqs2_splits():
+def run_mmseqs2_splits_w_ratio():
     # Input data configuration
     input_data = {
         'csv_path': DATA_DIR / f"CPI_all_brenda_{TYPE}_enriched.csv",
@@ -77,8 +68,8 @@ def run_mmseqs2_splits():
     }
 
     # Run MMseqs2 splitting pipeline
-    print("Running MMseqs2 splitting pipeline...")
-    results = mmseqs2_split_data_into_files(
+    print("Running MMseqs2 splitting pipeline with ratio...")
+    results = mmseqs2_split_data_w_ratio_into_files(
         input_csv_path=input_data['csv_path'],
         output_dir=OUTPUT_DIR,
         seq_col=input_data['sequence_column'],
@@ -88,10 +79,13 @@ def run_mmseqs2_splits():
         kinetic_cols=input_data['kinetic_columns'],
         threads=clustering_params['threads'],
         seed=clustering_params['seed'],
-        n_folds=cv_config['n_folds']
+        n_folds=cv_config['n_folds'],
+        use_balanced_cv=True,  # Use balanced cross-validation
+        max_cv_iterations=1000,  # Iterations for optimization
+        compare_cv_methods=True  # Compare both methods
     )
 
     return results
 
 if __name__ == '__main__':
-    run_mmseqs2_splits()
+    run_mmseqs2_splits_w_ratio()
