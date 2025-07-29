@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import click
+from tqdm import tqdm
 
 from astra.constants import PROJECT_ROOT
 
@@ -30,19 +31,23 @@ def manifest(input_path):
 
 # Training script for Astra
 @cli.command()
-@click.option('--train_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "train.csv"), help='The path to data you want to train on.')
-@click.option('--valid_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "valid.csv"), help='The path to data you want to validate on.')
-@click.option('--batch_size', default=32, help='The batch size you want to train with.')
-def train(train_path, valid_path, batch_size):
+@click.option('--train_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "train.csv"), help='The string path to data you want to train on.')
+@click.option('--valid_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "valid.csv"), help='The string path to data you want to validate on.')
+@click.option('--batch_size', default=32, help='The integer batch size you want to train with.')
+@click.option('--seed', default=42, help='Set integer seed for reproduciblity.')
+
+def train(train_path, valid_path, batch_size, seed):
     """Base function for training Astra model."""
     click.echo(f"Setting up training for {train_path}.")
     click.echo(f"Using {valid_path} for validation.")
 
     # Import locally
-    from astra.pipelines.train import train
+    with tqdm(total=1, desc="Loading libraries") as pbar:
+        from astra.pipelines.train import train
+        pbar.update(1)
 
     # Run training script
-    train(train_path, valid_path, batch_size)
+    train(train_path, valid_path, batch_size, seed)
     click.echo("Training complete!")
 
 

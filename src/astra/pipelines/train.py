@@ -10,7 +10,7 @@ from astra.model.models.dummy_model import DummyModel
 from astra.model.loss.masked_mse_loss import MaskedMSELoss
 
 
-def train(train_path: str, valid_path: str, batch_size: int = 32, device: str = None):
+def train(train_path: str, valid_path: str, batch_size: int = 32, seed: int = None, device: str = None):
     """
     Runs full training loop for Astra.
     
@@ -20,6 +20,10 @@ def train(train_path: str, valid_path: str, batch_size: int = 32, device: str = 
         batch_size (int): The size of the batches used during training (and featurizing?).
         device (str): The device to use during training.
     """
+    if seed is not None:
+        print(f"Setting global seed to {seed}")
+        L.seed_everything(seed, workers=True)
+
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -67,6 +71,7 @@ def train(train_path: str, valid_path: str, batch_size: int = 32, device: str = 
         max_epochs=10,
         logger=wandb_logger, # Use W&B logger
         callbacks=[checkpoint_callback], # Add the checkpoint callback
+        deterministic=True if seed is not None else False # Ensure deterministic behaviour
     )
 
     # Run training loop
