@@ -108,7 +108,7 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 | :------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
 | **Write Detailed Paper Outline**| - Draft section headers (problem statement, proposed methods, and expected results).<br>- Write 2-4 bullet points of key content for each section.<br>- Explicitly list the paper's 3-4 key contributions.   | **Thu, Jul 25** |   ☐    |
 | **Write Abstract**              | - Draft one sentence for: context, problem, method, result, and implication.<br>- Refine into a cohesive paragraph under the word limit.                                 | **Fri, Jul 26** |   ☐    |
-| **Write First Draft**           | - Draft **Method** section first.<br>- Draft **Introduction** and **Related Work**.<br>- Draft **Experiments** section with planned setup.<br>- Create placeholders for all figures and tables. | **Fri, Aug 1**  |   ☐    |
+| **EDA Figure**           | - Venn diagram graph analazing the % overlap of kinetic parameters. Using Pangenomic. | **Fri, Aug 1**  |   ☐    |
 | **Get & Implement Feedback**    | - Identify 2-3 reviewers and send the draft.<br>- Consolidate all feedback into a single document.<br>- Triage changes (Critical, High-Priority, Minor).<br>- Systematically implement revisions. | **Tue, Aug 19** |   ☐    |
 | **Generate Figures & Tables**   | - Create a script (`plots.py`) to generate all visuals from saved results.<br>- Generate main performance and ablation tables.<br>- Generate interpretability plots.<br>- Write clear captions for everything. | **Wed, Aug 20** |   ☐    |
 | **Final Proofread and Polish**  | - Perform a full grammar and spelling check.<br>- Read the entire paper aloud to catch awkward phrasing.<br>- Ensure formatting matches the workshop's style guide.  | **Thu, Aug 21** |   ☐    |
@@ -138,6 +138,21 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                              | Subtasks                                                                                                                                                         | Deadline        | Status |
 | :-------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
+| **Finish preparing CPI-Pred data**      | - Generate KM and KI splits<br>- Get all splits<br>- Run analysis of seq similarity preservation on kcat, KM, KI splits<br>- Get "combined" kcat/KM/KI dataset              | **, Aug**  |   ☐    |
 | **Run Baseline Experiments**      | - Run "individual models" experiment.<br>- Run "naive combined" experiment.<br>- Save all model checkpoints and a `results.json` summary for each run.               | **Fri, Aug 8**  |   ☐    |
 | **Run Core Method Experiments**   | - Run "basic recomp" experiment.<br>- Run "advanced recomp" experiment.<br>- Document all results in the experiment tracking system.                               | **Fri, Aug 8** |   ☐    |
 | **Run Interpretability Analysis** | - Write a script to load a trained model and a data sample.<br>- Extract and save feature coefficients/importance from linear/XGBoost models.<br>- Extract and visualize attention weights from attention-based models. | **Fri, Aug 15** |   ☐    |
+
+---
+
+### July 29th Discussion Takeaways
+
+- 2 main evaluations for the model:
+    
+    a) Train+test on other models' splits
+    - This will be the direct and **quantitative comparison**
+    - Create  datasets by combining kcat/KM/KI folds
+        - Assess the preservation of sequence similarity to prevent data leakage
+    
+    b) Train+test on astra's ratio splits
+    - This will be just a **qualitative comparison** against other model's performance (would have to retrain them on these splits).
