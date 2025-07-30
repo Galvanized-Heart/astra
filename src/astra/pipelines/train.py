@@ -58,7 +58,7 @@ def train(train_path: str, valid_path: str, batch_size: int = 32, seed: int = No
 
     # Instatiate ModelCheckpoint
     checkpoint_callback = ModelCheckpoint(
-        monitor="valid_loss", # Metric to monitor (this needs to match validation_step() inside AstraModule())
+        monitor="valid_loss_epoch", # Metric to monitor (this needs to match validation_step() inside AstraModule())
         dirpath="checkpoints/",          # Directory to save checkpoints
         filename="sample-model-{epoch:02d}-{valid_loss:.2f}", # Checkpoint file name
         save_top_k=1,                    # Save the best k models
