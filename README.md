@@ -119,7 +119,7 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                                | Subtasks                                                                                                                                                                        | Deadline        | Status |
 | :---------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------- | :----: |
-| **Create Data Splitting Logic**     | - Implement the random splitting function.<br>- Implement `mmseqs2` wrapper and cluster-based splitting.<br>- Write tests to ensure no data leakage between train/validation sets. | **Tue, Jul 30** |   ☐    |
+| **Create Data Splitting Logic**     | - ~~Implement the random splitting function.~~<br>- ~~Implement `mmseqs2` wrapper and cluster-based splitting.~~<br>- Write tests to ensure no data leakage between train/validation sets. | **Fri, Aug 1** |   ☐    |
 | **Setup Experiment Tracking**       | - ~~Initialize a Weights & Biases project.~~<br>- Define standard metrics to log (loss, accuracy, F1, etc.).<br>- Ensure hyperparameters are automatically logged on every run. | **Wed, Jul 31** |   ☐    |
 
 ---
@@ -128,8 +128,8 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                            | Subtasks                                                                                                                                                                 | Deadline        | Status |
 | :------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
-| **Create Model Architectures**  | - Implement the baseline model(s) (e.g., XGBoost, Linear).<br>- Implement the `sklearn.multioutput.MultiOutputRegressor` wrapper for XGBoost.<br>- ~~Implement the "advanced recomp" model as a PyTorch `nn.Module`~~.<br>- Add clear docstrings explaining input/output shapes. | **Fri, Aug 1**  |   ☐    |
-| **Build Training & Loss Logic** | - ~~Create PyTorch `Dataset` and `DataLoader` classes.~~<br>- Build the main training script with `argparse` for key parameters.<br>- Implement training and validation loops.<br>- Integrate experiment tracking calls within the loops. | **Fri, Aug 1**  |   ☐    |
+| **Create Model Architectures**  | - Implement the baseline model(s) (e.g., XGBoost, Linear).<br>- Implement the `sklearn.multioutput.MultiOutputRegressor` wrapper for XGBoost.<br>- ~~Implement the "advanced recomp" model as a PyTorch `nn.Module`~~.<br>- Add clear docstrings explaining input/output shapes. | **1st week Aug**  |   ☐    |
+| **Build Training & Loss Logic** | - ~~Create PyTorch `Dataset` and `DataLoader` classes.~~<br>- Build the main training script with `argparse` for key parameters.<br>- Implement training and validation loops.<br>- Integrate experiment tracking calls within the loops. | **1st week Aug**  |   ☐    |
 | **Optimize Hyperparameters**    | - Define the hyperparameter search space (learning rate, weight decay, etc.).<br>- Set up and run a sweep using a tool like Optuna or W&B Sweeps.<br>- Analyze results to find the best configuration. | **Wed, Aug 13** |   ☐    |
 
 ---
@@ -138,7 +138,7 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                              | Subtasks                                                                                                                                                         | Deadline        | Status |
 | :-------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
-| **Finish preparing CPI-Pred data**      | - Generate KM and KI splits<br>- Get all splits<br>- Run analysis of seq similarity preservation on kcat, KM, KI splits<br>- Get "combined" kcat/KM/KI dataset              | **, Aug**  |   ☐    |
+| **Finish preparing CPI-Pred data**      | - Generate KM and KI splits<br>- Get all splits<br>- Get "combined" kcat/KM/KI dataset <br>- Run analysis of seq similarity preservation on kcat, KM, KI splits             | **Fri Aug 1st**  |   ☐    |
 | **Run Baseline Experiments**      | - Run "individual models" experiment.<br>- Run "naive combined" experiment.<br>- Save all model checkpoints and a `results.json` summary for each run.               | **Fri, Aug 8**  |   ☐    |
 | **Run Core Method Experiments**   | - Run "basic recomp" experiment.<br>- Run "advanced recomp" experiment.<br>- Document all results in the experiment tracking system.                               | **Fri, Aug 8** |   ☐    |
 | **Run Interpretability Analysis** | - Write a script to load a trained model and a data sample.<br>- Extract and save feature coefficients/importance from linear/XGBoost models.<br>- Extract and visualize attention weights from attention-based models. | **Fri, Aug 15** |   ☐    |
