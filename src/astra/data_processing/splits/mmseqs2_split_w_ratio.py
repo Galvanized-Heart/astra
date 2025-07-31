@@ -25,15 +25,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import KFold
+from matplotlib_venn import venn3, venn3_circles
 
-# Optional import for Venn diagrams
-try:
-    from matplotlib_venn import venn3, venn3_circles
-    HAS_VENN = True
-except ImportError:
-    HAS_VENN = False
-    print("Warning: matplotlib-venn not available. Venn diagrams will be skipped.")
-    print("Install with: pip install matplotlib-venn")
 
 # ==============================================================================
 # SECTION 1: Core MMseqs2 & File Helpers
@@ -357,9 +350,6 @@ def create_kinetic_parameter_venn_diagram(overlap_results: dict, output_path: st
         output_path (str): Path to save the Venn diagram
         dataset_name (str): Name of the dataset for the plot title
     """
-    if not HAS_VENN:
-        print("Warning: matplotlib-venn not available. Skipping Venn diagram creation.")
-        return
         
     if not overlap_results or 'venn_data' not in overlap_results:
         print("Warning: No Venn diagram data available. Skipping visualization.")
