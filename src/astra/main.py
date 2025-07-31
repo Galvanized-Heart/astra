@@ -6,8 +6,6 @@ from tqdm import tqdm
 
 from astra.constants import PROJECT_ROOT
 
-DATA_PATH = Path.joinpath(PROJECT_ROOT, "data", "interim", "cpipred", "CPI_all_brenda_core_enriched.csv")
-
 @click.group()
 def cli():
     """Astra."""
@@ -32,8 +30,8 @@ def manifest(input_path):
 
 # Training script for Astra
 @cli.command()
-@click.option('--train_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "train.csv"), help='The string path to data you want to train on.')
-@click.option('--valid_path', default=Path.joinpath(PROJECT_ROOT, "data", "split", "valid.csv"), help='The string path to data you want to validate on.')
+@click.option('--train_path', default=f"{PROJECT_ROOT}/train.csv", help='The string path to data you want to train on.')
+@click.option('--valid_path', default=f"{PROJECT_ROOT}/valid.csv", help='The string path to data you want to validate on.')
 @click.option('--batch_size', default=32, help='The integer batch size you want to train with.')
 @click.option('--epochs', default=10, help='The integer for number of training epochs.')
 @click.option('--seed', default=42, help='The integer seed for reproduciblity.')
