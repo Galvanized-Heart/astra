@@ -212,6 +212,8 @@ __marimo__/
 data/
 results/
 experiments/
+wandb/
+checkpoints/
 
 # Exceptions
 !configs/data/
