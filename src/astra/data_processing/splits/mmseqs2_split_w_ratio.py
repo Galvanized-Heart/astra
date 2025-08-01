@@ -4,14 +4,12 @@ End-to-End Dataset Splitting via Sequence Clustering with MMseqs2.
 This script provides a comprehensive workflow to:
 1. Read a CSV file containing biological sequences.
 2. Cluster the sequences using MMseqs2 to group similar items.
-3. Split the data into train/validation/test sets based on these clusters,
-   preventing data leakage and ensuring robust model evaluation.
-4. Generate a "capped" histogram to clearly visualize the distribution of
+3. Generate a "capped" histogram to clearly visualize the distribution of
    the most common cluster sizes.
-5. Create a CSV report detailing all clusters that exceed the specified size cap.
-6. Analyze the distribution and overlap of kinetic parameters (kcat, KM, Ki) 
-   across the dataset and splits using statistical summaries and Venn diagrams.
-7. Optionally create N-fold cross-validation splits with parameter analysis.
+4. Create a CSV report detailing all clusters that exceed the specified size cap.
+5. Analyze the distribution and overlap of kinetic parameters (kcat, KM, Ki) 
+   across the dataset using statistical summaries and Venn diagrams.
+6. Optionally create N-fold cross-validation splits with parameter analysis.
 """
 
 import os
@@ -40,10 +38,9 @@ def create_fasta_from_csv(csv_path: str, seq_col: str, fasta_path: str):
             f.write(f">{idx}\n{row[seq_col]}\n")
 
 
-def cluster_and_split(fasta_path: str, seq_id: float, split_ratios: dict, 
-                      coverage: float, cov_mode: int, threads: int, 
-                      cluster_mode: int, seed: int):
-    """Runs MMseqs2 to cluster sequences and assigns them to splits."""
+def cluster_sequences(fasta_path: str, seq_id: float, coverage: float, cov_mode: int, 
+                     threads: int, cluster_mode: int):
+    """Runs MMseqs2 to cluster sequences."""
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = f"{tmpdir}/DB"
         cluster_path = f"{tmpdir}/clu"
@@ -70,27 +67,10 @@ def cluster_and_split(fasta_path: str, seq_id: float, split_ratios: dict,
                 rep, member = line.strip().split('\t')
                 clusters.setdefault(rep, []).append(member)
 
-        cluster_reps = list(clusters.keys())
-        rng = random.Random(seed)
-        rng.shuffle(cluster_reps)
-        
-        n = len(cluster_reps)
-        train_end = int(split_ratios['train'] * n)
-        valid_end = train_end + int(split_ratios['valid'] * n)
-        
-        splits = {
-            'train': cluster_reps[:train_end],
-            'valid': cluster_reps[train_end:valid_end],
-            'test': cluster_reps[valid_end:]
-        }
-
-        split_map = {}
         cluster_id_map = {}
-        for split_name, reps in splits.items():
-            for rep in reps:
-                for member in clusters[rep]:
-                    cluster_id_map[member] = rep
-                    split_map[member] = split_name
+        for rep, members in clusters.items():
+            for member in members:
+                cluster_id_map[member] = rep
 
         num_clusters = len(clusters)
         total_members = sum(len(members) for members in clusters.values())
@@ -100,7 +80,7 @@ def cluster_and_split(fasta_path: str, seq_id: float, split_ratios: dict,
             'average_cluster_size': f"{average_size:.2f}",
             'sequences_clustered': total_members,
         }
-        return split_map, cluster_id_map, stats, clusters
+        return cluster_id_map, stats, clusters
 
 
 # ==============================================================================
@@ -180,40 +160,6 @@ def print_kinetic_analysis(analysis_results: dict, dataset_name: str = "Dataset"
     else:
         print("No kinetic parameters found in dataset")
     print("-" * 50)
-
-
-def analyze_kinetic_distribution_by_split(df: pd.DataFrame, kinetic_cols: list = None):
-    """
-    Analyzes kinetic parameter distribution across train/valid/test splits.
-    
-    Args:
-        df (pd.DataFrame): Dataframe with 'split' column and kinetic parameters
-        kinetic_cols (list): List of kinetic parameter column names
-    
-    Returns:
-        dict: Analysis results by split
-    """
-    if kinetic_cols is None:
-        kinetic_cols = ['kcat', 'KM', 'Ki']
-    
-    splits = df['split'].unique()
-    split_analysis = {}
-    
-    print("\n--- Kinetic Parameter Distribution by Split ---")
-    
-    for split in ['train', 'valid', 'test']:  # Ensure consistent order
-        if split in splits:
-            split_df = df[df['split'] == split]
-            split_analysis[split] = analyze_kinetic_parameters(split_df, kinetic_cols)
-            print_kinetic_analysis(split_analysis[split], f"{split.capitalize()} Split")
-            
-            # Also analyze overlap for each split
-            overlap_results = analyze_kinetic_parameter_overlap(split_df, kinetic_cols)
-            if overlap_results:
-                print_overlap_analysis(overlap_results, f"{split.capitalize()} Split")
-                split_analysis[split]['overlap'] = overlap_results
-    
-    return split_analysis
 
 
 def analyze_kinetic_parameter_overlap(df: pd.DataFrame, kinetic_cols: list = None):
@@ -300,7 +246,7 @@ def analyze_kinetic_parameter_overlap(df: pd.DataFrame, kinetic_cols: list = Non
             'none': total_rows - len(set1 | set2 | set3)
         }
         
-        # Prepare data for matplotlib-venn (order: only_1, only_2, overlap_12_not3, only_3, overlap_13_not2, overlap_23_not1, overlap_123)
+        # Prepare data for matplotlib-venn 
         results['venn_data'] = {
             'subsets': (
                 len(only_1),           # A only
@@ -335,97 +281,25 @@ def print_overlap_analysis(overlap_results: dict, dataset_name: str = "Dataset")
     print(f"\nOverlap analysis:")
     for overlap_type, count in overlap_results['overlap_counts'].items():
         percentage = (count / overlap_results['total_samples']) * 100 if overlap_results['total_samples'] > 0 else 0
-        overlap_label = overlap_type.replace('_', ' & ').upper().replace(' ONLY', ' only').replace('NONE', 'No parameters')
+        if overlap_type == 'none':
+            overlap_label = 'No parameters'
+        elif overlap_type.endswith('_only'):
+            params = overlap_type[:-5] 
+            overlap_label = params.replace('_', ' & ').upper() + ' only'
+        else:
+            overlap_label = overlap_type.replace('_', ' & ').upper()
+        
         print(f"  - {overlap_label}: {count:,} samples ({percentage:.1f}%)")
     
     print("-" * 60)
 
 
-def create_kinetic_parameter_venn_diagram(overlap_results: dict, output_path: str, dataset_name: str = "Dataset"):
-    """
-    Creates a Venn diagram showing the overlap of kinetic parameters.
-    
-    Args:
-        overlap_results (dict): Results from analyze_kinetic_parameter_overlap
-        output_path (str): Path to save the Venn diagram
-        dataset_name (str): Name of the dataset for the plot title
-    """
-        
-    if not overlap_results or 'venn_data' not in overlap_results:
-        print("Warning: No Venn diagram data available. Skipping visualization.")
-        return
-    
-    if len(overlap_results['parameters']) != 3:
-        print(f"Warning: Venn diagram requires exactly 3 parameters. Found {len(overlap_results['parameters'])}. Skipping visualization.")
-        return
-    
-    plt.figure(figsize=(10, 8))
-    
-    # Define distinct colors for each set
-    colors = {
-        'set1': '#FF9999',  # Light red
-        'set2': '#99FF99',  # Light green
-        'set3': '#9999FF',  # Light blue
-        'alpha': 0.4        # Transparency for better overlap visibility
-    }
-    
-    # Create the Venn diagram with custom colors
-    venn_data = overlap_results['venn_data']
-    v = venn3(subsets=venn_data['subsets'], 
-              set_labels=venn_data['set_labels'],
-              set_colors=(colors['set1'], colors['set2'], colors['set3']),
-              alpha=colors['alpha'])
-    
-    # Customize the appearance
-    if v is not None:
-        # Add thin black edge to each circle for better definition
-        c = venn3_circles(subsets=venn_data['subsets'], linestyle='-', linewidth=1)
-        
-        # Customize text appearance
-        for text in v.set_labels:
-            if text is not None:
-                text.set_fontweight('bold')
-                text.set_fontsize(11)
-        
-        # Make the numbers more visible
-        for text in v.subset_labels:
-            if text is not None:
-                text.set_fontsize(10)
-                text.set_fontweight('bold')
-    
-    # Add title and labels
-    param_names = [param.upper() for param in overlap_results['parameters']]
-    plt.title(f'{dataset_name}\nKinetic Parameter Overlap: {", ".join(param_names)}', 
-              fontsize=14, fontweight='bold', pad=20)
-    
-    # Add summary statistics as text
-    total_samples = overlap_results['total_samples']
-    summary_text = f"Total samples: {total_samples:,}\n"
-    
-    for param, count in overlap_results['individual_counts'].items():
-        pct = (count / total_samples) * 100 if total_samples > 0 else 0
-        summary_text += f"{param.upper()}: {count:,} ({pct:.1f}%)\n"
-    
-    # Add all three parameters count
-    if 'venn_data' in overlap_results:
-        all_three_count = venn_data['subsets'][6]  # A&B&C intersection
-        all_three_pct = (all_three_count / total_samples) * 100 if total_samples > 0 else 0
-        summary_text += f"\nAll three: {all_three_count:,} ({all_three_pct:.1f}%)"
-    
-    plt.figtext(0.02, 0.02, summary_text, fontsize=10, 
-               bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8,
-                        edgecolor='gray', linewidth=1))
-    
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
-    plt.close()
-
 
 def create_nfold_cross_validation_splits(df: pd.DataFrame, n_folds: int, output_dir: str, 
                                        seed: int = 42, kinetic_cols: list = None):
     """
-    Creates N-fold cross-validation splits with proper train/test pairs for each fold.
-    For each fold, one part serves as test and the remaining parts as train.
+    Creates N-fold cross-validation splits with proper train/valid pairs for each fold.
+    For each fold, one part serves as valid and the remaining parts as train.
     
     Args:
         df (pd.DataFrame): Full dataframe to split into folds, including cluster information
@@ -466,57 +340,57 @@ def create_nfold_cross_validation_splits(df: pd.DataFrame, n_folds: int, output_
     
     # Create folds based on clusters
     for fold_idx in range(n_folds):
-        # Test set is current fold's clusters
-        test_clusters = fold_clusters[fold_idx]
+        # Valid set is current fold's clusters
+        valid_clusters = fold_clusters[fold_idx]
         # Train set is all other clusters
         train_clusters = [c for i, fold in enumerate(fold_clusters) if i != fold_idx for c in fold]
         
-        # Create train and test sets
-        fold_test_df = df[df['cluster_id'].isin(test_clusters)].copy()
+        # Create train and valid sets
+        fold_valid_df = df[df['cluster_id'].isin(valid_clusters)].copy()
         fold_train_df = df[df['cluster_id'].isin(train_clusters)].copy()
         
-        # Save train and test sets
+        # Save train and valid sets
         train_filename = f"fold_{fold_idx}_train.csv"
-        test_filename = f"fold_{fold_idx}_test.csv"
+        valid_filename = f"fold_{fold_idx}_valid.csv"
         
         train_path = os.path.join(cv_output_dir, train_filename)
-        test_path = os.path.join(cv_output_dir, test_filename)
+        valid_path = os.path.join(cv_output_dir, valid_filename)
         
         fold_train_df.to_csv(train_path, index=False)
-        fold_test_df.to_csv(test_path, index=False)
+        fold_valid_df.to_csv(valid_path, index=False)
         
         # Store fold information
         fold_info[f'fold_{fold_idx}'] = {
             'train_path': train_path,
-            'test_path': test_path,
+            'valid_path': valid_path,
             'train_count': len(fold_train_df),
-            'test_count': len(fold_test_df)
+            'valid_count': len(fold_valid_df),
+            'train_clusters': len(train_clusters),
+            'valid_clusters': len(valid_clusters)
         }
         
-        print(f"  -> Fold {fold_idx}: Train {len(fold_train_df):,} samples, Test {len(fold_test_df):,} samples")
+        print(f"  -> Fold {fold_idx}: Train {len(fold_train_df):,} samples ({len(train_clusters)} clusters), Valid {len(fold_valid_df):,} samples ({len(valid_clusters)} clusters)")
         
         # Analyze kinetic parameters for this fold if requested
         if kinetic_cols:
             train_analysis = analyze_kinetic_parameters(fold_train_df, kinetic_cols)
-            test_analysis = analyze_kinetic_parameters(fold_test_df, kinetic_cols)
+            valid_analysis = analyze_kinetic_parameters(fold_valid_df, kinetic_cols)
             
             fold_analyses[f'fold_{fold_idx}'] = {
                 'train': train_analysis,
-                'test': test_analysis
+                'valid': valid_analysis
             }
             
             # Analyze overlap for this fold
             train_overlap = analyze_kinetic_parameter_overlap(fold_train_df, kinetic_cols)
-            test_overlap = analyze_kinetic_parameter_overlap(fold_test_df, kinetic_cols)
+            valid_overlap = analyze_kinetic_parameter_overlap(fold_valid_df, kinetic_cols)
             
             # Create Venn diagrams for this fold
             if train_overlap and 'venn_data' in train_overlap:
-                train_venn_path = os.path.join(cv_output_dir, f"fold_{fold_idx}_train_overlap.png")
-                create_kinetic_parameter_venn_diagram(train_overlap, train_venn_path, f"Fold {fold_idx} Train")
+                create_kinetic_parameter_venn_diagram(train_overlap, cv_output_dir, f"Fold {fold_idx} Train")
             
-            if test_overlap and 'venn_data' in test_overlap:
-                test_venn_path = os.path.join(cv_output_dir, f"fold_{fold_idx}_test_overlap.png")
-                create_kinetic_parameter_venn_diagram(test_overlap, test_venn_path, f"Fold {fold_idx} Test")
+            if valid_overlap and 'venn_data' in valid_overlap:
+                create_kinetic_parameter_venn_diagram(valid_overlap, cv_output_dir, f"Fold {fold_idx} Valid")
     
     # Print detailed kinetic parameter analysis across folds
     if kinetic_cols and fold_analyses:
@@ -531,20 +405,20 @@ def create_nfold_cross_validation_splits(df: pd.DataFrame, n_folds: int, output_
             fold_num = fold_name.split('_')[1]
             print(f"\nFold {fold_num}:")
             print(f"  Train: {fold_data['train']['total_samples']:,} samples")
-            print(f"  Test:  {fold_data['test']['total_samples']:,} samples")
+            print(f"  Valid:  {fold_data['valid']['total_samples']:,} samples")
             
             for param in kinetic_cols:
                 if param in df.columns:
                     train_pct = fold_data['train']['parameter_percentages'].get(param, 0)
-                    test_pct = fold_data['test']['parameter_percentages'].get(param, 0)
+                    valid_pct = fold_data['valid']['parameter_percentages'].get(param, 0)
                     original_pct = original_analysis['parameter_percentages'].get(param, 0)
                     
                     train_dev = abs(train_pct - original_pct)
-                    test_dev = abs(test_pct - original_pct)
+                    valid_dev = abs(valid_pct - original_pct)
                     
-                    param_deviations[param].extend([train_dev, test_dev])
+                    param_deviations[param].extend([train_dev, valid_dev])
                     
-                    print(f"    {param.upper()} - Train: {train_pct:.1f}% (dev: {train_dev:.1f}%), Test: {test_pct:.1f}% (dev: {test_dev:.1f}%)")
+                    print(f"    {param.upper()} - Train: {train_pct:.1f}% (dev: {train_dev:.1f}%), Valid: {valid_pct:.1f}% (dev: {valid_dev:.1f}%)")
         
         # Print overall deviation summary
         print(f"\n--- Overall CV Parameter Distribution Quality ---")
@@ -728,56 +602,56 @@ def create_balanced_nfold_cross_validation_splits(df: pd.DataFrame,
     
     # Create folds based on optimized cluster assignments
     for fold_idx in range(n_folds):
-        # Test set is current fold's clusters
-        test_clusters = [cluster for cluster, fold in fold_assignments.items() if fold == fold_idx]
+        # Valid set is current fold's clusters
+        valid_clusters = [cluster for cluster, fold in fold_assignments.items() if fold == fold_idx]
         # Train set is all other clusters
         train_clusters = [cluster for cluster, fold in fold_assignments.items() if fold != fold_idx]
         
-        # Create train and test sets
-        fold_test_df = df[df['cluster_id'].isin(test_clusters)].copy()
+        # Create train and valid sets
+        fold_valid_df = df[df['cluster_id'].isin(valid_clusters)].copy()
         fold_train_df = df[df['cluster_id'].isin(train_clusters)].copy()
         
-        # Save train and test sets
+        # Save train and valid sets
         train_filename = f"fold_{fold_idx}_train.csv"
-        test_filename = f"fold_{fold_idx}_test.csv"
+        valid_filename = f"fold_{fold_idx}_valid.csv"
         
         train_path = os.path.join(cv_output_dir, train_filename)
-        test_path = os.path.join(cv_output_dir, test_filename)
+        valid_path = os.path.join(cv_output_dir, valid_filename)
         
         fold_train_df.to_csv(train_path, index=False)
-        fold_test_df.to_csv(test_path, index=False)
+        fold_valid_df.to_csv(valid_path, index=False)
         
         # Store fold information
         fold_info[f'fold_{fold_idx}'] = {
             'train_path': train_path,
-            'test_path': test_path,
+            'valid_path': valid_path,
             'train_count': len(fold_train_df),
-            'test_count': len(fold_test_df)
+            'valid_count': len(fold_valid_df),
+            'train_clusters': len(train_clusters),
+            'valid_clusters': len(valid_clusters)
         }
         
-        print(f"  -> Fold {fold_idx}: Train {len(fold_train_df):,} samples, Test {len(fold_test_df):,} samples")
+        print(f"  -> Fold {fold_idx}: Train {len(fold_train_df):,} samples ({len(train_clusters)} clusters), Valid {len(fold_valid_df):,} samples ({len(valid_clusters)} clusters)")
         
         # Analyze kinetic parameters for this fold
         train_analysis = analyze_kinetic_parameters(fold_train_df, existing_kinetic_cols)
-        test_analysis = analyze_kinetic_parameters(fold_test_df, existing_kinetic_cols)
+        valid_analysis = analyze_kinetic_parameters(fold_valid_df, existing_kinetic_cols)
         
         fold_analyses[f'fold_{fold_idx}'] = {
             'train': train_analysis,
-            'test': test_analysis
+            'valid': valid_analysis
         }
         
         # Analyze overlap for this fold
         train_overlap = analyze_kinetic_parameter_overlap(fold_train_df, existing_kinetic_cols)
-        test_overlap = analyze_kinetic_parameter_overlap(fold_test_df, existing_kinetic_cols)
+        valid_overlap = analyze_kinetic_parameter_overlap(fold_valid_df, existing_kinetic_cols)
         
         # Create Venn diagrams for this fold
         if train_overlap and 'venn_data' in train_overlap:
-            train_venn_path = os.path.join(cv_output_dir, f"fold_{fold_idx}_train_overlap.png")
-            create_kinetic_parameter_venn_diagram(train_overlap, train_venn_path, f"Fold {fold_idx} Train")
+            create_kinetic_parameter_venn_diagram(train_overlap, cv_output_dir, f"Fold {fold_idx} Train")
         
-        if test_overlap and 'venn_data' in test_overlap:
-            test_venn_path = os.path.join(cv_output_dir, f"fold_{fold_idx}_test_overlap.png")
-            create_kinetic_parameter_venn_diagram(test_overlap, test_venn_path, f"Fold {fold_idx} Test")
+        if valid_overlap and 'venn_data' in valid_overlap:
+            create_kinetic_parameter_venn_diagram(valid_overlap, cv_output_dir, f"Fold {fold_idx} Valid")
     
     # Print detailed kinetic parameter analysis across folds
     if fold_analyses:
@@ -792,19 +666,19 @@ def create_balanced_nfold_cross_validation_splits(df: pd.DataFrame,
             fold_num = fold_name.split('_')[1]
             print(f"\nFold {fold_num}:")
             print(f"  Train: {fold_data['train']['total_samples']:,} samples")
-            print(f"  Test:  {fold_data['test']['total_samples']:,} samples")
+            print(f"  Valid:  {fold_data['valid']['total_samples']:,} samples")
             
             for param in existing_kinetic_cols:
                 train_pct = fold_data['train']['parameter_percentages'].get(param, 0)
-                test_pct = fold_data['test']['parameter_percentages'].get(param, 0)
+                valid_pct = fold_data['valid']['parameter_percentages'].get(param, 0)
                 original_pct = original_analysis['parameter_percentages'].get(param, 0)
                 
                 train_dev = abs(train_pct - original_pct)
-                test_dev = abs(test_pct - original_pct)
+                valid_dev = abs(valid_pct - original_pct)
                 
-                param_deviations[param].extend([train_dev, test_dev])
+                param_deviations[param].extend([train_dev, valid_dev])
                 
-                print(f"    {param.upper()} - Train: {train_pct:.1f}% (dev: {train_dev:.1f}%), Test: {test_pct:.1f}% (dev: {test_dev:.1f}%)")
+                print(f"    {param.upper()} - Train: {train_pct:.1f}% (dev: {train_dev:.1f}%), Valid: {valid_pct:.1f}% (dev: {valid_dev:.1f}%)")
         
         # Print overall deviation summary
         print(f"\n--- Overall Balanced CV Parameter Distribution Quality ---")
@@ -868,6 +742,99 @@ def analyze_and_plot_clusters(clusters: dict, size_threshold: int, output_dir: s
     print(f"-> Capped distribution plot saved to: {plot_path}")
 
 
+    
+def create_kinetic_parameter_venn_diagram(overlap_results: dict, output_path: str, dataset_name: str = "Dataset"):
+    """
+    Creates a Venn diagram showing the overlap of kinetic parameters.
+    
+    Args:
+        overlap_results (dict): Results from analyze_kinetic_parameter_overlap
+        output_path (str): Path to save the Venn diagram
+        dataset_name (str): Name of the dataset for the plot title
+    """
+        
+    if not overlap_results or 'venn_data' not in overlap_results:
+        print("Warning: No Venn diagram data available. Skipping visualization.")
+        return
+    
+    if len(overlap_results['parameters']) != 3:
+        print(f"Warning: Venn diagram requires exactly 3 parameters. Found {len(overlap_results['parameters'])}. Skipping visualization.")
+        return
+    
+    plt.figure(figsize=(10, 8))
+    
+    # Define distinct colors for each set
+    colors = {
+        'set1': '#FF9999',  # Light red
+        'set2': '#99FF99',  # Light green
+        'set3': '#9999FF',  # Light blue
+        'alpha': 0.4        # Transparency for better overlap visibility
+    }
+    
+    # Create the Venn diagram with custom colors
+    venn_data = overlap_results['venn_data']
+    v = venn3(subsets=venn_data['subsets'], 
+              set_labels=venn_data['set_labels'],
+              set_colors=(colors['set1'], colors['set2'], colors['set3']),
+              alpha=colors['alpha'])
+    
+    # Customize the appearance
+    if v is not None:
+        # Add thin black edge to each circle for better definition
+        c = venn3_circles(subsets=venn_data['subsets'], linestyle='-', linewidth=1)
+        
+        # Customize text appearance
+        for text in v.set_labels:
+            if text is not None:
+                text.set_fontweight('bold')
+                text.set_fontsize(11)
+        
+        # Make the numbers more visible
+        for text in v.subset_labels:
+            if text is not None:
+                text.set_fontsize(10)
+                text.set_fontweight('bold')
+    
+    # Add title and labels
+    param_names = [param.upper() for param in overlap_results['parameters']]
+    plt.title(f'{dataset_name}\nKinetic Parameter Overlap: {", ".join(param_names)}', 
+              fontsize=14, fontweight='bold', pad=20)
+    
+    # Add summary statistics as text
+    total_samples = overlap_results['total_samples']
+    summary_text = f"Total samples: {total_samples:,}\n"
+    
+    for param, count in overlap_results['individual_counts'].items():
+        pct = (count / total_samples) * 100 if total_samples > 0 else 0
+        summary_text += f"{param.upper()}: {count:,} ({pct:.1f}%)\n"
+    
+    # Add all three parameters count
+    if 'venn_data' in overlap_results:
+        all_three_count = venn_data['subsets'][6]  # A&B&C intersection
+        all_three_pct = (all_three_count / total_samples) * 100 if total_samples > 0 else 0
+        summary_text += f"\nAll three: {all_three_count:,} ({all_three_pct:.1f}%)"
+    
+    plt.figtext(0.02, 0.02, summary_text, fontsize=10, 
+               bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8,
+                        edgecolor='gray', linewidth=1))
+    
+    plt.tight_layout()
+
+    # Save
+    if dataset_name == "Original Dataset":
+        # Save directly in the output directory
+        filename = "original_dataset_venn.png"
+        plt.savefig(os.path.join(output_path, filename), dpi=300, bbox_inches='tight', facecolor='white')
+    else:
+        # Create venn_diagrams directory for fold-specific diagrams
+        venn_dir = os.path.join(output_path, "venn_diagrams")
+        os.makedirs(venn_dir, exist_ok=True)
+        # Save figure
+        filename = f"{dataset_name.replace(' ', '_').lower()}_venn.png"
+        plt.savefig(os.path.join(venn_dir, filename), dpi=300, bbox_inches='tight', facecolor='white')
+    plt.close()
+
+
 # ==============================================================================
 # SECTION 4: Main Orchestration Function
 # ==============================================================================
@@ -877,7 +844,6 @@ def mmseqs2_split_data_w_ratio_into_files(
     output_dir: str,
     seq_col: str = "protein_sequence",
     seq_id: float = 0.8,
-    split_ratios: dict = None,
     coverage: float = 0.8,
     cov_mode: int = 0,
     cluster_mode: int = 0,
@@ -898,7 +864,6 @@ def mmseqs2_split_data_w_ratio_into_files(
         output_dir (str): Directory for all output files.
         seq_col (str): Name of the column containing sequences.
         seq_id (float): Sequence identity threshold for clustering.
-        split_ratios (dict): Ratios for train/valid/test splits.
         coverage (float): Coverage threshold for clustering.
         cov_mode (int): Coverage mode for MMseqs2.
         cluster_mode (int): Cluster mode for MMseqs2.
@@ -916,13 +881,11 @@ def mmseqs2_split_data_w_ratio_into_files(
         compare_cv_methods (bool): Whether to create both original and balanced CV
                                   for comparison.
     """
-    print("--- Starting Data Splitting and Analysis Process ---")
+    print("--- Starting Data Clustering and Analysis Process ---")
     
     # --- 1. Validation and Setup ---
     if not os.path.exists(input_csv_path): raise FileNotFoundError(f"Input not found: {input_csv_path}")
     if not shutil.which("mmseqs"): raise OSError("MMseqs2 not found in PATH.")
-    if split_ratios is None: split_ratios = {'train': 0.8, 'valid': 0.1, 'test': 0.1}
-    if abs(sum(split_ratios.values()) - 1.0) > 1e-6: raise ValueError("Split ratios must sum to 1.0.")
 
     os.makedirs(output_dir, exist_ok=True)
     df = pd.read_csv(input_csv_path)
@@ -940,8 +903,8 @@ def mmseqs2_split_data_w_ratio_into_files(
         create_fasta_from_csv(input_csv_path, seq_col, fasta_path)
 
         print("4. Clustering sequences with MMseqs2...")
-        split_map, cluster_map, stats, clusters = cluster_and_split(
-            fasta_path, seq_id, split_ratios, coverage, cov_mode, threads, cluster_mode, seed
+        cluster_map, stats, clusters = cluster_sequences(
+            fasta_path, seq_id, coverage, cov_mode, threads, cluster_mode
         )
     finally:
         if os.path.exists(fasta_path): os.remove(fasta_path)
@@ -950,41 +913,20 @@ def mmseqs2_split_data_w_ratio_into_files(
     print(f"5. Analyzing cluster distribution with a size cap of {cluster_size_cap}...")
     analyze_and_plot_clusters(clusters, cluster_size_cap, output_dir)
         
-    # --- 6. Assign Splits and Save Data Files ---
-    print("6. Assigning splits and saving partitioned CSV files...")
+    # --- 6. Assign Cluster IDs ---
+    print("6. Assigning cluster IDs...")
     df['cluster_id'] = df.index.astype(str).map(cluster_map)
-    df['split'] = df.index.astype(str).map(split_map)
     
-    if df['split'].isnull().sum() > 0:
-        print(f"-> Warning: {df['split'].isnull().sum()} sequences were unclustered. Assigning to 'train'.")
-        df['split'].fillna('train', inplace=True)
+    if df['cluster_id'].isnull().sum() > 0:
+        print(f"-> Warning: {df['cluster_id'].isnull().sum()} sequences were unclustered.")
 
-    output_files = {}
-    for split_name in ['train', 'valid', 'test']:
-        split_df = df[df['split'] == split_name].copy().drop(columns=['split'])
-        output_path = os.path.join(output_dir, f"{split_name}.csv")
-        split_df.to_csv(output_path, index=False)
-        output_files[split_name] = {'path': output_path, 'count': len(split_df)}
-
-    # --- 7. Analyze Kinetic Parameter Distribution by Split ---
-    print("7. Analyzing kinetic parameter distribution across splits...")
-    split_analysis = analyze_kinetic_distribution_by_split(df, kinetic_cols)
-    
-    # Create Venn diagrams for each split
-    for split_name in ['train', 'valid', 'test']:
-        if split_name in split_analysis and 'overlap' in split_analysis[split_name]:
-            overlap_data = split_analysis[split_name]['overlap']
-            if overlap_data and 'venn_data' in overlap_data:
-                venn_path = os.path.join(output_dir, f"{split_name}_kinetic_overlap.png")
-                create_kinetic_parameter_venn_diagram(overlap_data, venn_path, f"{split_name.capitalize()} Split")
-
-    # --- 8. Analyze Kinetic Parameter Overlap ---
-    print("8. Analyzing kinetic parameter overlap...")
+    # --- 7. Analyze Kinetic Parameter Overlap ---
+    print("7. Analyzing kinetic parameter overlap...")
     overlap_results = analyze_kinetic_parameter_overlap(df, kinetic_cols)
     print_overlap_analysis(overlap_results, "Original Dataset")
-    create_kinetic_parameter_venn_diagram(overlap_results, os.path.join(output_dir, "kinetic_parameter_overlap.png"), "Original Dataset")
+    create_kinetic_parameter_venn_diagram(overlap_results, output_dir, "Original Dataset")
     
-    # --- 9. MODIFIED N-Fold Cross-Validation Section ---
+    # --- 8. N-Fold Cross-Validation Section ---
     fold_info = None
     if n_folds is not None and n_folds > 1:
         if compare_cv_methods:
@@ -993,14 +935,19 @@ def mmseqs2_split_data_w_ratio_into_files(
             print(f"{'='*60}")
             
             # First create original CV splits
-            print(f"9a. Creating ORIGINAL {n_folds}-fold cross-validation splits...")
+            print(f"8a. Creating ORIGINAL {n_folds}-fold cross-validation splits...")
+            
+            # Get unique cluster IDs
+            cluster_ids = df['cluster_id'].unique().tolist()
+            print(f"Total clusters to assign: {len(cluster_ids)}")
+            
             fold_info = create_nfold_cross_validation_splits(
                 df, n_folds, output_dir, seed, kinetic_cols
             )
             
             if use_balanced_cv:
                 # Then create balanced CV splits
-                print(f"\n9b. Creating BALANCED {n_folds}-fold cross-validation splits...")
+                print(f"\n8b. Creating BALANCED {n_folds}-fold cross-validation splits...")
                 balanced_fold_info = create_balanced_nfold_cross_validation_splits(
                     df, n_folds, output_dir, seed, kinetic_cols, max_cv_iterations
                 )
@@ -1015,32 +962,30 @@ def mmseqs2_split_data_w_ratio_into_files(
         else:
             # Create only the requested type
             if use_balanced_cv:
-                print(f"9. Creating BALANCED {n_folds}-fold cross-validation splits...")
+                print(f"8. Creating BALANCED {n_folds}-fold cross-validation splits...")
                 fold_info = create_balanced_nfold_cross_validation_splits(
                     df, n_folds, output_dir, seed, kinetic_cols, max_cv_iterations
                 )
             else:
-                print(f"9. Creating ORIGINAL {n_folds}-fold cross-validation splits...")
+                print(f"8. Creating ORIGINAL {n_folds}-fold cross-validation splits...")
                 fold_info = create_nfold_cross_validation_splits(
                     df, n_folds, output_dir, seed, kinetic_cols
                 )
 
-    # --- 10. Final Report (update to include balanced CV info) ---
+    # --- 9. Final Report ---
     print("\n--- Process Complete ---")
     print("Clustering Statistics:")
     for key, value in stats.items(): 
         print(f"  - {key.replace('_', ' ').title()}: {value}")
     
     print("\nOutput Files:")
-    for split_name, info in output_files.items(): 
-        print(f"  - {info['path']} ({info['count']} rows)")
     print(f"  - {os.path.join(output_dir, f'cluster_dist_capped_at_{cluster_size_cap}.png')}")
+    print(f"  - {os.path.join(output_dir, 'kinetic_parameter_overlap.png')}")
     
-    # Report split-specific overlap diagrams
-    for split_name in ['train', 'valid', 'test']:
-        split_venn_path = os.path.join(output_dir, f"{split_name}_kinetic_overlap.png")
-        if os.path.exists(split_venn_path):
-            print(f"  - {split_venn_path}")
+    # Check if large clusters report exists
+    large_clusters_report = os.path.join(output_dir, 'large_clusters_report.csv')
+    if os.path.exists(large_clusters_report):
+        print(f"  - {large_clusters_report}")
     
     # Report cross-validation folds if created
     if fold_info:
@@ -1048,7 +993,7 @@ def mmseqs2_split_data_w_ratio_into_files(
         print(f"\n{cv_type} Cross-Validation Folds ({n_folds}-fold):")
         for fold_name, info in fold_info.items():
             print(f"  - {info['train_path']} ({info['train_count']} rows)")
-            print(f"  - {info['test_path']} ({info['test_count']} rows)")
+            print(f"  - {info['valid_path']} ({info['valid_count']} rows)")
             
         if compare_cv_methods and use_balanced_cv:
             print(f"\nAdditional Balanced CV files in: cv_folds_balanced/")

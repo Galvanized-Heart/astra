@@ -32,7 +32,8 @@ dependencies = [
     "wandb>=0.21.0",
     "xgboost>=3.0.2",
     "xmltodict>=0.14.2",
-    "matplotlib-venn"
+    "matplotlib-venn",
+    "seaborn"
 ]
 
 [dependency-groups]
