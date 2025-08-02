@@ -44,6 +44,6 @@ class ProteinLigandDataset(Dataset):
         item = {
             "protein_embedding": protein_embedding,
             "ligand_embedding": ligand_embedding,
-            "targets": self.target_values[idx]
+            "targets": torch.log10(self.target_values[idx])
         }
         return item
