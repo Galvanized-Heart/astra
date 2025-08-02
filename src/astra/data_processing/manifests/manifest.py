@@ -16,17 +16,18 @@ def generate_and_save_features(
     items: List[str],
     featurizer: Featurizer,
     output_dir: Path,
-    feature_name: str = "embedding",
     batch_size: int = 32
 ) -> Dict[str, str]:
     """
     Generic function to generate, save, and cache features for a list of items.
+    This version robustly handles featurizers that return either a single tensor 
+    or a dictionary of tensors for each item.
     """
     item_to_path_map = {}
     items_to_process = []
     
     # Check if embeddings have already been generated item
-    print(f"Checking for cached {feature_name} features in {output_dir}...")
+    print(f"Checking for cached features in {output_dir}...")
     for item in tqdm(items, desc="Checking cache"):
         item_hash = hashlib.sha256(item.encode()).hexdigest()
         output_file = output_dir / f"{item_hash}.safetensors"
@@ -41,19 +42,22 @@ def generate_and_save_features(
 
     print(f"Generating new features in batches of {batch_size}...")
     
-    # Iterate through the items_to_process list in chunks of `batch_size`
+    # Iterate through the items_to_process list in chunks of batch_size
     for i in tqdm(range(0, len(items_to_process), batch_size), desc="Processing Batches"):
-        # Create a batch of items
         batch_items = items_to_process[i : i + batch_size]
-        
-        # Generate features for batch
         newly_computed_features = featurizer.featurize(batch_items)
         
-        # Save the features for this batch immediately to free up memory
-        for item, tensor in newly_computed_features.items():
+        # Save the features for this batch
+        for item, features in newly_computed_features.items():
             path_str = item_to_path_map[item]
-            save_file({feature_name: tensor}, path_str)
-        
+
+            # Ensure tensor becomes a dict for saving
+            if not isinstance(features, dict):
+                features_to_save = {"embedding": features}
+            else:
+                features_to_save = features
+            save_file(features_to_save, path_str)
+            
     return item_to_path_map
 
 
@@ -123,8 +127,8 @@ def create_manifests(
 
     # Run feature generation process
     print("\n--- Step 3: Generating features ---")
-    protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, "embedding", batch_size)
-    ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, "embedding", batch_size)
+    protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, batch_size)
+    ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, batch_size)
 
     # Create final manifests
     print("\n--- Step 4: Creating final manifest files ---")
