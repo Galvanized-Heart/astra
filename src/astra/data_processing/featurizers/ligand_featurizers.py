@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from rdkit import Chem
 from rdkit.Chem import rdFingerprintGenerator
 
@@ -19,12 +19,17 @@ class MorganFeaturizer(Featurizer):
     def name(self) -> str:
         return f"morgan_r{self.radius}_s{self.fp_size}"
 
-    def featurize(self, smiles_list: List[str]) -> Dict[str, torch.Tensor]:
+    @property
+    def feature_spec(self) -> Dict[str, Tuple[int, ...]]:
+        """Returns the specification for the Morgan fingerprint."""
+        return {"embedding": (self.fp_size,)}
+    
+    def featurize(self, smiles_list: List[str]) -> Dict[str, Dict[str, torch.Tensor]]:
         results = {}
         for smiles in smiles_list:
             mol = Chem.MolFromSmiles(smiles)
             if mol:
                 fp_bv = self.generator.GetFingerprint(mol)
                 fp_tensor = torch.from_numpy(np.array(fp_bv, dtype=np.float32))
-                results[smiles] = fp_tensor
+                results[smiles] = {"embedding": fp_tensor}
         return results
