@@ -45,7 +45,7 @@ def manifest(input_path):
 @click.option("--config_path", default=f"{PROJECT_ROOT}configs/experiments/test_config.yaml", help="The string path to config file used for training.")
 def train(config_path):
     """CLI function for training Astra model."""
-    # WARNING: Do not import torch or lightning into main.py, even indirectly
+    # WARNING: Do not import torch or lightning into main.py directly or indirectly
     run_training_engine(config_path=config_path)
 
 
