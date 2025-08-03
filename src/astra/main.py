@@ -5,6 +5,18 @@ import click
 from tqdm import tqdm
 
 from astra.constants import PROJECT_ROOT
+from astra.pipelines.run_train import run_training_engine
+
+################################
+########### WARNING ############
+################################
+###  DO NOT IMPORT torch OR  ###
+### lightning INTO THIS FILE ###
+################################
+###  DOING SO WILL RUIN THE  ###
+###       DETERMINISTIC      ###
+###       FUNCTIONALIY       ###
+################################
 
 @click.group()
 def cli():
@@ -30,34 +42,11 @@ def manifest(input_path):
 
 # Training script for Astra
 @cli.command()
-@click.option('--train_path', default=f"{PROJECT_ROOT}/train.csv", help='The string path to data you want to train on.')
-@click.option('--valid_path', default=f"{PROJECT_ROOT}/valid.csv", help='The string path to data you want to validate on.')
-@click.option('--batch_size', default=32, help='The integer batch size you want to train with.')
-@click.option('--epochs', default=10, help='The integer for number of training epochs.')
-@click.option('--seed', default=42, help='The integer seed for reproduciblity.')
-
-def train(train_path, valid_path, batch_size, epochs, seed):
-    """Base function for training Astra model."""
-    click.echo(f"Setting up training for {train_path}.")
-    click.echo(f"Using {valid_path} for validation.")
-
-    # Establish whether or not to use deterministic algorithms
-    if seed is not None:
-        click.echo(f"Running in DETERMINISTIC mode with seed: {seed}")
-        # Set environment vars for deterministic CuBLAS operations
-        os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
-        os.environ["PYTHONHASHSEED"] = str(seed)
-    else:
-        click.echo("Running in STOCHASTIC mode (no seed provided).")
-
-    # Import locally after environment variable setup
-    with tqdm(total=1, desc="Loading libraries") as pbar:
-        from astra.pipelines.train import train
-        pbar.update(1)
-
-    # Run training script
-    train(train_path=train_path, valid_path=valid_path, epochs=epochs, batch_size=batch_size, seed=seed)
-    click.echo("Training complete!")
+@click.option("--config_path", default=f"{PROJECT_ROOT}configs/experiments/test_config.yaml", help="The string path to config file used for training.")
+def train(config_path):
+    """CLI function for training Astra model."""
+    # WARNING: Do not import torch or lightning into main.py, even indirectly
+    run_training_engine(config_path=config_path)
 
 
 def predict(test_path):

@@ -1,0 +1,64 @@
+
+
+# General settings
+seed: 42
+project_name: "astra"
+run_name: "ESM_DummyModel_run_01"
+
+
+# Data configuration
+data:
+  train_path: "data/raw/train_set.csv"
+  valid_path: "data/raw/valid_set.csv"
+  batch_size: 64
+
+
+# Featurizer configuration
+featurizers:
+  protein:
+    name: "ESMFeaturizer"
+    params:
+      model_name: "facebook/esm2_t6_8M_UR50D"
+      max_length: 1022
+  ligand:
+    name: "MorganFeaturizer"
+    params:
+      radius: 2
+      fp_size: 2048
+
+
+# Model configuration
+model:
+  architecture:
+    name: "DummyModel" # This is the key to select the model class
+    params: # Hyperparameters for the DummyModel
+      # Add any specific hyperparameters for your DummyModel here
+      # e.g., hidden_dim: 256
+      # e.g., n_layers: 2
+      # e.g., dropout: 0.1
+      pass # Using 'pass' if it takes no arguments
+  
+  # Configuration for the Lightning wrapper (AstraModule)
+  lightning_module:
+    lr: 0.001
+    optimizer: "AdamW"
+    loss_function: "MaskedMSELoss"
+    lr_scheduler: # Optional
+      name: "ReduceLROnPlateau"
+      params:
+        monitor: "valid_loss_epoch"
+        mode: "min"
+        factor: 0.1
+        patience: 3
+
+
+# Trainer configuration
+trainer:
+  epochs: 10
+  device: "auto" # Let Lightning decide
+  # The 'deterministic' flag will be set based on the top-level 'seed'
+  callbacks:
+    checkpoint:
+      monitor: "valid_loss_epoch"
+      save_top_k: 1
+      mode: "min"
