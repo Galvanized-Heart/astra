@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 
 import click
-from tqdm import tqdm
 
 from astra.constants import PROJECT_ROOT
 from astra.pipelines.run_train import run_training_engine

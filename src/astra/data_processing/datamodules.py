@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Optional
 
 import lightning as L
 from torch.utils.data import DataLoader
@@ -13,7 +13,14 @@ from astra.constants import PROJECT_ROOT
 
 class AstraDataModule(L.LightningDataModule):
     """DataModule for Astra."""
-    def __init__(self, data_paths: Dict[str, str] = None, protein_featurizer: Featurizer = None, ligand_featurizer: Featurizer = None, batch_size: int = 32):
+    def __init__(self, 
+                 data_paths: Dict[str, str] = None, 
+                 protein_featurizer: Featurizer = None, 
+                 ligand_featurizer: Featurizer = None, 
+                 batch_size: int = 32,
+                 target_columns: List[str] = None,
+                 target_transform: Optional[str] = None
+            ):
         """
         Meant to instantiate states for `torch.utils.data.Dataset` classes.
 

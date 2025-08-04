@@ -11,6 +11,8 @@ data:
   train_path: "data/raw/train_set.csv"
   valid_path: "data/raw/valid_set.csv"
   batch_size: 64
+  target_columns: ["kcat"] # Set either single value or all 3 (if unspecified it does multi-task)
+  target_transform: "log10"
 
 
 # Featurizer configuration
@@ -43,6 +45,7 @@ model:
     lr: 0.001
     optimizer: "AdamW"
     loss_function: "MaskedMSELoss"
+    recomposition_func: # Optional
     lr_scheduler: # Optional
       name: "ReduceLROnPlateau"
       params:
