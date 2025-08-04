@@ -9,14 +9,15 @@ class ProteinLigandDataset(Dataset):
     Dataset that loads pre-computed protein and ligand embeddings
     stored as safetensors files.
     """
-    def __init__(self, manifest_path):
+    def __init__(self, manifest_path, target_columns: list, target_transform: str = None):
         """
         Args:
             manifest_path (str): Path to CSV file with precomputed safetensor paths.
         """
         print(f"Loading manifest from {manifest_path}...")
         self.manifest = pd.read_csv(manifest_path)
-        self.target_values = torch.tensor(self.manifest[["kcat", "KM", "Ki"]].values, dtype=torch.float32)
+        self.target_transform = target_transform
+        self.target_values = torch.tensor(self.manifest[target_columns].values, dtype=torch.float32)
         print("Dataset ready.")
 
     def __len__(self):
@@ -40,10 +41,16 @@ class ProteinLigandDataset(Dataset):
         protein_embedding = protein_tensors["embedding"]
         ligand_embedding = ligand_tensors["embedding"] 
 
+        # 
+        targets = self.target_values[idx]
+        if self.target_transform == "log10":
+            # Add small epsilon to avoid log(0) = -inf
+            targets = torch.log10(targets + 1e-12)
+
         # Create dictionary for multi-modal data
         item = {
             "protein_embedding": protein_embedding,
             "ligand_embedding": ligand_embedding,
-            "targets": torch.log10(self.target_values[idx])
+            "targets": targets
         }
         return item

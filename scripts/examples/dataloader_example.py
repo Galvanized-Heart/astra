@@ -64,7 +64,7 @@ def main():
 
     # Create dataset from manifest CSV path
     train_path = manifest_files['train']
-    train_dataset = ProteinLigandDataset(train_path)
+    train_dataset = ProteinLigandDataset(train_path, target_columns=["kcat", "KM", "Ki"], target_transform="log10")
     print(f"Successfully created a dataset with {len(train_dataset)} samples.")
     
     # Create dataloader from dataset

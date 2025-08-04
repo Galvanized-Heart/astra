@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Optional
 
 import lightning as L
 from torch.utils.data import DataLoader
@@ -13,7 +13,14 @@ from astra.constants import PROJECT_ROOT
 
 class AstraDataModule(L.LightningDataModule):
     """DataModule for Astra."""
-    def __init__(self, data_paths: Dict[str, str] = None, protein_featurizer: Featurizer = None, ligand_featurizer: Featurizer = None, batch_size: int = 32):
+    def __init__(self, 
+                 data_paths: Dict[str, str] = None, 
+                 protein_featurizer: Featurizer = None, 
+                 ligand_featurizer: Featurizer = None, 
+                 batch_size: int = 32,
+                 target_columns: List[str] = None,
+                 target_transform: Optional[str] = None
+            ):
         """
         Meant to instantiate states for `torch.utils.data.Dataset` classes.
 
@@ -23,6 +30,10 @@ class AstraDataModule(L.LightningDataModule):
         """
 
         super().__init__()
+        self.save_hyperparameters(ignore=['protein_featurizer', 'ligand_featurizer']) # Ignore unpicklable objects
+
+        self.protein_feature_spec = protein_featurizer.feature_spec
+        self.ligand_feature_spec = ligand_featurizer.feature_spec
 
         # Create manifest features
         manifest_files = create_manifests(split_files=data_paths, output_dir=PROJECT_ROOT/"data"/"manifest", protein_featurizer=protein_featurizer, ligand_featurizer=ligand_featurizer)
@@ -52,15 +63,19 @@ class AstraDataModule(L.LightningDataModule):
         """
         # TODO: Splitting needs to be optional so users can provide their own training splits (possibly in config)
             # NOTE: For now, splits will be premade and user will provide the paths for the split
+        common_params = {
+            "target_columns": self.hparams.target_columns,
+            "target_transform": self.hparams.target_transform
+        }
 
         if stage == "fit":
             print("Setting up training dataset...")
-            self.train_dataset = ProteinLigandDataset(self.train_path)
+            self.train_dataset = ProteinLigandDataset(self.train_path, **common_params)
             print("Training set complete.")
 
         if stage == "validate" or stage == "fit":
             print("Setting up validation dataset...")
-            self.valid_dataset = ProteinLigandDataset(self.valid_path)
+            self.valid_dataset = ProteinLigandDataset(self.valid_path, **common_params)
             print("Validation set complete.")
 
         # Test is meant to provide metrics
