@@ -128,8 +128,8 @@ class PipelineBuilder:
         model_params = arch_cfg.params.copy()
 
         # Add the dynamically generated featurizer specs
-        model_params['protein_spec'] = self.datamodule.protein_feature_spec
-        model_params['ligand_spec'] = self.datamodule.ligand_feature_spec
+        model_params['protein_emb_dim'] = self.datamodule.protein_feature_spec
+        model_params['ligand_emb_dim'] = self.datamodule.ligand_feature_spec
         
         self.model_architecture = MODEL_REGISTRY[arch_cfg.name](**model_params)
         return self
@@ -191,7 +191,6 @@ class PipelineBuilder:
 
     def run(self):
         """Builds all components in order and starts the training process."""
-        self.resolve_and_validate_config()
         self.build_featurizers()
         self.build_datamodule()
         self.build_model_architecture()

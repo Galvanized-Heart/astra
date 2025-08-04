@@ -58,13 +58,17 @@ class AstraModule(L.LightningModule):
         
         # If there's a lr_scheduler, return dict w/ optimizer and lr_scheduler
         else:
-            lr_scheduler = self.lr_scheduler_class(optimizer, **self.lr_scheduler_kwargs)
+            scheduler_params = self.lr_scheduler_kwargs.copy()
+            
+            monitor_metric = scheduler_params.pop("monitor", "valid_loss_epoch")
+
+            lr_scheduler = self.lr_scheduler_class(optimizer, **scheduler_params)
             
             return {
                 "optimizer": optimizer,
                 "lr_scheduler": {
                     "scheduler": lr_scheduler,
-                    "monitor": self.lr_scheduler_kwargs.get("monitor", "val_loss"),
+                    "monitor": monitor_metric,  # Use the popped value here
                     "interval": "epoch",
                     "frequency": 1,
                 },
@@ -135,7 +139,7 @@ class AstraModule(L.LightningModule):
         loss = self._shared_step(batch)
 
         # Log results
-        self.log('valid_loss_epoch', loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log('valid_loss', loss, on_step=True, on_epoch=True, prog_bar=True)
 
     def on_training_epoch_end(self):
         # Can be used to log accumulated metrics from training_step()

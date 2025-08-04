@@ -1,5 +1,7 @@
 import yaml
 import os
+import sys
+from astra.constants import PROJECT_ROOT
 
 ################################
 ########!!! WARNING !!!#########
@@ -25,6 +27,18 @@ def run_training_engine(config_path):
     with open(config_path, 'r') as f:
         config_dict = yaml.safe_load(f)
 
+    print("INFO: Resolving relative paths in config against PROJECT_ROOT...")
+    # Resolve train_path
+    if 'data' in config_dict and 'train_path' in config_dict['data']:
+        relative_train_path = config_dict['data']['train_path']
+        # Use your constant to create an absolute path
+        config_dict['data']['train_path'] = str(PROJECT_ROOT / relative_train_path)
+
+    # Resolve valid_path
+    if 'data' in config_dict and 'valid_path' in config_dict['data']:
+        relative_valid_path = config_dict['data']['valid_path']
+        config_dict['data']['valid_path'] = str(PROJECT_ROOT / relative_valid_path)
+
     data_config = config_dict.get("data")
     print(f"Setting up training for {data_config.get('train_path')}.")
     print(f"Using {data_config.get('valid_path')} for validation.")
@@ -39,29 +53,14 @@ def run_training_engine(config_path):
     else:
         print("LAUNCHER: Running in STOCHASTIC mode.")
 
-    # Validate config
-    try:
-        # WARNING: Do not import torch or lightning into run_train.py directly or indirectly before env vars are set!
-        from astra.data_processing.configs.config_schema import FullConfig, ValidationError
-
-        # Parse and validate the raw dictionary
-        validated_config = FullConfig(**config_dict)
-        print("Configuration validated successfully!")
-
-    except ValidationError as e:
-        # On failure, print a user-friendly error and exit.
-        print("\nERROR: Configuration validation failed!")
-        print(e)
-        exit
-
     # Import locally after environment variable setup
     # WARNING: Do not import torch or lightning into run_train.py directly or indirectly before env vars are set!
     from astra.pipelines.train_builder import PipelineBuilder
 
-    print(f"LAUNCHER: Handing off to pipeline builder for run '{validated_config.run_name}'...")
+    print(f"LAUNCHER: Handing off to pipeline builder for run '{config_dict['run_name']}'...")
 
     # Run training logic    
-    builder = PipelineBuilder(config=validated_config)
+    builder = PipelineBuilder(config_dict=config_dict)
     builder.run()
 
     print("\nTraining complete!")

@@ -8,10 +8,10 @@ run_name: "ESM_DummyModel_run_01"
 
 # Data configuration
 data:
-  train_path: "data/raw/train_set.csv"
-  valid_path: "data/raw/valid_set.csv"
+  train_path: "data/example_data/train_raw.csv"
+  valid_path: "data/example_data/val_raw.csv"
   batch_size: 64
-  target_columns: #["kcat"] # Set either single value or all 3 (if unspecified it does multi-task)
+  target_columns: ["kcat", "KM", "Ki"] # Set either single value or all 3
   target_transform: "log10"
 
 
@@ -38,7 +38,7 @@ model:
       # e.g., hidden_dim: 256
       # e.g., n_layers: 2
       # e.g., dropout: 0.1
-      pass # Using 'pass' if it takes no arguments
+      {} # Using empty dict if it takes no arguments since Pydantic expects dict or None
   
   # Configuration for the Lightning wrapper (AstraModule)
   lightning_module:

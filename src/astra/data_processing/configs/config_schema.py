@@ -1,41 +1,45 @@
-from pydantic import BaseModel, FilePath, PositiveInt, Field, ValidationError
-from typing import Literal, Optional, Dict, Tuple, Any
+from pydantic import BaseModel, FilePath, PositiveInt, Field, ValidationError, RootModel
+from typing import Literal, Optional, Dict, List, Any
 
-# Assuming you have a registry for your models.
-# If not, you would manually define the Literal, e.g., Literal["DummyModel", "RealModel"]
-from astra.data_processing.configs.registry import MODEL_REGISTRY, LOSS_FN_REGISTRY, OPTIMIZER_REGISTRY
+# Import registries to dynamically create Literals
+from astra.data_processing.configs.registry import (
+    MODEL_REGISTRY, LOSS_FN_REGISTRY, OPTIMIZER_REGISTRY,
+    FEATURIZER_REGISTRY, SCHEDULER_REGISTRY, RECOMPOSITION_REGISTRY
+)
 
 # --- Nested Models for Organization ---
 
 class DataConfig(BaseModel):
-    train_path: FilePath  # Validates that the file path exists
+    train_path: FilePath
     valid_path: FilePath
-    batch_size: PositiveInt = 32 # Validates that the number is > 0
+    batch_size: PositiveInt = 32
+    target_columns: List[str] = Field(default_factory=lambda: ["kcat", "KM", "Ki"])
+    target_transform: Optional[str] = None
 
-class FeaturizerParams(BaseModel):
-    #__root__: Dict[str, Any]
-    pass
-
-class ProteinFeaturizerConfig(BaseModel):
-    name: Literal["ESMFeaturizer"] # Add more as you create them
-    params: Dict[str, Any] = Field(default_factory=dict)
-
-class LigandFeaturizerConfig(BaseModel):
-    name: Literal["MorganFeaturizer"] # Add more as you create them
+class FeaturizerConfig(BaseModel):
+    # Dynamically get the available featurizer names
+    name: Literal[tuple(FEATURIZER_REGISTRY.keys())]
+    # This line now correctly defines params as a flexible dictionary
     params: Dict[str, Any] = Field(default_factory=dict)
 
 class FeaturizersConfig(BaseModel):
-    protein: ProteinFeaturizerConfig
-    ligand: LigandFeaturizerConfig
+    protein: FeaturizerConfig
+    ligand: FeaturizerConfig
 
 class ModelArchitectureConfig(BaseModel):
-    name: Literal[tuple(MODEL_REGISTRY.registered_names)] # Dynamic literal from registry.py
+    name: Literal[tuple(MODEL_REGISTRY.keys())]
+    params: Dict[str, Any] = Field(default_factory=dict)
+
+class SchedulerConfig(BaseModel):
+    name: Literal[tuple(SCHEDULER_REGISTRY.keys())]
     params: Dict[str, Any] = Field(default_factory=dict)
 
 class LightningModuleConfig(BaseModel):
     lr: float = 1e-3
-    optimizer: Literal[tuple(OPTIMIZER_REGISTRY.registered_names)] = "AdamW" # Dynamic literal from registry.py
-    loss_function: Literal[tuple(LOSS_FN_REGISTRY.registered_names)] = "MaskedMSELoss" # Dynamic literal from registry.py
+    optimizer: Literal[tuple(OPTIMIZER_REGISTRY.keys())] = "AdamW"
+    loss_function: Optional[Literal[tuple(LOSS_FN_REGISTRY.keys())]] = None
+    recomposition_func: Optional[Literal[tuple(RECOMPOSITION_REGISTRY.keys())]] = None
+    lr_scheduler: Optional[SchedulerConfig] = None
 
 class ModelConfig(BaseModel):
     architecture: ModelArchitectureConfig
@@ -54,7 +58,7 @@ class TrainerConfig(BaseModel):
     device: str = "auto"
     callbacks: CallbacksConfig
 
-
+# --- Top-Level Configuration Model ---
 
 class FullConfig(BaseModel):
     """The complete, validated configuration for an Astra training run."""
