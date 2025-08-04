@@ -55,8 +55,7 @@ model:
 # Trainer configuration
 trainer:
   epochs: 10
-  device: "auto" # Let Lightning decide
-  # The 'deterministic' flag will be set based on the top-level 'seed'
+  device: "auto" # Options: "cpu", "gpu", "auto"
   callbacks:
     checkpoint:
       monitor: "valid_loss_epoch"

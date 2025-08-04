@@ -1,14 +1,14 @@
-# astra/utils/registry.py
 import torch
+
 from astra.model.models.dummy_model import DummyModel
-# Import your other models here as you create them
-# from astra.model.models.real_model import RealModel
 from astra.model.loss.masked_mse_loss import MaskedMSELoss
 from astra.data_processing.featurizers import ESMFeaturizer, MorganFeaturizer
 
 MODEL_REGISTRY = {
     "DummyModel": DummyModel,
-     
+     #"CpiPredConvModel": CpiPredConvModel,
+     #"CpiPredSelfAttnModel": CpiPredSelfAttnModel,
+     #"CpiPredCrossAtnnModel": CpiPredCrossAtnnModel,
 }
 
 OPTIMIZER_REGISTRY = {
@@ -29,5 +29,4 @@ FEATURIZER_REGISTRY = {
 
 SCHEDULER_REGISTRY = {
     "ReduceLROnPlateau": torch.optim.lr_scheduler.ReduceLROnPlateau,
-    # Add other schedulers as needed
 }

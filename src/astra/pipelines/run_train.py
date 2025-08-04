@@ -3,7 +3,7 @@ import os
 from tqdm import tqdm
 
 ################################
-########### WARNING ############
+########!!! WARNING !!!#########
 ################################
 ###  DO NOT IMPORT torch OR  ###
 ### lightning INTO THIS FILE ###
@@ -62,4 +62,4 @@ def run_training_engine(config_path):
     # Run training logic
     print(f"LAUNCHER: Handing off to training engine for run '{config.get('run_name')}'...")
     train(config_dict)
-    print("Training complete!")
+    print("\nTraining complete!")
