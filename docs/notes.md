@@ -6,29 +6,27 @@
 - Goal: Preserve the **ratio** of kinetic parameters from the **input dataset** in each of the folds for k-fold cross validation splits.
     - for every fold, the % of each kinetic column (kcat, KM, Ki) should match the original dataset’s percentages.
 
-- Method: Greedy search
+- Method: Greedy assignment
     - Make the locally best change available at each step - accept a swap only if it reduces deviation.
 
 ### Objective
 
-Minimize total L1 deviation from the target across folds:
+Minimise the total L1 deviation between each fold’s parameter ratio and the original dataset:
 
 $$
-J(a) = \sum_{f=1}^{k} \sum_{p \in P} \left| t_p - d_p\left(D_f(a)\right) \right|
+\mathcal{D}(\mathcal{F})=\sum_{f=1}^{K}\ \sum_{p\in P}\left|\, r_{p,f}-r_{p,\mathrm{orig}} \right|
 $$
 
-Lower $J(a)$ indicates better balance.
+Lower $\mathcal{D}$ indicates better balance.
 
 #### Where
 
-- **$J(a)$** — Objective value (total L1 deviation across all folds).
-- **$a$** — Assignment function mapping each cluster to a fold.
-- **$k$** — Number of folds.
-- **$P$** — Set of kinetic parameters considered.
-- **$t_p$** — Target (global) percent of non‑null values for parameter $p$ in the full dataset.
-- **$D_f(a)$** — Subset of rows assigned to fold $f$ under assignment $(a)$.
-- **$d_p(S)$** — Percent of non‑null values for parameter $p$ within set $S$.
-
+- **$\mathcal{D}$** — Total L1 deviation (objective value).
+- **$\mathcal{F}$** — Function that assigns each cluster to one of the $K$ folds (greedy assignment).
+- **$K$** — Number of folds.
+- **$P$** — Set of kinetic parameters (Kcat, Ki, KM).
+- $r_{p,f}$ — Fraction of samples in fold $f$ that contain a non-missing measurement for kinetic parameter $p$
+- $r_{p,\mathrm{orig}}$ — The same fraction computed over the entire dataset.
 
 
 

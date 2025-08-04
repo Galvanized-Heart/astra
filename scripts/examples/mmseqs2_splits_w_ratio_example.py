@@ -30,7 +30,7 @@ import numpy as np
 from pathlib import Path
 
 # Setup paths
-TYPE = "core" # "pangenomic" or "core"
+TYPE = "pangenomic" # "pangenomic" or "core"
 BALANCED_CV = True # True or False
 ROOT_DIR = Path(__file__).resolve().parents[2] if "__file__" in globals() else Path.cwd().parents[1]
 ASTRA_DIR = ROOT_DIR / "src" / "astra"
@@ -57,6 +57,8 @@ def run_mmseqs2_splits_w_ratio():
         'threads': 4,
         'seed': 42
     }
+    # TODO: add coverage mode parameter (currently set to 0: bidirectional)
+    # TODO: add cluster mode parameter (currently set to 0: greedy set cover)
 
     # Cross-validation settings
     cv_config = {

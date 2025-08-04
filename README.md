@@ -108,7 +108,7 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 | :------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
 | **Write Detailed Paper Outline**| - Draft section headers (problem statement, proposed methods, and expected results).<br>- Write 2-4 bullet points of key content for each section.<br>- Explicitly list the paper's 3-4 key contributions.   | **Thu, Jul 25** |   ☐    |
 | **Write Abstract**              | - Draft one sentence for: context, problem, method, result, and implication.<br>- Refine into a cohesive paragraph under the word limit.                                 | **Fri, Jul 26** |   ☐    |
-| **EDA Figure**           | - Venn diagram graph analazing the % overlap of kinetic parameters. Using Pangenomic. | **Fri, Aug 1**  |   ☐    |
+| **EDA Figure**           | - ~~Venn diagram graph analazing the % overlap of kinetic parameters. Using Pangenomic.~~ | **Fri, Aug 1**  |   ☐    |
 | **Get & Implement Feedback**    | - Identify 2-3 reviewers and send the draft.<br>- Consolidate all feedback into a single document.<br>- Triage changes (Critical, High-Priority, Minor).<br>- Systematically implement revisions. | **Tue, Aug 19** |   ☐    |
 | **Generate Figures & Tables**   | - Create a script (`plots.py`) to generate all visuals from saved results.<br>- Generate main performance and ablation tables.<br>- Generate interpretability plots.<br>- Write clear captions for everything. | **Wed, Aug 20** |   ☐    |
 | **Final Proofread and Polish**  | - Perform a full grammar and spelling check.<br>- Read the entire paper aloud to catch awkward phrasing.<br>- Ensure formatting matches the workshop's style guide.  | **Thu, Aug 21** |   ☐    |
@@ -119,7 +119,7 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                                | Subtasks                                                                                                                                                                        | Deadline        | Status |
 | :---------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------- | :----: |
-| **Create Data Splitting Logic**     | - ~~Implement the random splitting function.~~<br>- ~~Implement `mmseqs2` wrapper and cluster-based splitting.~~<br>- Write tests to ensure no data leakage between train/validation sets. | **Fri, Aug 1** |   ☐    |
+| **Create Data Splitting Logic**     | - ~~Implement the random splitting function.~~<br>- ~~Implement `mmseqs2` wrapper and cluster-based splitting.~~<br>- ~~Write tests to ensure no data leakage between train/validation sets.~~ | **Fri, Aug 1** |   ☐    |
 | **Setup Experiment Tracking**       | - ~~Initialize a Weights & Biases project.~~<br>- Define standard metrics to log (loss, accuracy, F1, etc.).<br>- Ensure hyperparameters are automatically logged on every run. | **Wed, Jul 31** |   ☐    |
 
 ---
@@ -128,7 +128,7 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                            | Subtasks                                                                                                                                                                 | Deadline        | Status |
 | :------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
-| **Create Model Architectures**  | - Implement the baseline model(s) (e.g., XGBoost, Linear).<br>- Implement the `sklearn.multioutput.MultiOutputRegressor` wrapper for XGBoost.<br>- ~~Implement the "advanced recomp" model as a PyTorch `nn.Module`~~.<br>- Add clear docstrings explaining input/output shapes. | **1st week Aug**  |   ☐    |
+| **Create Model Architectures**  | - Implement the baseline model(s) (e.g., XGBoost).<br>- Implement the `sklearn.multioutput.MultiOutputRegressor` wrapper for XGBoost.<br>- ~~Implement the "advanced recomp" model as a PyTorch `nn.Module`~~.<br>- Add clear docstrings explaining input/output shapes. | **1st week Aug**  |   ☐    |
 | **Build Training & Loss Logic** | - ~~Create PyTorch `Dataset` and `DataLoader` classes.~~<br>- Build the main training script with `argparse` for key parameters.<br>- Implement training and validation loops.<br>- Integrate experiment tracking calls within the loops. | **1st week Aug**  |   ☐    |
 | **Optimize Hyperparameters**    | - Define the hyperparameter search space (learning rate, weight decay, etc.).<br>- Set up and run a sweep using a tool like Optuna or W&B Sweeps.<br>- Analyze results to find the best configuration. | **Wed, Aug 13** |   ☐    |
 
@@ -138,7 +138,7 @@ This plan outlines the necessary tasks, subtasks, and deadlines to prepare a sub
 
 | Task                              | Subtasks                                                                                                                                                         | Deadline        | Status |
 | :-------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------- | :----: |
-| **Finish preparing CPI-Pred data**      | - Generate KM and KI splits<br>- Get all splits<br>- Get "combined" kcat/KM/KI dataset <br>- Run analysis of seq similarity preservation on kcat, KM, KI splits             | **Fri Aug 1st**  |   ☐    |
+| **~~Finish preparing CPI-Pred data~~ (Discarded)**      | - ~~Generate KM and KI splits~~<br>- ~~Get all splits~~<br>- Get "combined" kcat/KM/KI dataset <br>- Run analysis of seq similarity preservation on kcat, KM, KI splits             | **Fri Aug 1st**  |   Discarded    |
 | **Run Baseline Experiments**      | - Run "individual models" experiment.<br>- Run "naive combined" experiment.<br>- Save all model checkpoints and a `results.json` summary for each run.               | **Fri, Aug 8**  |   ☐    |
 | **Run Core Method Experiments**   | - Run "basic recomp" experiment.<br>- Run "advanced recomp" experiment.<br>- Document all results in the experiment tracking system.                               | **Fri, Aug 8** |   ☐    |
 | **Run Interpretability Analysis** | - Write a script to load a trained model and a data sample.<br>- Extract and save feature coefficients/importance from linear/XGBoost models.<br>- Extract and visualize attention weights from attention-based models. | **Fri, Aug 15** |   ☐    |
