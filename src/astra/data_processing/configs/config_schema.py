@@ -30,13 +30,13 @@ class FeaturizersConfig(BaseModel):
 
 class ModelArchitectureConfig(BaseModel):
     # Dynamically create the Literal from registered models
-    name: Literal[Tuple(MODEL_REGISTRY.registered_names)]
+    name: Literal[tuple(MODEL_REGISTRY.registered_names)]
     params: Dict[str, Any] = Field(default_factory=dict)
 
 class LightningModuleConfig(BaseModel):
     lr: float = 1e-3
-    optimizer: Literal[Tuple(OPTIMIZER_REGISTRY.registered_names)] = "AdamW"
-    loss_function: Literal[Tuple(LOSS_FN_REGISTRY.registered_names)] = "MaskedMSELoss"
+    optimizer: Literal[tuple(OPTIMIZER_REGISTRY.registered_names)] = "AdamW"
+    loss_function: Literal[tuple(LOSS_FN_REGISTRY.registered_names)] = "MaskedMSELoss"
 
 class ModelConfig(BaseModel):
     architecture: ModelArchitectureConfig
