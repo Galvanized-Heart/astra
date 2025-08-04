@@ -11,7 +11,7 @@ data:
   train_path: "data/raw/train_set.csv"
   valid_path: "data/raw/valid_set.csv"
   batch_size: 64
-  target_columns: ["kcat"] # Set either single value or all 3 (if unspecified it does multi-task)
+  target_columns: #["kcat"] # Set either single value or all 3 (if unspecified it does multi-task)
   target_transform: "log10"
 
 

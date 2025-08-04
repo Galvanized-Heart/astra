@@ -13,7 +13,7 @@ class DataConfig(BaseModel):
     batch_size: PositiveInt = 32 # Validates that the number is > 0
 
 class FeaturizerParams(BaseModel):
-    # This allows any parameters, you could make it stricter if needed
+    #__root__: Dict[str, Any]
     pass
 
 class ProteinFeaturizerConfig(BaseModel):
@@ -29,14 +29,13 @@ class FeaturizersConfig(BaseModel):
     ligand: LigandFeaturizerConfig
 
 class ModelArchitectureConfig(BaseModel):
-    # Dynamically create the Literal from registered models
-    name: Literal[tuple(MODEL_REGISTRY.registered_names)]
+    name: Literal[tuple(MODEL_REGISTRY.registered_names)] # Dynamic literal from registry.py
     params: Dict[str, Any] = Field(default_factory=dict)
 
 class LightningModuleConfig(BaseModel):
     lr: float = 1e-3
-    optimizer: Literal[tuple(OPTIMIZER_REGISTRY.registered_names)] = "AdamW"
-    loss_function: Literal[tuple(LOSS_FN_REGISTRY.registered_names)] = "MaskedMSELoss"
+    optimizer: Literal[tuple(OPTIMIZER_REGISTRY.registered_names)] = "AdamW" # Dynamic literal from registry.py
+    loss_function: Literal[tuple(LOSS_FN_REGISTRY.registered_names)] = "MaskedMSELoss" # Dynamic literal from registry.py
 
 class ModelConfig(BaseModel):
     architecture: ModelArchitectureConfig
@@ -55,7 +54,7 @@ class TrainerConfig(BaseModel):
     device: str = "auto"
     callbacks: CallbacksConfig
 
-# --- Top-Level Configuration Model ---
+
 
 class FullConfig(BaseModel):
     """The complete, validated configuration for an Astra training run."""

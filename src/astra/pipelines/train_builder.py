@@ -1,40 +1,108 @@
 import torch
 import warnings
+import copy
 from pathlib import Path
+
+# --- PyTorch Lightning and W&B ---
 import lightning as L
 from lightning.pytorch.loggers import WandbLogger
 from lightning.pytorch.callbacks import ModelCheckpoint
 
+# --- Astra Imports ---
 from astra.data_processing.datamodules import AstraDataModule
 from astra.model.lightning_models import AstraModule
 from astra.data_processing.configs.registry import (
     MODEL_REGISTRY, OPTIMIZER_REGISTRY, LOSS_FN_REGISTRY, FEATURIZER_REGISTRY,
     SCHEDULER_REGISTRY, RECOMPOSITION_REGISTRY, RECOMP_INPUT_DIMS
 )
+from astra.data_processing.configs.config_schema import FullConfig, ValidationError
+
 
 class PipelineBuilder:
-    """Builds the entire training pipeline from a validated Pydantic config object."""
+    """
+    Constructs the entire training pipeline from a configuration dictionary.
 
-    def __init__(self, config):
+    The builder validates and resolves the configuration upon instantiation by calling
+    an internal helper method, ensuring the object is always in a valid state.
+    """
+
+    def __init__(self, config_dict: dict):
         """
+        Initializes the builder by creating a fully validated and resolved configuration.
+
         Args:
-            config: A validated FullConfig Pydantic object.
+            config_dict (dict): The raw dictionary loaded directly from the YAML file.
         """
-        self.config = config
+        print("INFO: Initializing PipelineBuilder...")
+        # Correct and validate config provided by user
+        self.final_config: FullConfig = self._resolve_and_validate_config(config_dict)
+        print("INFO: Configuration resolved and validated successfully!")
+
+        # Initialize other attributes to be populated by the build methods.
         self.protein_featurizer = None
         self.ligand_featurizer = None
         self.datamodule = None
         self.model_architecture = None
         self.model = None
+        self.trainer = None
+
+    def _resolve_and_validate_config(self, config_dict: dict) -> FullConfig:
+        """
+        Takes a raw config dict, applies defaults and validation logic, and returns
+        a validated Pydantic FullConfig object.
+
+        Args:
+            config_dict (dict): The raw user-provided configuration.
+
+        Returns:
+            FullConfig: A validated and resolved Pydantic configuration object.
+        
+        Raises:
+            ValueError: If the configuration is logically inconsistent.
+            pydantic.ValidationError: If the configuration violates the defined schema.
+        """
+        resolved_config = copy.deepcopy(config_dict)
+
+        # Resolve `target_columns` and `loss_function`
+        data_cfg = resolved_config.setdefault('data', {})
+        target_columns = data_cfg.setdefault('target_columns', ["kcat", "KM", "Ki"])
+        lm_cfg = resolved_config['model']['lightning_module']
+        if 'loss_function' not in lm_cfg or lm_cfg['loss_function'] is None:
+            lm_cfg['loss_function'] = "MaskedMSELoss" if len(target_columns) > 1 else "MSELoss"
+            print(f"INFO: Defaulted 'loss_function' to '{lm_cfg['loss_function']}'.")
+        
+        # Resolve the model's `out_dim`
+        arch_params = resolved_config['model']['architecture'].setdefault('params', {})
+        recomp_func_name = lm_cfg.get('recomposition_func')
+
+        expected_out_dim, source = (
+            (RECOMP_INPUT_DIMS[recomp_func_name], f"recomposition function '{recomp_func_name}'")
+            if recomp_func_name else (len(target_columns), "number of target_columns")
+        )
+        
+        user_out_dim = arch_params.get('out_dim')
+        if user_out_dim is None:
+            arch_params['out_dim'] = expected_out_dim
+            print(f"INFO: Set 'out_dim' to {expected_out_dim} based on {source}.")
+        elif user_out_dim != expected_out_dim:
+            raise ValueError(f"Config Mismatch: Model 'out_dim' ({user_out_dim}) must be {expected_out_dim} to match {source}.")
+
+        # Validate corrected configuration with Pydantic
+        try:
+            return FullConfig(**resolved_config)
+        except ValidationError as e:
+            print("\nERROR: The final, resolved configuration is invalid!")
+            raise e
 
     def build_featurizers(self):
         print("INFO: Building featurizers...")
-        p_cfg = self.config.featurizers.protein
-        l_cfg = self.config.featurizers.ligand
+        p_cfg = self.final_config.featurizers.protein
+        l_cfg = self.final_config.featurizers.ligand
 
-        # TODO: Make more robust device logic for featurizers!
+        # This logic could be improved with a `requires_device` flag in the config schema.
+        # For now, this pragmatic approach works for ESM.
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        if p_cfg.name == 'ESMFeaturizer': # This could be improved with a config flag or featurizer could have flag inside the class
+        if p_cfg.name == 'ESMFeaturizer':
             p_cfg.params['device'] = device
 
         self.protein_featurizer = FEATURIZER_REGISTRY[p_cfg.name](**p_cfg.params)
@@ -43,7 +111,7 @@ class PipelineBuilder:
 
     def build_datamodule(self):
         print("INFO: Building datamodule...")
-        data_cfg = self.config.data
+        data_cfg = self.final_config.data
         self.datamodule = AstraDataModule(
             data_paths={'train': data_cfg.train_path, 'valid': data_cfg.valid_path},
             protein_featurizer=self.protein_featurizer,
@@ -56,52 +124,23 @@ class PipelineBuilder:
 
     def build_model_architecture(self):
         print("INFO: Building model architecture...")
-        arch_cfg = self.config.model.architecture
-        model_params = arch_cfg.params.copy() # Use a copy to avoid modifying config
+        arch_cfg = self.final_config.model.architecture
+        model_params = arch_cfg.params.copy()
 
-        # --- NEW, ROBUST out_dim VALIDATION ---
-        recomp_func_name = self.config.model.lightning_module.recomposition_func
-        
-        if recomp_func_name:
-            # Case 1: Recomposition is used. Model output must match its input needs.
-            expected_out_dim = RECOMP_INPUT_DIMS.get(recomp_func_name)
-            if expected_out_dim is None:
-                raise ValueError(f"Recomposition function '{recomp_func_name}' has no defined input dimension in RECOMP_INPUT_DIMS.")
-            validation_source = f"recomposition function '{recomp_func_name}'"
-        else:
-            # Case 2: No recomposition. Model output must match the number of targets.
-            expected_out_dim = len(self.config.data.target_columns)
-            validation_source = "number of target_columns"
-            
-        user_out_dim = model_params.get('out_dim')
-
-        if user_out_dim is None:
-            print(f"INFO: 'out_dim' not specified. Setting to {expected_out_dim} based on {validation_source}.")
-            model_params['out_dim'] = expected_out_dim
-        elif user_out_dim != expected_out_dim:
-            raise ValueError(
-                f"Configuration Mismatch: Model 'out_dim' ({user_out_dim}) is incorrect. "
-                f"It must be {expected_out_dim} to match the {validation_source}. Please update your config."
-            )
-
+        # Add the dynamically generated featurizer specs
         model_params['protein_spec'] = self.datamodule.protein_feature_spec
         model_params['ligand_spec'] = self.datamodule.ligand_feature_spec
+        
         self.model_architecture = MODEL_REGISTRY[arch_cfg.name](**model_params)
         return self
 
     def build_lightning_module(self):
         print("INFO: Building Lightning module...")
-        lm_cfg = self.config.model.lightning_module
+        lm_cfg = self.final_config.model.lightning_module
         
-        # Loss function validation
-        loss_fn_name = lm_cfg.loss_function
-        n_targets = len(self.config.data.target_columns)
-        if n_targets > 1 and loss_fn_name == "MSELoss":
-             warnings.warn(f"Using 'MSELoss' for multi-target ({n_targets}) problem. Consider 'MaskedMSELoss'.")
-        
-        loss_func = LOSS_FN_REGISTRY[loss_fn_name]()
-
+        loss_func = LOSS_FN_REGISTRY[lm_cfg.loss_function]()
         recomp_func = RECOMPOSITION_REGISTRY.get(lm_cfg.recomposition_func)
+        optimizer_class = OPTIMIZER_REGISTRY[lm_cfg.optimizer]
 
         scheduler_class, scheduler_kwargs = None, {}
         if lm_cfg.lr_scheduler:
@@ -113,7 +152,7 @@ class PipelineBuilder:
             lr=lm_cfg.lr,
             loss_func=loss_func,
             recomposition_func=recomp_func,
-            optimizer_class=OPTIMIZER_REGISTRY[lm_cfg.optimizer],
+            optimizer_class=optimizer_class,
             lr_scheduler_class=scheduler_class,
             lr_scheduler_kwargs=scheduler_kwargs
         )
@@ -121,21 +160,21 @@ class PipelineBuilder:
 
     def build_trainer(self):
         print("INFO: Building Trainer...")
-        trainer_cfg = self.config.trainer
+        trainer_cfg = self.final_config.trainer
         
         wandb_logger = WandbLogger(
-            name=self.config.run_name,
-            project=self.config.project_name,
+            name=self.final_config.run_name,
+            project=self.final_config.project_name,
             entity="lmse-university-of-toronto",
             log_model="all",
-            config=self.config.dict() # Pass the validated config as a dict
+            config=self.final_config.dict() # Log the final, resolved config
         )
         
         cb_cfg = trainer_cfg.callbacks.checkpoint
         checkpoint_callback = ModelCheckpoint(
             monitor=cb_cfg.monitor,
             dirpath="checkpoints/",
-            filename=f"{self.config.run_name}-{{epoch:02d}}-{{{cb_cfg.monitor}:.2f}}",
+            filename=f"{self.final_config.run_name}-{{epoch:02d}}-{{{cb_cfg.monitor}:.2f}}",
             save_top_k=cb_cfg.save_top_k,
             mode=cb_cfg.mode,
             save_last=True
@@ -145,13 +184,14 @@ class PipelineBuilder:
             max_epochs=trainer_cfg.epochs,
             logger=wandb_logger,
             callbacks=[checkpoint_callback],
-            deterministic=(self.config.seed is not None),
+            deterministic=(self.final_config.seed is not None),
             accelerator=trainer_cfg.device
         )
         return self
 
     def run(self):
-        """Build all components and run the training loop."""
+        """Builds all components in order and starts the training process."""
+        self.resolve_and_validate_config()
         self.build_featurizers()
         self.build_datamodule()
         self.build_model_architecture()
