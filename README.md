@@ -90,7 +90,11 @@ uv lock
 <br>
 
 NeurIPs 2025 Potential Workshops:
-- <a href=https://icml.cc/virtual/2025/workshop/39959>2nd Workshop on Multi-modal Foundation Models and Large Language Models for Life Sciences</a> (temporary link)
+- <a href=https://nips2025fm4ls.github.io/pages/call-for-participation.html>2nd Workshop on Multi-modal Foundation Models and Large Language Models for Life Sciences</a>
+    - Paper Submission - Aug 22, 2025
+    - Accept/Reject Notification - Sep 22, 2025
+    - Camera-Ready Submission - October 15, 2025
+
 - <a href=https://ai4sciencecommunity.github.io/neurips25>AI for Science: The Reach and Limits of AI for Scientific Discovery</a>
     - Abstract Submission - Aug 18, 2025
     - Paper Submission - Aug 25, 2025
