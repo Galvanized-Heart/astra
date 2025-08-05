@@ -63,7 +63,7 @@ class TrainerConfig(BaseModel):
 class FullConfig(BaseModel):
     """The complete, validated configuration for an Astra training run."""
     project_name: str = "astra"
-    run_name: str
+    run_name: Optional[str] = None
     seed: Optional[int] = None
 
     data: DataConfig

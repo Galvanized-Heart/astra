@@ -78,18 +78,11 @@ class AstraModule(L.LightningModule):
         """A flexible shared step for training and validation."""
         # Can use this to reduce replicate code in training_step() and validation_step()
 
-        # Get inputs from batch
-        model_kwargs = {
-            'protein_embedding': batch['protein_embedding'],
-            'ligand_embedding': batch['ligand_embedding'],
-        }
-
-        if "protein_attention_mask" in batch:
-            # The attention models expect the mask
-            model_kwargs["input_mask"] = batch["protein_attention_mask"]
+        # Pop out targets
+        y = batch.pop("targets")
 
         # Make predictions
-        output = self.model(**model_kwargs)
+        output = self.model(**batch)
         # TODO: In the future, refactor `ProteinLigandDataset` to pass exact keys for `forward` in each model (see below)
         """
         Using this will make models more modular and remove the 'Get inputs from batch' code above.
@@ -109,7 +102,6 @@ class AstraModule(L.LightningModule):
             y_hat = output
 
         # Calculate loss
-        y = batch['targets']
         loss = self.loss_func(y_hat, y)
 
         # Return loss

@@ -2,6 +2,7 @@ import torch
 import warnings
 import copy
 from pathlib import Path
+from datetime import datetime
 
 # --- PyTorch Lightning and W&B ---
 import lightning as L
@@ -161,20 +162,32 @@ class PipelineBuilder:
     def build_trainer(self):
         print("INFO: Building Trainer...")
         trainer_cfg = self.final_config.trainer
-        
+
+        run_name_prefix = self.final_config.run_name
+        if run_name_prefix is None:
+            # Create descriptive run name if None is provided
+            # Format: ModelName_YYYYMMDD-HHMMSS
+            model_name = self.final_config.model.architecture.name
+            timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            run_name_prefix = f"{model_name}_{timestamp}"
+            print(f"INFO: run_name not provided. Generated run name: {run_name_prefix}")
+
         wandb_logger = WandbLogger(
-            name=self.final_config.run_name,
+            name=run_name_prefix,  # Use wandb generated or user provided name
             project=self.final_config.project_name,
             entity="lmse-university-of-toronto",
             log_model="all",
             config=self.final_config.dict() # Log the final, resolved config
         )
-        
+
+        checkpoint_dir = f"checkpoints/{run_name_prefix}"
+        print(f"INFO: Checkpoints will be saved in: {checkpoint_dir}")
+
         cb_cfg = trainer_cfg.callbacks.checkpoint
         checkpoint_callback = ModelCheckpoint(
             monitor=cb_cfg.monitor,
-            dirpath="checkpoints/",
-            filename=f"{self.final_config.run_name}-{{epoch:02d}}-{{{cb_cfg.monitor}:.2f}}",
+            dirpath=checkpoint_dir,
+            filename=f"{{epoch:02d}}-{{{cb_cfg.monitor}:.2f}}",
             save_top_k=cb_cfg.save_top_k,
             mode=cb_cfg.mode,
             save_last=True
