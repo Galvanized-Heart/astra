@@ -1,4 +1,4 @@
-# Config file for training CpiPredConvModel
+# Config file for training CpiPredSelfAttnModel
 
 # General settings
 seed: 42
@@ -32,14 +32,13 @@ featurizers:
 # Model configuration
 model:
   architecture:
-    name: "CpiPredConvModel"
+    name: "CpiPredSelfAttnModel"
     params: 
-      hid_dim: 128
-      kernal_1: 9
-      conv_out_dim: 64
-      kernal_2: 5
-      last_hid: 256
-      dropout: 0.1
+      n_heads: 4      # Number of attention heads
+      d_k: 64         # Dimension of Key/Query
+      d_v: 64         # Dimension of Value
+      attn_out_dim: 32  # Output dimension of the attention layer itself
+      d_ff: 1024      # Hidden dimension of the final feed-forward network
   
   # Configuration for the Lightning wrapper (AstraModule)
   lightning_module:

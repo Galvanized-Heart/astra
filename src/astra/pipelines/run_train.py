@@ -57,7 +57,7 @@ def run_training_engine(config_path):
     # WARNING: Do not import torch or lightning into run_train.py directly or indirectly before env vars are set!
     from astra.pipelines.train_builder import PipelineBuilder
 
-    print(f"LAUNCHER: Handing off to pipeline builder for run '{config_dict['run_name']}'...")
+    print(f"LAUNCHER: Handing off to pipeline builder for run...")
 
     # Run training logic    
     builder = PipelineBuilder(config_dict=config_dict)

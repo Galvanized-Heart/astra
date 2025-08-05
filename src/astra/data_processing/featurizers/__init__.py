@@ -1,3 +1,3 @@
-from base import Featurizer
-from protein_featurizers import ESMFeaturizer
-from ligand_featurizers import MorganFeaturizer
+from .base import Featurizer
+from .protein_featurizers import ESMFeaturizer
+from .ligand_featurizers import MorganFeaturizer

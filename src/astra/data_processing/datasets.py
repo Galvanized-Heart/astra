@@ -41,7 +41,7 @@ class ProteinLigandDataset(Dataset):
         protein_embedding = protein_tensors["embedding"]
         ligand_embedding = ligand_tensors["embedding"] 
 
-        # 
+        # Transform data
         targets = self.target_values[idx]
         if self.target_transform == "log10":
             # Add small epsilon to avoid log(0) = -inf
@@ -53,4 +53,10 @@ class ProteinLigandDataset(Dataset):
             "ligand_embedding": ligand_embedding,
             "targets": targets
         }
+
+        # Add protein attention mask if it exists
+        protein_attention_mask = protein_tensors.get("attention_mask")
+        if protein_attention_mask is not None:
+            item["protein_attention_mask"] = protein_attention_mask
+
         return item
