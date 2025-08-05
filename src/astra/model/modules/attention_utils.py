@@ -40,14 +40,14 @@ class PoswiseFeedForwardNet_SAtt(nn.Module):
     def __init__(self, d_model, cmpd_dim, d_ff, num_preds):
         super().__init__()
         self.fc = nn.Sequential(
-            nn.Linear(d_model + cmpd_dim, d_ff), # d_model+cmpd_dim needs to become attn_dim*prot_dim (or see other solution in forward())
+            nn.Linear(d_model + cmpd_dim, d_ff), # TODO: d_model+cmpd_dim needs to become attn_dim*prot_dim (or see other solution in forward())
             nn.ReLU(),
             nn.Linear(d_ff, num_preds),
         )
 
     def forward(self, pooled_protein_emb, compound):
         # Concatenate the fixed-size protein vector with the ligand vector
-        combined_input = torch.cat((torch.flatten(pooled_protein_emb, start_dim=1), compound), 1) # pooled_protein_emb.shape = [batch_size, attn_dim, prot_dim] right now (which leads to mismatch error when running self.fc())
+        combined_input = torch.cat((torch.flatten(pooled_protein_emb, start_dim=1), compound), 1) # TODO: pooled_protein_emb.shape = [batch_size, attn_dim, prot_dim] right now (which leads to mismatch error when running self.fc())
                                                                                                   # So we need to decide whether to make it prot_dim (aka d_model in this case) or attn_dim*prot_dim (which could be HUGE, e.g. 32*320=10240)
         output = self.fc(combined_input)
         return output

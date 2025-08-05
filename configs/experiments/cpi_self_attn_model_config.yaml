@@ -1,4 +1,5 @@
 # Config file for training CpiPredSelfAttnModel
+# TODO: Must resolve dimension mismatch in PoswiseFeedForwardNet_SAtt in attention_utils.py before running experiments
 
 # General settings
 seed: 42
