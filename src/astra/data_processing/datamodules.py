@@ -18,6 +18,7 @@ class AstraDataModule(L.LightningDataModule):
                  protein_featurizer: Featurizer = None, 
                  ligand_featurizer: Featurizer = None, 
                  batch_size: int = 32,
+                 featurizer_batch_size: int = 32,
                  target_columns: List[str] = None,
                  target_transform: Optional[str] = None
             ):
@@ -36,7 +37,13 @@ class AstraDataModule(L.LightningDataModule):
         self.ligand_feature_spec = ligand_featurizer.feature_spec
 
         # Create manifest features
-        manifest_files = create_manifests(split_files=data_paths, output_dir=PROJECT_ROOT/"data"/"manifest", protein_featurizer=protein_featurizer, ligand_featurizer=ligand_featurizer)
+        manifest_files = create_manifests(
+            split_files=data_paths, 
+            output_dir=PROJECT_ROOT/"data"/"manifest", 
+            protein_featurizer=protein_featurizer, 
+            ligand_featurizer=ligand_featurizer,
+            batch_size=featurizer_batch_size
+        )
 
         # Set file paths if they exist, else set to None
         self.train_path = manifest_files.get("train")

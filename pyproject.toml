@@ -33,7 +33,8 @@ dependencies = [
     "xgboost>=3.0.2",
     "xmltodict>=0.14.2",
     "matplotlib-venn",
-    "seaborn"
+    "seaborn",
+    "torchmetrics>=1.7.4",
 ]
 
 [dependency-groups]
