@@ -1000,3 +1000,123 @@ def mmseqs2_split_data_w_ratio_into_files(
     
     print("------------------------\n")
     
+
+# ==============================================================================
+# SECTION 5: NEW - HPO Splitting Functionality
+# ==============================================================================
+
+def create_hpo_split_from_fold_balanced(
+    input_train_fold_path: str,
+    output_dir: str,
+    cluster_col: str = "cluster_id",
+    split_ratio: float = 0.8,
+    seed: int = 42,
+    kinetic_cols: list = None,
+    max_iterations: int = 1000
+):
+    """
+    Creates a balanced train/validation split for HPO from a single fold's training data.
+
+    This function is an orchestrator. It loads a specific training fold (e.g., 'fold_0_train.csv'),
+    treats it as a new "mini-dataset", and then calls the existing balanced n-fold splitting logic
+    to create a smaller train/validation split that preserves kinetic parameter distribution.
+    It achieves the desired split ratio by generating n-folds and then combining them.
+
+    Args:
+        input_train_fold_path (str): Path to the training data CSV for a single fold.
+        output_dir (str): Directory where the new HPO split files will be saved.
+        cluster_col (str): The name of the column containing cluster identifiers.
+        split_ratio (float): The desired proportion for the training set (e.g., 0.8 for 80/20).
+        seed (int): Random seed for reproducible splitting.
+        kinetic_cols (list): List of kinetic parameter column names for balancing.
+        max_iterations (int): Maximum iterations for the greedy optimization algorithm.
+    """
+    # --- Function Header and Initial Logging ---
+    print(f"\n{'='*60}")
+    print("--- Creating BALANCED HPO Split from Existing Training Fold ---")
+    print(f"{'='*60}")
+
+    # --- 1. Validation and Setup ---
+    # First, ensure the input file actually exists before proceeding.
+    if not os.path.exists(input_train_fold_path):
+        raise FileNotFoundError(f"Input file not found: {input_train_fold_path}")
+
+    # Load the specified training fold into a pandas DataFrame. This is our "mini-dataset".
+    df = pd.read_csv(input_train_fold_path)
+
+    # Check that the crucial cluster ID column is present. The entire logic depends on it.
+    if cluster_col not in df.columns:
+        raise ValueError(f"Cluster column '{cluster_col}' not found in the dataframe.")
+        
+    # --- The "Trick": Convert Split Ratio to N-Folds ---
+    # To get a desired split ratio (e.g., 0.8 for 80/20), we can use n-fold cross-validation.
+    # The formula n ~ 1 / (1 - ratio) gives the number of folds needed.
+    # For a ratio of 0.8, n = 1 / (1 - 0.8) = 1 / 0.2 = 5. This creates a perfect 5-fold split.
+    if not (0.5 <= split_ratio < 1.0):
+        raise ValueError("split_ratio must be between 0.5 and 1.0")
+    n_folds = int(round(1 / (1 - split_ratio)))
+    print(f"Using {n_folds}-fold split to achieve approximately {split_ratio:.0%} / {(1-split_ratio):.0%} split.")
+    
+    # --- 2. Reuse Existing Logic in a Controlled Environment ---
+    # Use a temporary directory to avoid cluttering the filesystem with intermediate files.
+    # The 'with' statement ensures this directory is automatically deleted when we're done.
+    with tempfile.TemporaryDirectory() as tmp_cv_dir:
+        print(f"\nRunning balanced splitting on '{os.path.basename(input_train_fold_path)}'...")
+        
+        # *** THIS IS THE CORE OF THE REUSE STRATEGY ***
+        # We call your original, trusted function to do the hard work of balanced splitting.
+        # It will operate only on the data from `df` (our mini-dataset) and save the
+        # resulting 5 folds into the temporary directory.
+        create_balanced_nfold_cross_validation_splits(
+            df=df,
+            n_folds=n_folds,
+            output_dir=tmp_cv_dir, # All intermediate files go here
+            seed=seed,
+            kinetic_cols=kinetic_cols,
+            max_iterations=max_iterations
+        )
+
+        # --- 3. Assemble the Final HPO Train/Valid Sets from Intermediate Folds ---
+        print("\nAssembling final HPO train and validation sets...")
+        
+        # Define the path to the temporary balanced folds created by the function call above.
+        temp_fold_dir = os.path.join(tmp_cv_dir, 'cv_folds_balanced')
+        
+        # The HPO validation set is simply the first validation fold created (~20% of the data).
+        hpo_valid_df = pd.read_csv(os.path.join(temp_fold_dir, 'fold_0_valid.csv'))
+        
+        # The HPO training set is the combination of all OTHER validation folds (~80% of the data).
+        train_dfs = []
+        for i in range(1, n_folds):
+            # Load each of the remaining folds into a DataFrame.
+            fold_df = pd.read_csv(os.path.join(temp_fold_dir, f'fold_{i}_valid.csv'))
+            train_dfs.append(fold_df)
+        
+        # Concatenate the list of DataFrames into a single, large training set.
+        hpo_train_df = pd.concat(train_dfs, ignore_index=True)
+        
+        # --- 4. Final Verification, Saving, and Reporting ---
+        # Create the final output directory if it doesn't exist.
+        os.makedirs(output_dir, exist_ok=True)
+        hpo_train_path = os.path.join(output_dir, "hpo_train.csv")
+        hpo_valid_path = os.path.join(output_dir, "hpo_valid.csv")
+        
+        # Save the final, assembled DataFrames to their permanent location.
+        hpo_train_df.to_csv(hpo_train_path, index=False)
+        hpo_valid_df.to_csv(hpo_valid_path, index=False)
+        
+        # Print a summary report to the console so the user knows what happened.
+        print("\n--- Balanced HPO Split Creation Complete ---")
+        hpo_train_count = len(hpo_train_df)
+        hpo_valid_count = len(hpo_valid_df)
+        total_count = hpo_train_count + hpo_valid_count
+        
+        print(f"HPO Train set size: {hpo_train_count} samples ({hpo_train_count/total_count:.1%})")
+        print(f"HPO Valid set size: {hpo_valid_count} samples ({hpo_valid_count/total_count:.1%})")
+        
+        print("\nFinal files saved to:")
+        print(f"  - HPO Train: {hpo_train_path}")
+        print(f"  - HPO Valid: {hpo_valid_path}")
+        print(f"{'='*60}\n")
+        
+        return hpo_train_path, hpo_valid_path
