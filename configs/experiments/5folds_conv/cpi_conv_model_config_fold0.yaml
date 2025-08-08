@@ -59,7 +59,7 @@ model:
 
 # Trainer configuration
 trainer:
-  epochs: 2
+  epochs: 10
   device: "auto" # Options: "cpu", "gpu", "auto"
   callbacks:
     checkpoint:

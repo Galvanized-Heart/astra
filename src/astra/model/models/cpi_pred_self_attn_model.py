@@ -22,8 +22,8 @@ class CpiPredSelfAttnModel(nn.Module):
                  d_k: int,
                  n_heads: int,
                  d_v: int,
-                 attn_out_dim: int, # Renamed from original 'out_dim' to avoid conflict
-                 d_ff: int):
+                 attn_out_dim: int = 1, # This is set to 1 by default in CPI-Pred (and should be kept as such since we believe the attn_out_dim is meant to be a vector but we're keeping this as an artifact, !!do not HPO on this!!)
+                 d_ff: int = 1):
         super().__init__()
 
         # --- Derive internal dimensions from pipeline specs ---

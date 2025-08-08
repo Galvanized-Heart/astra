@@ -8,8 +8,8 @@ project_name: "astra" # wandb project_name
 
 # Data configuration
 data:
-  train_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_0_train.csv"
-  valid_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_0_valid.csv"
+  train_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_1_train.csv"
+  valid_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_1_valid.csv"
   batch_size: 64
   featurizer_batch_size: 128
   target_columns: ["kcat", "KM", "Ki"] # Set either single value or all 3
@@ -59,7 +59,7 @@ model:
 
 # Trainer configuration
 trainer:
-  epochs: 2
+  epochs: 10
   device: "auto" # Options: "cpu", "gpu", "auto"
   callbacks:
     checkpoint:

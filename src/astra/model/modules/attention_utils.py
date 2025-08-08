@@ -37,10 +37,10 @@ class MultiHeadAttention(nn.Module):
         return output, attn
 
 class PoswiseFeedForwardNet_SAtt(nn.Module):
-    def __init__(self, d_model, cmpd_dim, d_ff, num_preds):
+    def __init__(self, attn_out_dim, d_model, cmpd_dim, d_ff, num_preds):
         super().__init__()
         self.fc = nn.Sequential(
-            nn.Linear(d_model + cmpd_dim, d_ff), # TODO: d_model+cmpd_dim needs to become attn_dim*prot_dim (or see other solution in forward())
+            nn.Linear(attn_out_dim*d_model + cmpd_dim, d_ff), # TODO: d_model+cmpd_dim needs to become attn_dim*prot_dim (or see other solution in forward())
             nn.ReLU(),
             nn.Linear(d_ff, num_preds),
         )
@@ -57,7 +57,7 @@ class EncoderLayer_SAtt(nn.Module):
     def __init__(self, d_model, d_k, n_heads, d_v, attn_out_dim, cmpd_dim, d_ff, final_out_dim):
         super().__init__()
         self.emb_self_attn = MultiHeadAttention(d_model, d_k, n_heads, d_v, attn_out_dim)
-        self.pos_ffn = PoswiseFeedForwardNet_SAtt(d_model, cmpd_dim, d_ff, num_preds=final_out_dim)
+        self.pos_ffn = PoswiseFeedForwardNet_SAtt(attn_out_dim, d_model, cmpd_dim, d_ff, num_preds=final_out_dim)
 
     def forward(self, input_emb, self_attn_mask, input_pad_mask, compound):
         # 1. Apply multi-head self-attention to the protein embedding

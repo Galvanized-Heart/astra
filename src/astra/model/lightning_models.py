@@ -150,7 +150,7 @@ class AstraModule(L.LightningModule):
         loss, y_hat, y = self._shared_step(batch)
         
         # Log loss
-        self.log('train_loss_step', loss, on_step=True, on_epoch=True, prog_bar=True) 
+        self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True) 
 
         # Update the metrics for each target parameter
         for i, param_name in enumerate(self.target_columns):
@@ -174,7 +174,7 @@ class AstraModule(L.LightningModule):
         loss, y_hat, y = self._shared_step(batch)
 
         # Log loss
-        self.log('valid_loss_step', loss, on_step=True, on_epoch=True, prog_bar=True)
+        self.log('valid_loss', loss, on_step=True, on_epoch=True, prog_bar=True)
         
         # Update the metric state
         for i, param_name in enumerate(self.target_columns):
