@@ -53,6 +53,14 @@ def run_training_engine(config_path):
     else:
         print("LAUNCHER: Running in STOCHASTIC mode.")
 
+    trainer_callbacks_config = config_dict.get("trainer", {}).get("callbacks", {})
+    pruning_callback = trainer_callbacks_config.pop("pruning", None)
+    
+    extra_callbacks = []
+    if pruning_callback:
+        extra_callbacks.append(pruning_callback)
+
+
     # Import locally after environment variable setup
     # WARNING: Do not import torch or lightning into run_train.py directly or indirectly before env vars are set!
     from astra.pipelines.train_builder import PipelineBuilder
@@ -61,6 +69,7 @@ def run_training_engine(config_path):
 
     # Run training logic    
     builder = PipelineBuilder(config_dict=config_dict)
-    builder.run()
+    final_metric = builder.run(extra_callbacks=extra_callbacks)
 
     print("\nTraining complete!")
+    return final_metric

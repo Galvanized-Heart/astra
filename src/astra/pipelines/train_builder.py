@@ -141,7 +141,8 @@ class PipelineBuilder:
         print("INFO: Building Lightning module...")
         lm_cfg = self.final_config.model.lightning_module
         
-        loss_func = LOSS_FN_REGISTRY[lm_cfg.loss_function]()
+        loss_cfg = lm_cfg.loss_function
+        loss_func = LOSS_FN_REGISTRY[loss_cfg.name](**loss_cfg.params)
         recomp_func = RECOMPOSITION_REGISTRY.get(lm_cfg.recomposition_func)
         optimizer_class = OPTIMIZER_REGISTRY[lm_cfg.optimizer]
 
@@ -164,7 +165,7 @@ class PipelineBuilder:
         )
         return self
 
-    def build_trainer(self):
+    def build_trainer(self, extra_callbacks: list = None):
         print("INFO: Building Trainer...")
         trainer_cfg = self.final_config.trainer
 
@@ -198,16 +199,23 @@ class PipelineBuilder:
             save_last=True
         )
 
+        callbacks = [checkpoint_callback]
+
+        # If any extra_callbacks were passed, add them.
+        if extra_callbacks:
+            callbacks.extend(extra_callbacks)
+            print(f"INFO: Added {len(extra_callbacks)} extra callbacks.")
+
         self.trainer = L.Trainer(
             max_epochs=trainer_cfg.epochs,
             logger=wandb_logger,
-            callbacks=[checkpoint_callback],
+            callbacks=callbacks,
             deterministic=(self.final_config.seed is not None),
             accelerator=trainer_cfg.device
         )
         return self
 
-    def run(self):
+    def run(self, extra_callbacks: list = None):
         """Builds all components in order and starts the training process."""
         seed = self.final_config.seed
         if seed is not None:
@@ -217,7 +225,15 @@ class PipelineBuilder:
         self.build_datamodule()
         self.build_model_architecture()
         self.build_lightning_module()
-        self.build_trainer()
+        self.build_trainer(extra_callbacks=extra_callbacks)
         
         print("\n--- LAUNCHING TRAINING ---")
         self.trainer.fit(self.model, self.datamodule)
+
+        # Return metric for Optuna
+        final_metric = self.trainer.callback_metrics.get(self.final_config.trainer.callbacks.checkpoint.monitor)
+        if final_metric is not None:
+            return final_metric.item()
+        else:
+            print(f"WARNING: Monitored metric '{self.final_config.trainer.callbacks.checkpoint.monitor}' not found in trainer.callback_metrics.")
+            return float('inf')
