@@ -13,6 +13,7 @@ class DataConfig(BaseModel):
     train_path: FilePath
     valid_path: FilePath
     batch_size: PositiveInt = 32
+    featurizer_batch_size: int = 32
     target_columns: List[str] = Field(default_factory=lambda: ["kcat", "KM", "Ki"])
     target_transform: Optional[str] = None
 

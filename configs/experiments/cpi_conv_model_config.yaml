@@ -2,15 +2,16 @@
 
 # General settings
 seed: 42
-project_name: "astra"
+project_name: "astra" # wandb project_name
 #run_name: "" # Recommend leaving empty for more informative and unique naming for checkpoints and wandb
 
 
 # Data configuration
 data:
-  train_path: "data/example_data/train_raw.csv"
-  valid_path: "data/example_data/val_raw.csv"
+  train_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_0_train.csv"
+  valid_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_0_valid.csv"
   batch_size: 64
+  featurizer_batch_size: 128
   target_columns: ["kcat", "KM", "Ki"] # Set either single value or all 3
   target_transform: "log10"
 
@@ -20,7 +21,7 @@ featurizers:
   protein:
     name: "ESMFeaturizer"
     params:
-      model_name: "facebook/esm2_t6_8M_UR50D"
+      model_name: "facebook/esm2_t33_650M_UR50D"
       max_length: 1022
   ligand:
     name: "MorganFeaturizer"
@@ -58,7 +59,7 @@ model:
 
 # Trainer configuration
 trainer:
-  epochs: 10
+  epochs: 2
   device: "auto" # Options: "cpu", "gpu", "auto"
   callbacks:
     checkpoint:

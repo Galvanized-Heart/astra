@@ -1,17 +1,17 @@
-# Config file for training DummyModel
+# Config file for training CpiPredConvModel
 
 # General settings
 seed: 42
-project_name: "astra"
-run_name: "ESM_DummyModel_run_01"
+project_name: "astra" # wandb project_name
+#run_name: "" # Recommend leaving empty for more informative and unique naming for checkpoints and wandb
 
 
 # Data configuration
 data:
-  train_path: "data/example_data/train_raw.csv"
-  valid_path: "data/example_data/val_raw.csv"
+  train_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_0_train.csv"
+  valid_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_0_valid.csv"
   batch_size: 64
-  featurizer_batch_size: 16
+  featurizer_batch_size: 128
   target_columns: ["kcat", "KM", "Ki"] # Set either single value or all 3
   target_transform: "log10"
 
@@ -21,7 +21,7 @@ featurizers:
   protein:
     name: "ESMFeaturizer"
     params:
-      model_name: "facebook/esm2_t6_8M_UR50D"
+      model_name: "facebook/esm2_t33_650M_UR50D"
       max_length: 1022
   ligand:
     name: "MorganFeaturizer"
@@ -33,13 +33,14 @@ featurizers:
 # Model configuration
 model:
   architecture:
-    name: "DummyModel" # This is the key to select the model class
-    params: # Hyperparameters for the DummyModel
-      # Add any specific hyperparameters for your DummyModel here
-      # e.g., hidden_dim: 256
-      # e.g., n_layers: 2
-      # e.g., dropout: 0.1
-      {} # Using empty dict if it takes no arguments since Pydantic expects dict or None
+    name: "CpiPredConvModel"
+    params: 
+      hid_dim: 128
+      kernal_1: 9
+      conv_out_dim: 64
+      kernal_2: 5
+      last_hid: 256
+      dropout: 0.1
   
   # Configuration for the Lightning wrapper (AstraModule)
   lightning_module:

@@ -1,13 +1,22 @@
 from collections.abc import Callable
-from typing import Optional, Type
+from typing import Optional, Type, List
 
 import lightning as L
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import xgboost as xgb
-from sklearn.metrics import mean_squared_error
+
+import torchmetrics
+from torchmetrics.collections import MetricCollection
+from torchmetrics.regression import (
+    MeanSquaredError, 
+    MeanAbsoluteError, 
+    R2Score, 
+    PearsonCorrCoef, 
+    SpearmanCorrCoef,
+    KendallRankCorrCoef
+)
+
 
 
 class AstraModule(L.LightningModule):
@@ -16,6 +25,7 @@ class AstraModule(L.LightningModule):
                 lr: float,
                 loss_func: nn.Module, 
                 optimizer_class: Type[torch.optim.Optimizer],
+                target_columns: List[str], 
                 recomposition_func: Optional[Callable] = None,  
                 lr_scheduler_class: Optional[Type] = None, 
                 lr_scheduler_kwargs: Optional[dict] = None
@@ -31,6 +41,8 @@ class AstraModule(L.LightningModule):
                 Defaults to a MaskedMSELoss that handles NaNs.
             optimizer_class (Type[torch.optim.Optimizer]): The class of the optimizer to use.
                 Example: torch.optim.Adam, torch.optim.SGD.
+            target_columns (List[str]): A list of the names of the output parameters,
+                e.g., ['kcat', 'KM', 'Ki']. Used for logging.
             recomposition_func (Optional[Callable]): A function to transform model output.
             lr_scheduler_class (Optional[Type]): The class of the LR lr_scheduler to use.
                 Example: torch.optim.lr_scheduler.ReduceLROnPlateau.
@@ -38,7 +50,7 @@ class AstraModule(L.LightningModule):
                 Must include a 'monitor' key for lr_schedulers that require one.
         """
         super().__init__()
-        self.save_hyperparameters(ignore=['model', 'recomposition_func', 'loss_func'])
+        self.save_hyperparameters(ignore=['model', 'recomposition_func', 'loss_func', 'target_columns'])
 
         self.model = model
         self.loss_func = loss_func
@@ -47,7 +59,30 @@ class AstraModule(L.LightningModule):
         self.optimizer_class = optimizer_class
         self.lr_scheduler_class = lr_scheduler_class
         self.lr_scheduler_kwargs = lr_scheduler_kwargs or {}
+
+        self.target_columns = target_columns
+
+        # Create collections for metrics
+        self.train_metrics = nn.ModuleDict()
+        self.valid_metrics = nn.ModuleDict()
+        
+        # Track each target parameter
+        for param_name in self.target_columns:
+            metrics_for_param = MetricCollection({
+                'MSE': MeanSquaredError(),
+                'RMSE': MeanSquaredError(squared=False),
+                'MAE': MeanAbsoluteError(),
+                'Pearson': PearsonCorrCoef(),
+                'R2': R2Score(),
+                'Spearman': SpearmanCorrCoef(),
+                'Kendall': KendallRankCorrCoef()
+            })
+            
+            # Create separate collections for train and valid, with a parameter-specific prefix
+            self.train_metrics[param_name] = metrics_for_param.clone(prefix=f'train/{param_name}_')
+            self.valid_metrics[param_name] = metrics_for_param.clone(prefix=f'valid/{param_name}_')
     
+
     def configure_optimizers(self):
         """Instantiate the optimizer and, optionally, the lr_scheduler."""
         optimizer = self.optimizer_class(self.parameters(), lr=self.hparams.lr)
@@ -68,12 +103,13 @@ class AstraModule(L.LightningModule):
                 "optimizer": optimizer,
                 "lr_scheduler": {
                     "scheduler": lr_scheduler,
-                    "monitor": monitor_metric,  # Use the popped value here
+                    "monitor": monitor_metric,
                     "interval": "epoch",
                     "frequency": 1,
                 },
             }
     
+
     def _shared_step(self, batch):
         """A flexible shared step for training and validation."""
         # Can use this to reduce replicate code in training_step() and validation_step()
@@ -104,46 +140,75 @@ class AstraModule(L.LightningModule):
         # Calculate loss
         loss = self.loss_func(y_hat, y)
 
-        # Return loss
-        return loss
+        # Return loss, predictions, and targets
+        return loss, y_hat, y
+
 
     def training_step(self, batch, batch_idx):
         """Functionality for training loop."""
         # Compute shared step
-        loss = self._shared_step(batch)
-
-        # Log results
+        loss, y_hat, y = self._shared_step(batch)
+        
+        # Log loss
         self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True) 
 
-        # Optionally accumulate per epoch metrics for on_training_epoch_end()
-        #self.train_metric.update(logits, y)
-        # NOTE: This requires a torchmetrics to be set in __init__()
+        # Update the metrics for each target parameter
+        for i, param_name in enumerate(self.target_columns):
+            preds_i = y_hat[:, i]
+            targets_i = y[:, i]
 
-        # Alternatively set on_step=False for easy to compute metrics
-        #self.log('train/loss_epoch', loss, on_step=False, on_epoch=True, prog_bar=True)
+            # Create mask for the current parameter
+            mask = ~torch.isnan(targets_i)
 
-        # Return loss for optimizer
+            # Update metrics only with non-NaN values
+            if mask.sum() > 0:
+                self.train_metrics[param_name].update(preds_i[mask], targets_i[mask])
+
+        # Return loss for optimizer        
         return loss
     
+
     def validation_step(self, batch, batch_idx):
         """Functionality for prediction validation."""
         # Compute shared step
-        loss = self._shared_step(batch)
+        loss, y_hat, y = self._shared_step(batch)
 
-        # Log results
+        # Log loss
         self.log('valid_loss', loss, on_step=True, on_epoch=True, prog_bar=True)
+        
+        # Update the metric state
+        for i, param_name in enumerate(self.target_columns):
+            preds_i = y_hat[:, i]
+            targets_i = y[:, i]
+            
+            mask = ~torch.isnan(targets_i)
+            if mask.sum() > 0:
+                self.valid_metrics[param_name].update(preds_i[mask], targets_i[mask])
 
     def on_training_epoch_end(self):
-        # Can be used to log accumulated metrics from training_step()
-        #epoch_metric = self.train_metric.compute()
-        #self.log("train/metric_epoch", epoch_metric)
-        #self.train_metric.reset()
-        pass
+        """Functionality for logging training metrics at every epoch."""
+        all_metrics = {}
+        for param_name in self.target_columns:
+            # Compute all metrics for the current parameter
+            param_metrics = self.train_metrics[param_name].compute()
+            all_metrics.update(param_metrics)
+            # Reset for the next epoch
+            self.train_metrics[param_name].reset()
+        
+        self.log_dict(all_metrics, on_step=False, on_epoch=True)
 
-    def on_validation_epoch_end(self): # NOTE: If you want to use this, include outputs as an argument!
-        # Can be used to log accumulated metrics from validation_step()
-        # NOTE: outputs is a list of dicts from output from validation_step()
-        pass
+
+    def on_validation_epoch_end(self):
+        """Functionality for logging training metrics at every epoch."""
+        all_metrics = {}
+        for param_name in self.target_columns:
+            # Compute all metrics for the current parameter
+            param_metrics = self.valid_metrics[param_name].compute()
+            all_metrics.update(param_metrics)
+            # Reset for the next epoch
+            self.valid_metrics[param_name].reset()
+
+        self.log_dict(all_metrics, on_step=False, on_epoch=True)
 
 # Example usage
 """ 

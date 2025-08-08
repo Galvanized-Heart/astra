@@ -105,6 +105,7 @@ class PipelineBuilder:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if p_cfg.name == 'ESMFeaturizer':
             p_cfg.params['device'] = device
+            
 
         self.protein_featurizer = FEATURIZER_REGISTRY[p_cfg.name](**p_cfg.params)
         self.ligand_featurizer = FEATURIZER_REGISTRY[l_cfg.name](**l_cfg.params)
@@ -118,6 +119,7 @@ class PipelineBuilder:
             protein_featurizer=self.protein_featurizer,
             ligand_featurizer=self.ligand_featurizer,
             batch_size=data_cfg.batch_size,
+            featurizer_batch_size=data_cfg.featurizer_batch_size,
             target_columns=data_cfg.target_columns,
             target_transform=data_cfg.target_transform
         )
@@ -148,12 +150,15 @@ class PipelineBuilder:
             scheduler_class = SCHEDULER_REGISTRY[lm_cfg.lr_scheduler.name]
             scheduler_kwargs = lm_cfg.lr_scheduler.params or {}
 
+        target_columns = self.final_config.data.target_columns
+
         self.model = AstraModule(
             model=self.model_architecture,
             lr=lm_cfg.lr,
             loss_func=loss_func,
-            recomposition_func=recomp_func,
             optimizer_class=optimizer_class,
+            target_columns=target_columns,
+            recomposition_func=recomp_func,
             lr_scheduler_class=scheduler_class,
             lr_scheduler_kwargs=scheduler_kwargs
         )
@@ -204,6 +209,10 @@ class PipelineBuilder:
 
     def run(self):
         """Builds all components in order and starts the training process."""
+        seed = self.final_config.seed
+        if seed is not None:
+            L.seed_everything(seed, workers=True)
+
         self.build_featurizers()
         self.build_datamodule()
         self.build_model_architecture()
