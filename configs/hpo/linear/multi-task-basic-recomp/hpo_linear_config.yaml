@@ -1,0 +1,42 @@
+project: astra-linear-multi-task-basic-recomp-hpo
+entity: lmse-university-of-toronto
+
+command:
+  - ${env}
+  - python
+  - ${program} # This will be the script path
+  - --base_config
+  - "configs/hpo/linear/single-task-km/cpi_linear_model_config_base.yaml" # Relative to PROJECT_ROOT
+  - ${args}
+
+program: "scripts/run_experiment/run_sweep_linear.py"
+method: bayes
+metric:
+  name: valid_loss_epoch
+  goal: minimize
+
+parameters:
+  lr:
+    distribution: log_uniform_values
+    min: 1.0e-5
+    max: 1.0e-2
+  batch_size:
+    values: [32, 64, 128]
+
+  dim_1:
+    values: [32, 64, 128, 256, 512, 1024]
+  dim_2:
+    values: [32, 64, 128, 256, 512, 1024]
+
+  w_kcat_logit:
+    distribution: uniform
+    min: -2.0
+    max: 2.0
+  w_km_logit:
+    distribution: uniform
+    min: -2.0
+    max: 2.0
+  w_ki_logit:
+    distribution: uniform
+    min: -2.0
+    max: 2.0
