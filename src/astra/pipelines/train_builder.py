@@ -68,10 +68,29 @@ class PipelineBuilder:
         data_cfg = resolved_config.setdefault('data', {})
         target_columns = data_cfg.setdefault('target_columns', ["kcat", "KM", "Ki"])
         lm_cfg = resolved_config['model']['lightning_module']
+
+        # Set default loss function
         if 'loss_function' not in lm_cfg or lm_cfg['loss_function'] is None:
-            lm_cfg['loss_function'] = "MaskedMSELoss" if len(target_columns) > 1 else "MSELoss"
-            print(f"INFO: Defaulted 'loss_function' to '{lm_cfg['loss_function']}'.")
-        
+            loss_name = "MaskedMSELoss" if len(target_columns) > 1 else "MSELoss"
+            lm_cfg['loss_function'] = {'name': loss_name, 'params': {}} # Default to a dict structure
+            print(f"INFO: Defaulted 'loss_function' to '{loss_name}'.")
+
+        # Normalize loss function config to a dictionary for consistent handling
+        loss_config_raw = lm_cfg['loss_function']
+        if isinstance(loss_config_raw, str):
+            loss_config_dict = {'name': loss_config_raw, 'params': {}}
+        else:
+            loss_config_dict = loss_config_raw
+            loss_config_dict.setdefault('params', {})
+
+        # Clean up incompatible parameters (MSELoss can't take 'weights' as param)
+        if loss_config_dict['name'] == 'MSELoss' and 'weights' in loss_config_dict['params']:
+            print("INFO: 'weights' parameter is not applicable for 'MSELoss'. It will be removed from the configuration.")
+            del loss_config_dict['params']['weights']
+
+        # Update the main config with the cleaned and normalized loss function dict
+        lm_cfg['loss_function'] = loss_config_dict
+
         # Resolve the model's `out_dim`
         arch_params = resolved_config['model']['architecture'].setdefault('params', {})
         recomp_func_name = lm_cfg.get('recomposition_func')
@@ -182,7 +201,7 @@ class PipelineBuilder:
             name=run_name_prefix,  # Use wandb generated or user provided name
             project=self.final_config.project_name,
             entity="lmse-university-of-toronto",
-            log_model="all",
+            log_model=False, # Do not upload model checkpoints
             config=self.final_config.dict() # Log the final, resolved config
         )
 
@@ -230,7 +249,22 @@ class PipelineBuilder:
         print("\n--- LAUNCHING TRAINING ---")
         self.trainer.fit(self.model, self.datamodule)
 
-        # Return metric for Optuna
+        # Get checkpoint callback
+        checkpoint_callback = None
+        for cb in self.trainer.callbacks:
+            if isinstance(cb, ModelCheckpoint):
+                checkpoint_callback = cb
+                break
+
+        # Upload path to best model checkpoint to wandb
+        if checkpoint_callback and checkpoint_callback.best_model_path:
+            best_path = checkpoint_callback.best_model_path
+            print(f"INFO: Best model saved locally at: {best_path}")
+            
+            # Log the path as text metadata to the run's summary
+            self.trainer.logger.experiment.summary["best_local_checkpoint_path"] = best_path
+
+        # Return metric
         final_metric = self.trainer.callback_metrics.get(self.final_config.trainer.callbacks.checkpoint.monitor)
         if final_metric is not None:
             return final_metric.item()

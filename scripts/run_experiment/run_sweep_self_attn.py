@@ -52,16 +52,6 @@ def main():
     base_config_path = PROJECT_ROOT / args.base_config
     with open(base_config_path, 'r') as f:
         config_dict = yaml.safe_load(f)
-
-    # 1. Initialize a new W&B run.
-    #run = wandb.init()
-    
-    # 2. Load the base configuration file.
-    #base_config_path = PROJECT_ROOT / "configs" / "hpo" / "conv" / "cpi_conv_model_config_base.yaml"
-    #with open(base_config_path, 'r') as f:
-        #config_dict = yaml.safe_load(f)
-
-    # 3. Merge sweep parameters from wandb.config into the nested dict.
     
     # Masked loss function weightings
     logits = [wandb.config.w_kcat_logit, wandb.config.w_km_logit, wandb.config.w_ki_logit]
@@ -72,12 +62,10 @@ def main():
     config_dict['data']['batch_size'] = wandb.config.batch_size
 
     # Model architecture
-    config_dict['model']['architecture']['params']['hid_dim'] = wandb.config.hid_dim
-    config_dict['model']['architecture']['params']['kernal_1'] = wandb.config.kernal_1
-    config_dict['model']['architecture']['params']['conv_out_dim'] = wandb.config.conv_out_dim
-    config_dict['model']['architecture']['params']['kernal_2'] = wandb.config.kernal_2
-    config_dict['model']['architecture']['params']['last_hid'] = wandb.config.last_hid
-    config_dict['model']['architecture']['params']['dropout'] = wandb.config.dropout
+    config_dict['model']['architecture']['params']['n_heads'] = wandb.config.n_heads
+    config_dict['model']['architecture']['params']['d_k'] = wandb.config.d_k
+    config_dict['model']['architecture']['params']['d_v'] = wandb.config.d_v
+    config_dict['model']['architecture']['params']['d_ff'] = wandb.config.d_ff
 
     # Learning rate
     config_dict['model']['lightning_module']['lr'] = wandb.config.lr

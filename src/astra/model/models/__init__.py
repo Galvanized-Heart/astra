@@ -1,3 +1,4 @@
 from .dummy_model import DummyModel
 from .cpi_pred_conv_model import CpiPredConvModel
+from .cpi_pred_cross_attn_model import CpiPredCrossAttnModel
 from .cpi_pred_self_attn_model import CpiPredSelfAttnModel

@@ -214,6 +214,7 @@ results/
 experiments/
 wandb/
 checkpoints/
+*.out
 
 # Exceptions
 !configs/data/

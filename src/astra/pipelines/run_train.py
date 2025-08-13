@@ -27,6 +27,16 @@ def run_training_engine(config_path):
     with open(config_path, 'r') as f:
         config_dict = yaml.safe_load(f)
 
+    final_metric = run_training_engine_from_dict(config_dict=config_dict)
+
+    return final_metric
+
+
+def run_training_engine_from_dict(config_dict):
+    """
+    Training function configured to handle a config dictionary object directly.
+    """
+
     print("INFO: Resolving relative paths in config against PROJECT_ROOT...")
     # Resolve train_path
     if 'data' in config_dict and 'train_path' in config_dict['data']:

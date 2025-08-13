@@ -35,7 +35,6 @@ dependencies = [
     "matplotlib-venn",
     "seaborn",
     "torchmetrics>=1.7.4",
-    "optuna>=4.4.0",
 ]
 
 [dependency-groups]

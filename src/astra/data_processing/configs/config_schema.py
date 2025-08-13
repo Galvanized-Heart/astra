@@ -1,5 +1,5 @@
 from pydantic import BaseModel, FilePath, PositiveInt, Field, ValidationError, RootModel
-from typing import Literal, Optional, Dict, List, Any
+from typing import Literal, Optional, Dict, List, Any, Union
 
 # Import registries to dynamically create Literals
 from astra.data_processing.configs.registry import (
@@ -35,10 +35,15 @@ class SchedulerConfig(BaseModel):
     name: Literal[tuple(SCHEDULER_REGISTRY.keys())]
     params: Dict[str, Any] = Field(default_factory=dict)
 
+class LossFunctionConfig(BaseModel):
+    """A structured model for loss function configurations."""
+    name: Literal[tuple(LOSS_FN_REGISTRY.keys())]
+    params: Dict[str, Any] = Field(default_factory=dict)
+
 class LightningModuleConfig(BaseModel):
     lr: float = 1e-3
     optimizer: Literal[tuple(OPTIMIZER_REGISTRY.keys())] = "AdamW"
-    loss_function: Optional[Literal[tuple(LOSS_FN_REGISTRY.keys())]] = None
+    loss_function: Optional[Union[Literal[tuple(LOSS_FN_REGISTRY.keys())], LossFunctionConfig]] = None
     recomposition_func: Optional[Literal[tuple(RECOMPOSITION_REGISTRY.keys())]] = None
     lr_scheduler: Optional[SchedulerConfig] = None
 

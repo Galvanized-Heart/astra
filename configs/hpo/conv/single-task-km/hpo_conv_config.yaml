@@ -1,0 +1,53 @@
+project: astra-single-task-km-hpo
+entity: lmse-university-of-toronto
+
+command:
+  - ${env}
+  - python
+  - ${program} # This will be the script path
+  - --base_config
+  - "configs/hpo/conv/single-task-km/cpi_conv_model_config_base.yaml" # Relative to PROJECT_ROOT
+  - ${args}
+
+program: "../../../scripts/run_experiment/run_sweep.py"
+method: bayes
+metric:
+  name: valid_loss_epoch
+  goal: minimize
+
+parameters:
+  lr:
+    distribution: log_uniform_values
+    min: 1.0e-5
+    max: 1.0e-2
+  batch_size:
+    values: [32, 64, 128]
+
+  hid_dim:
+    values: [32, 64, 128, 256, 512]
+  kernal_1:
+    values: [3, 5, 7, 9, 11]
+  conv_out_dim:
+    values: [32, 64, 128, 256, 512]
+  kernal_2:
+    values: [3, 5, 7, 9, 11]
+  last_hid:
+    values: [32, 64, 128, 256, 512]
+  dropout:
+    distribution: uniform
+    min: 0.0
+    max: 0.5
+
+
+  w_kcat_logit:
+    distribution: uniform
+    min: -2.0
+    max: 2.0
+  w_km_logit:
+    distribution: uniform
+    min: -2.0
+    max: 2.0
+  w_ki_logit:
+    distribution: uniform
+    min: -2.0
+    max: 2.0
