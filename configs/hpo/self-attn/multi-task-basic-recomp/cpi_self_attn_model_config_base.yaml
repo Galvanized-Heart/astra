@@ -8,8 +8,8 @@ project_name: "astra" # wandb project_name
 
 # Data configuration
 data:
-  train_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_0_train.csv"
-  valid_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_0_valid.csv"
+  train_path: "data/split/hpo_splits_balanced/hpo_train.csv"
+  valid_path: "data/split/hpo_splits_balanced/hpo_valid.csv"
   batch_size: 64
   featurizer_batch_size: 128
   target_columns: ["kcat", "KM", "Ki"] # Set either single value or all 3
@@ -38,7 +38,7 @@ model:
       n_heads: 4      # Number of attention heads
       d_k: 64         # Dimension of Key/Query
       d_v: 64         # Dimension of Value
-      attn_out_dim: 1 # Output dimension of the attention layer itself (meant to be 1)
+      attn_out_dim: 1 # Output dimension of the attention layer itself
       d_ff: 1024      # Hidden dimension of the final feed-forward network
   
   # Configuration for the Lightning wrapper (AstraModule)
@@ -49,7 +49,7 @@ model:
       name: "MaskedMSELoss"
       params:
         weights: [0.33, 0.33, 0.33] # These will be overwritten by the sweep
-    recomposition_func: # Optional
+    recomposition_func: BasicRecomp # Optional
     lr_scheduler: # Optional
       name: "ReduceLROnPlateau"
       params:

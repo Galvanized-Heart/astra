@@ -289,3 +289,6 @@ Here's an output of what I have so far for the `train_dataloader`:
          [3.1000e+01, 7.3000e-03,        nan],
          [       nan, 4.7000e-04,        nan]])}
 ```
+
+### Aug 13, 2025
+Today I'm analysing the HPOs fro astra conv, self attn, cross attn for single tasks and multi task variations.

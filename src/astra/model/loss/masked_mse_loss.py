@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class MaskedMSELoss(nn.Module):
-    def __init__(self, weights=[1.0, 1.0, 1.0]):
+    def __init__(self, weights=[1.0/3, 1.0/3, 1.0/3]):
         super().__init__()
         # Ensure weights is a tensor on the correct device later
         self.weights = torch.tensor(weights, dtype=torch.float32)

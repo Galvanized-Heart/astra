@@ -1,6 +1,6 @@
 import torch
 
-from astra.model.models import DummyModel, CpiPredConvModel, CpiPredSelfAttnModel
+from astra.model.models import DummyModel, CpiPredConvModel, CpiPredSelfAttnModel, CpiPredCrossAttnModel
 from astra.model.loss.masked_mse_loss import MaskedMSELoss
 from astra.data_processing.featurizers import ESMFeaturizer, MorganFeaturizer
 from astra.model.modules.kinetics import elemtary_to_michaelis_menten_basic, elemtary_to_michaelis_menten_advanced
@@ -10,7 +10,7 @@ MODEL_REGISTRY = {
     "DummyModel": DummyModel,
     "CpiPredConvModel": CpiPredConvModel,
     "CpiPredSelfAttnModel": CpiPredSelfAttnModel,
-     #"CpiPredCrossAtnnModel": CpiPredCrossAtnnModel,
+    "CpiPredCrossAttnModel": CpiPredCrossAttnModel,
 }
 
 # Optimizers

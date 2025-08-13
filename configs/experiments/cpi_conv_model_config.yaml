@@ -46,7 +46,10 @@ model:
   lightning_module:
     lr: 0.001
     optimizer: "AdamW"
-    loss_function: "MaskedMSELoss"
+    loss_function:
+      name: "MaskedMSELoss"
+      params:
+        weights: [0.33, 0.33, 0.33] # These will be overwritten by the sweep
     recomposition_func: # Optional
     lr_scheduler: # Optional
       name: "ReduceLROnPlateau"
@@ -59,7 +62,7 @@ model:
 
 # Trainer configuration
 trainer:
-  epochs: 2
+  epochs: 20
   device: "auto" # Options: "cpu", "gpu", "auto"
   callbacks:
     checkpoint:
