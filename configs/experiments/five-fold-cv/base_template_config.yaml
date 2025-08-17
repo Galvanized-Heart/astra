@@ -1,0 +1,60 @@
+# This is the base configuration for all 5-fold CV runs.
+# It contains settings that are NOT tuned by HPO.
+# The agent script (run_cv_job.py) will load this and then
+# programmatically inject the hyperparameters for each specific experiment.
+
+# General settings
+seed: 42
+project_name: "astra" # All runs will go to the main 'astra' project
+
+# Data configuration
+# The train_path and valid_path will be overwritten by the agent script for each fold.
+# Target columns will also be overwritten.
+# Target transform is a fixed choice for this experiment.
+data:
+  target_transform: "log10"
+  featurizer_batch_size: 128
+
+# Featurizer configuration (these are fixed for all experiments)
+featurizers:
+  protein:
+    name: "ESMFeaturizer"
+    params:
+      model_name: "facebook/esm2_t33_650M_UR50D"
+      max_length: 1022
+  ligand:
+    name: "MorganFeaturizer"
+    params:
+      radius: 2
+      fp_size: 2048
+
+# Model configuration
+# The specific architecture and its params (like dim_1, dim_2) will be overwritten.
+# The lightning_module settings (lr, optimizer, etc.) will be overwritten by HPO params.
+model:
+  architecture:
+    params: {} # Empty, to be filled by the agent
+  
+  lightning_module:
+    optimizer: "AdamW" # Fixed choice
+    loss_function:
+      name: "MaskedMSELoss" # This will be dynamically handled by PipelineBuilder
+      params:
+        weights: [0.33, 0.33, 0.33] # These will be overwritten by the sweep
+    lr_scheduler: # Fixed choice
+      name: "ReduceLROnPlateau"
+      params:
+        monitor: "valid_loss_epoch"
+        mode: "min"
+        factor: 0.1
+        patience: 3
+
+# Trainer configuration (these are fixed for all experiments)
+trainer:
+  epochs: 20
+  device: "auto"
+  callbacks:
+    checkpoint:
+      monitor: "valid_loss_epoch"
+      save_top_k: 1
+      mode: "min"

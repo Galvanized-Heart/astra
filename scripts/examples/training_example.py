@@ -2,7 +2,7 @@ from astra.constants import PROJECT_ROOT
 from astra.pipelines.run_train import run_training_engine
 
 # Set path to experiment configuration
-config_path = PROJECT_ROOT/"configs/experiments/cpi_cross_attn_model_config.yaml"
+config_path = PROJECT_ROOT/"configs/experiments/linear_model_config.yaml"
 
 # Run training script
 run_training_engine(config_path)

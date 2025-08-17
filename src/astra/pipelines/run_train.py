@@ -32,7 +32,7 @@ def run_training_engine(config_path):
     return final_metric
 
 
-def run_training_engine_from_dict(config_dict):
+def run_training_engine_from_dict(config_dict, active_wandb_run=None):
     """
     Training function configured to handle a config dictionary object directly.
     """

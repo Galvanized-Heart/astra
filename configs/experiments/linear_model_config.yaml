@@ -1,18 +1,20 @@
-# Config file for training CpiPredConvModel
+# Config file for training DummyModel
 
 # General settings
 seed: 42
-project_name: "astra" # wandb project_name
-#run_name: "" # Recommend leaving empty for more informative and unique naming for checkpoints and wandb
+project_name: "astra"
+run_name: 
 
 
 # Data configuration
 data:
-  train_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_0_train.csv"
-  valid_path: "data/cv_splits_pangenomic/cv_folds_balanced/fold_0_valid.csv"
-  batch_size: 64
-  featurizer_batch_size: 128
-  target_columns: ["kcat", "KM", "Ki"] # Set either single value or all 3
+  #train_path: "data/cv_splits_pangenomic/fold_0_train.csv"
+  #valid_path: "data/cv_splits_pangenomic/fold_0_valid.csv"
+  train_path: "data/split/hpo_splits_balanced/hpo_train.csv"
+  valid_path: "data/split/hpo_splits_balanced/hpo_valid.csv"
+  batch_size: 128
+  featurizer_batch_size: 16
+  target_columns: ["kcat"] # Set either single value or all 3
   target_transform: "log10"
 
 
@@ -21,7 +23,7 @@ featurizers:
   protein:
     name: "ESMFeaturizer"
     params:
-      model_name: "facebook/esm2_t33_650M_UR50D"
+      model_name: "facebook/esm2_t6_8M_UR50D"
       max_length: 1022
   ligand:
     name: "MorganFeaturizer"
@@ -33,20 +35,16 @@ featurizers:
 # Model configuration
 model:
   architecture:
-    name: "CpiPredConvModel"
-    params: 
-      hid_dim: 128
-      kernal_1: 9
-      conv_out_dim: 64
-      kernal_2: 5
-      last_hid: 256
-      dropout: 0.1
+    name: "LinearBaselineModel" # This is the key to select the model class
+    params: # Hyperparameters for the DummyModel
+      dim_1: 32
+      dim_2: 64
   
   # Configuration for the Lightning wrapper (AstraModule)
   lightning_module:
-    lr: 0.001
+    lr: 0.009788810859109869
     optimizer: "AdamW"
-    loss_function: "MaskedMSELoss"
+    loss_function: "MSELoss"
     recomposition_func: # Optional
     lr_scheduler: # Optional
       name: "ReduceLROnPlateau"
@@ -59,7 +57,7 @@ model:
 
 # Trainer configuration
 trainer:
-  epochs: 10
+  epochs: 20
   device: "auto" # Options: "cpu", "gpu", "auto"
   callbacks:
     checkpoint:

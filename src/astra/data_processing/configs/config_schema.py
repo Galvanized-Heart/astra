@@ -76,3 +76,5 @@ class FullConfig(BaseModel):
     featurizers: FeaturizersConfig
     model: ModelConfig
     trainer: TrainerConfig
+    
+    wandb: Optional[Dict[str, Any]] = None

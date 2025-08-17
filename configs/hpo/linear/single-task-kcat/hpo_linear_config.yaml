@@ -6,7 +6,7 @@ command:
   - python
   - ${program} # This will be the script path
   - --base_config
-  - "configs/hpo/linear/single-task-km/cpi_linear_model_config_base.yaml" # Relative to PROJECT_ROOT
+  - "configs/hpo/linear/single-task-kcat/cpi_linear_model_config_base.yaml" # Relative to PROJECT_ROOT
   - ${args}
 
 program: "scripts/run_experiment/run_sweep_linear.py"
