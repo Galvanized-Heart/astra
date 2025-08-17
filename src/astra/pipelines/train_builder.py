@@ -64,7 +64,9 @@ class PipelineBuilder:
         """
         resolved_config = copy.deepcopy(config_dict)
 
-        # Resolve `target_columns` and `loss_function`
+        # --- START OF MODIFIED SECTION ---
+
+        """# Resolve `target_columns` and `loss_function`
         data_cfg = resolved_config.setdefault('data', {})
         target_columns = data_cfg.setdefault('target_columns', ["kcat", "KM", "Ki"])
         lm_cfg = resolved_config['model']['lightning_module']
@@ -89,7 +91,42 @@ class PipelineBuilder:
             del loss_config_dict['params']['weights']
 
         # Update the main config with the cleaned and normalized loss function dict
+        lm_cfg['loss_function'] = loss_config_dict"""
+
+        # Resolve `target_columns` and establish lightning_module config (`lm_cfg`)
+        data_cfg = resolved_config.setdefault('data', {})
+        target_columns = data_cfg.setdefault('target_columns', ["kcat", "KM", "Ki"])
+        lm_cfg = resolved_config['model']['lightning_module']
+
+        # Normalize the loss_function part of the config to always be a dictionary
+        loss_config_raw = lm_cfg.get('loss_function', {})
+        if isinstance(loss_config_raw, str):
+            loss_config_dict = {'name': loss_config_raw, 'params': {}}
+        elif loss_config_raw is None:
+            loss_config_dict = {}
+        else:
+            loss_config_dict = loss_config_raw
+        
+        # Ensure a 'params' key exists within the loss function config
+        loss_config_dict.setdefault('params', {})
+
+        # Unconditionally determine the correct loss function name based on the number of targets
+        correct_loss_name = "MaskedMSELoss" if len(target_columns) > 1 else "MSELoss"
+        
+        # If the current name is different, update it and print a helpful message.
+        if loss_config_dict.get('name') != correct_loss_name:
+             print(f"INFO: Overriding loss function. Setting name to '{correct_loss_name}' based on {len(target_columns)} target column(s).")
+             loss_config_dict['name'] = correct_loss_name
+
+        # Clean up incompatible parameters. This logic is now guaranteed to work correctly.
+        if loss_config_dict['name'] == 'MSELoss' and 'weights' in loss_config_dict['params']:
+            print("INFO: 'weights' parameter is not applicable for 'MSELoss'. Removing from config.")
+            del loss_config_dict['params']['weights']
+
+        # Update the main config with the fully resolved and cleaned loss function dictionary
         lm_cfg['loss_function'] = loss_config_dict
+
+        # --- END OF MODIFIED SECTION ---
 
         # Resolve the model's `out_dim`
         arch_params = resolved_config['model']['architecture'].setdefault('params', {})
@@ -188,24 +225,43 @@ class PipelineBuilder:
         print("INFO: Building Trainer...")
         trainer_cfg = self.final_config.trainer
 
-        run_name_prefix = self.final_config.run_name
-        if run_name_prefix is None:
-            # Create descriptive run name if None is provided
-            # Format: ModelName_YYYYMMDD-HHMMSS
-            model_name = self.final_config.model.architecture.name
-            timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-            run_name_prefix = f"{model_name}_{timestamp}"
-            print(f"INFO: run_name not provided. Generated run name: {run_name_prefix}")
+        # Get wandb from configs
+        wandb_cfg = self.final_config.wandb or {}
+        user_provided_name = self.final_config.run_name
+        model_name = self.final_config.model.architecture.name
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+
+        if user_provided_name:
+            # Case 1: A user provides a 'run_name' in the config (for standalone runs).
+            final_run_name = f"{user_provided_name}_{model_name}_{timestamp}"
+            print(f"INFO: Using user-provided name to generate run name: {final_run_name}")
+        elif wandb_cfg.get("name"):
+            # Case 2: The orchestrator provides a name in the 'wandb' dict.
+            base_name = wandb_cfg.get("name")
+            final_run_name = f"{base_name}_{model_name}_{timestamp}"
+            print(f"INFO: Using orchestrator-provided name to generate run name: {final_run_name}")
+        else:
+            # Case 3: No name was provided at all.
+            final_run_name = f"{model_name}_{timestamp}"
+            print(f"INFO: No run name provided. Generated default name: {final_run_name}")
+
+        group_name = wandb_cfg.get("group")
+        tags = wandb_cfg.get("tags")
 
         wandb_logger = WandbLogger(
-            name=run_name_prefix,  # Use wandb generated or user provided name
+            name=final_run_name,
             project=self.final_config.project_name,
             entity="lmse-university-of-toronto",
-            log_model=False, # Do not upload model checkpoints
-            config=self.final_config.dict() # Log the final, resolved config
+            group=group_name,
+            tags=tags,
+            log_model=False,
+            config=self.final_config.dict()
         )
 
-        checkpoint_dir = f"checkpoints/{run_name_prefix}"
+        if group_name:
+            checkpoint_dir = f"checkpoints/{group_name}/{final_run_name}"
+        else:
+            checkpoint_dir = f"checkpoints/{final_run_name}"
         print(f"INFO: Checkpoints will be saved in: {checkpoint_dir}")
 
         cb_cfg = trainer_cfg.callbacks.checkpoint
