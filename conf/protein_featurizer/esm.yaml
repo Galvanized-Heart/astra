@@ -1,0 +1,5 @@
+protein:
+  name: "ESMFeaturizer"
+  params:
+    model_name: "facebook/esm2_t33_650M_UR50D"
+    max_length: 1022

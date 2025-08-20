@@ -1,0 +1,55 @@
+defaults:
+  # If _self_ is omitted, everything outside the `defaults` list will be ignored
+  - _self_
+
+  # - folder_name: yaml_name
+  - experiment_mode: multi_task/direct # sets target_column, loss, and recomposition by default
+  #- target_columns: all
+  #- loss: masked_mse
+  #- recomposition: none
+  
+  - data: hpo
+  - model: linear
+  - lr_scheduler: plateau
+  - protein_featurizer: esm
+  - ligand_featurizer: morgan
+
+  # To use the slurm launcher by default, uncomment the line below
+  # - override hydra/launcher: submitit_slurm
+
+
+
+# --- Static Configurations ---
+seed: 42
+project_name: "astra"
+
+data:
+  batch_size: 64
+  featurizer_batch_size: 128
+  target_columns: ${target_columns}
+  target_transform: "log10"
+
+
+
+# --- Composed Configurations ---
+featurizers:
+  protein: ${protein_featurizer}
+  ligand: ${ligand_featurizer}
+
+model:
+  architecture: ${model.architecture}
+  lightning_module:
+    lr: 0.001
+    optimizer: "AdamW"
+    loss_function: ${loss}
+    recomposition_func: ${recomposition}
+    lr_scheduler: ${lr_scheduler}
+
+trainer:
+  epochs: 20
+  device: "auto"
+  callbacks:
+    checkpoint:
+      monitor: "valid_loss_epoch"
+      save_top_k: 1
+      mode: "min"

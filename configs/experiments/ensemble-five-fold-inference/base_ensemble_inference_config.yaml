@@ -1,0 +1,53 @@
+project_name: "astra"
+run_name: "top_5_final_cv_ensembles"
+tags: ["top-5-ensemble", "final-cv-analysis"]
+
+# --- Global settings for data loading ---
+data_config:
+  # Path template for validation data. The {fold_num} will be replaced.
+  valid_path_template: "data/davis_kinase/folds/davis_test_fold_{fold_num}.csv"
+  batch_size: 64 # Use a larger batch size for inference
+  featurizer_batch_size: 64
+  target_columns: ["kcat", "KM", "Ki"]
+  target_transform: null # Or whatever was used in training
+
+# --- Define the specific ensembles to build and evaluate ---
+ensembles:
+  # --- Example 1: A Multi-Task Direct Prediction Ensemble ---
+  - name: "fold_0_multitask_direct"
+    fold_num: 0
+    task_type: "multi_task"
+    recomposition_func: null # Or "direct"
+    models:
+      - "/path/to/checkpoints/.../fold-0-model-A.ckpt"
+      - "/path/to/checkpoints/.../fold-0-model-B.ckpt"
+      - "/path/to/checkpoints/.../fold-0-model-C.ckpt"
+      - "/path/to/checkpoints/.../fold-0-model-D.ckpt"
+      - "/path/to/checkpoints/.../fold-0-model-E.ckpt"
+
+  # --- Example 2: A Multi-Task Advanced Recomposition Ensemble ---
+  - name: "fold_0_multitask_advanced_recomp"
+    fold_num: 0
+    task_type: "multi_task"
+    recomposition_func: "AdvancedRecomp"
+    models:
+      - "/path/to/adv_recomp/fold-0-model-A.ckpt"
+      # ... 4 more paths
+      
+  # --- Example 3: A Single-Task Ensemble (structured differently) ---
+  - name: "fold_1_singletask"
+    fold_num: 1
+    task_type: "single_task"
+    targets:
+      kcat:
+        - "/path/to/kcat_models/fold-1-model-A.ckpt"
+        - "/path/to/kcat_models/fold-1-model-B.ckpt"
+        # ... 3 more paths
+      KM:
+        - "/path/to/km_models/fold-1-model-A.ckpt"
+        - "/path/to/km_models/fold-1-model-B.ckpt"
+        # ... 3 more paths
+      Ki:
+        - "/path/to/ki_models/fold-1-model-A.ckpt"
+        - "/path/to/ki_models/fold-1-model-B.ckpt"
+        # ... 3 more paths

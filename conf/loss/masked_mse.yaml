@@ -1,0 +1,4 @@
+loss_function:
+  name: "MaskedMSELoss"
+  params:
+    weights: [0.33, 0.33, 0.33]

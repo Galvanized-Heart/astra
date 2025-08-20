@@ -1,0 +1,3 @@
+defaults:
+  - loss: mse
+  - recomposition: none

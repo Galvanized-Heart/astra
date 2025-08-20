@@ -1,0 +1,4 @@
+defaults:
+  - target_columns: all
+  - loss: masked_mse
+  - recomposition: none

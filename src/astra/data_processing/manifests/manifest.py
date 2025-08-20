@@ -126,12 +126,12 @@ def create_manifests(
     print(f"Found {len(unique_proteins)} unique proteins and {len(unique_ligands)} unique ligands.")
 
     # Run feature generation process
-    print("\n--- Step 3: Generating features ---")
+    print("\n--- Step 2: Generating features ---")
     protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, batch_size)
     ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, batch_size)
 
     # Create final manifests
-    print("\n--- Step 4: Creating final manifest files ---")
+    print("\n--- Step 3: Creating final manifest files ---")
     manifest_files = {}
     for split_name, file_path in split_files.items():
         print(f"Creating manifest for '{split_name}'...")
@@ -141,8 +141,8 @@ def create_manifests(
         split_df['protein_feature_path'] = split_df['protein_sequence'].map(protein_map)
         split_df['ligand_feature_path'] = split_df['ligand_smiles'].map(ligand_map)
 
-        # Select final columns and drop any invalid rows
-        manifest_df = split_df[['protein_feature_path', 'ligand_feature_path', 'kcat', 'KM', 'Ki']].dropna()
+        # Select final columns
+        manifest_df = split_df[['protein_feature_path', 'ligand_feature_path', 'kcat', 'KM', 'Ki']] 
 
         # Save manifest files and their paths
         manifest_path = output_dir / f"manifest_{split_name}.csv"

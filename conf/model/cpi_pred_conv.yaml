@@ -1,0 +1,9 @@
+architecture:
+  name: "CpiPredConvModel"
+  params: 
+    hid_dim: 128
+    kernal_1: 9
+    conv_out_dim: 64
+    kernal_2: 5
+    last_hid: 256
+    dropout: 0.1
