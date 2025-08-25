@@ -34,8 +34,8 @@ class ProteinLigandDataset(Dataset):
         ligand_embedding_path = row["ligand_feature_path"]
 
         # Load from safetensors files
-        protein_tensors = load_file(protein_embedding_path)
-        ligand_tensors = load_file(ligand_embedding_path)
+        protein_tensors = load_file(str(protein_embedding_path))
+        ligand_tensors = load_file(str(ligand_embedding_path))
 
         # Extract the tensors using the keys we defined during saving
         protein_embedding = protein_tensors["embedding"]

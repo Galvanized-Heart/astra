@@ -1,4 +1,3 @@
-loss_function:
-  name: "MaskedMSELoss"
-  params:
-    weights: [0.33, 0.33, 0.33]
+name: "MaskedMSELoss"
+params:
+  weights: [0.33, 0.33, 0.33]

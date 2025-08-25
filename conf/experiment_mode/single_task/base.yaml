@@ -1,3 +1,4 @@
+# @package _global_
 defaults:
-  - loss: mse
-  - recomposition: none
+  - override /loss: mse
+  - override /recomposition: none

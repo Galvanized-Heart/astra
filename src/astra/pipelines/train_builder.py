@@ -3,6 +3,7 @@ import warnings
 import copy
 from pathlib import Path
 from datetime import datetime
+from omegaconf import DictConfig, OmegaConf
 
 # --- PyTorch Lightning and W&B ---
 import lightning as L
@@ -27,15 +28,15 @@ class PipelineBuilder:
     an internal helper method, ensuring the object is always in a valid state.
     """
 
-    def __init__(self, config_dict: dict):
+    def __init__(self, config_dict: DictConfig):
         """
         Initializes the builder by creating a fully validated and resolved configuration.
 
         Args:
-            config_dict (dict): The raw dictionary loaded directly from the YAML file.
+            config_dict (DictConfig): The raw config object from Hydra.
         """
         print("INFO: Initializing PipelineBuilder...")
-        # Correct and validate config provided by user
+        # The config is now a DictConfig object, not a dict
         self.final_config: FullConfig = self._resolve_and_validate_config(config_dict)
         print("INFO: Configuration resolved and validated successfully!")
 
@@ -47,13 +48,13 @@ class PipelineBuilder:
         self.model = None
         self.trainer = None
 
-    def _resolve_and_validate_config(self, config_dict: dict) -> FullConfig:
+    def _resolve_and_validate_config(self, config_dict: DictConfig) -> FullConfig:
         """
         Takes a raw config dict, applies defaults and validation logic, and returns
         a validated Pydantic FullConfig object.
 
         Args:
-            config_dict (dict): The raw user-provided configuration.
+            config_dict (DictConfig): The raw config object from Hydra.
 
         Returns:
             FullConfig: A validated and resolved Pydantic configuration object.
@@ -62,36 +63,10 @@ class PipelineBuilder:
             ValueError: If the configuration is logically inconsistent.
             pydantic.ValidationError: If the configuration violates the defined schema.
         """
-        resolved_config = copy.deepcopy(config_dict)
+        resolved_config = config_dict.copy()
 
-        # --- START OF MODIFIED SECTION ---
-
-        """# Resolve `target_columns` and `loss_function`
-        data_cfg = resolved_config.setdefault('data', {})
-        target_columns = data_cfg.setdefault('target_columns', ["kcat", "KM", "Ki"])
-        lm_cfg = resolved_config['model']['lightning_module']
-
-        # Set default loss function
-        if 'loss_function' not in lm_cfg or lm_cfg['loss_function'] is None:
-            loss_name = "MaskedMSELoss" if len(target_columns) > 1 else "MSELoss"
-            lm_cfg['loss_function'] = {'name': loss_name, 'params': {}} # Default to a dict structure
-            print(f"INFO: Defaulted 'loss_function' to '{loss_name}'.")
-
-        # Normalize loss function config to a dictionary for consistent handling
-        loss_config_raw = lm_cfg['loss_function']
-        if isinstance(loss_config_raw, str):
-            loss_config_dict = {'name': loss_config_raw, 'params': {}}
-        else:
-            loss_config_dict = loss_config_raw
-            loss_config_dict.setdefault('params', {})
-
-        # Clean up incompatible parameters (MSELoss can't take 'weights' as param)
-        if loss_config_dict['name'] == 'MSELoss' and 'weights' in loss_config_dict['params']:
-            print("INFO: 'weights' parameter is not applicable for 'MSELoss'. It will be removed from the configuration.")
-            del loss_config_dict['params']['weights']
-
-        # Update the main config with the cleaned and normalized loss function dict
-        lm_cfg['loss_function'] = loss_config_dict"""
+        # Temporarily disable struct mode to allow dynamic modifications
+        OmegaConf.set_struct(resolved_config, False)
 
         # Resolve `target_columns` and establish lightning_module config (`lm_cfg`)
         data_cfg = resolved_config.setdefault('data', {})
@@ -126,8 +101,6 @@ class PipelineBuilder:
         # Update the main config with the fully resolved and cleaned loss function dictionary
         lm_cfg['loss_function'] = loss_config_dict
 
-        # --- END OF MODIFIED SECTION ---
-
         # Resolve the model's `out_dim`
         arch_params = resolved_config['model']['architecture'].setdefault('params', {})
         recomp_func_name = lm_cfg.get('recomposition_func')
@@ -144,11 +117,21 @@ class PipelineBuilder:
         elif user_out_dim != expected_out_dim:
             raise ValueError(f"Config Mismatch: Model 'out_dim' ({user_out_dim}) must be {expected_out_dim} to match {source}.")
 
+        # Re-enable struct mode for safety
+        OmegaConf.set_struct(resolved_config, True)
+
         # Validate corrected configuration with Pydantic
         try:
-            return FullConfig(**resolved_config)
+            # Convert the OmegaConf object to a primitive python dict for Pydantic.
+            # `resolve=True` ensures all interpolations like `${...}` are resolved to their values.
+            final_dict = OmegaConf.to_container(resolved_config, resolve=True, throw_on_missing=True)
+            return FullConfig(**final_dict)
         except ValidationError as e:
             print("\nERROR: The final, resolved configuration is invalid!")
+            # Also print the resolved config to help debug
+            print("--- Final Resolved Config ---")
+            print(OmegaConf.to_yaml(resolved_config))
+            print("-----------------------------")
             raise e
 
     def build_featurizers(self):
@@ -171,7 +154,7 @@ class PipelineBuilder:
         print("INFO: Building datamodule...")
         data_cfg = self.final_config.data
         self.datamodule = AstraDataModule(
-            data_paths={'train': data_cfg.train_path, 'valid': data_cfg.valid_path},
+            data_paths={'train': str(data_cfg.train_path), 'valid': str(data_cfg.valid_path)},
             protein_featurizer=self.protein_featurizer,
             ligand_featurizer=self.ligand_featurizer,
             batch_size=data_cfg.batch_size,
@@ -209,6 +192,10 @@ class PipelineBuilder:
 
         target_columns = self.final_config.data.target_columns
 
+        log_transform_active = (self.final_config.data.target_transform == "log10")
+        if log_transform_active:
+            print("INFO: Log10 transformation is active. Recomposition will operate in log space.")
+
         self.model = AstraModule(
             model=self.model_architecture,
             lr=lm_cfg.lr,
@@ -216,6 +203,7 @@ class PipelineBuilder:
             optimizer_class=optimizer_class,
             target_columns=target_columns,
             recomposition_func=recomp_func,
+            log_transform_active=log_transform_active,
             lr_scheduler_class=scheduler_class,
             lr_scheduler_kwargs=scheduler_kwargs
         )

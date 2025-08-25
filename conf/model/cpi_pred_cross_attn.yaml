@@ -1,5 +1,0 @@
-architecture:
-  name: "CpiPredCrossAttnModel"
-  params: 
-    n_heads: 4
-    d_ff: 1024

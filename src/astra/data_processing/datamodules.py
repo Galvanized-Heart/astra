@@ -105,12 +105,12 @@ class AstraDataModule(L.LightningDataModule):
 
     def test_dataloader(self):
         """Called by `Trainer().test`."""
-        print("AstraDataModule.test_dataloader() is not yet implenmented!")
+        print("AstraDataModule.test_dataloader() is not yet implemented!")
         pass
         #return DataLoader(self.test_dataset, batch_size=self.batch_size, shuffle=False, num_workers=4)
 
     def predict_dataloader(self):
         """Called by `Trainer().predict`."""
-        print("AstraDataModule.predict_dataloader() is not yet implenmented!")
+        print("AstraDataModule.predict_dataloader() is not yet implemented!")
         pass
         #return DataLoader(self.predict_dataset, batch_size=self.batch_size, shuffle=False, num_workers=4)

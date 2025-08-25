@@ -215,7 +215,7 @@ experiments/
 wandb/
 checkpoints/
 *.out
+.archived
 
 # Exceptions
-!configs/data/
-!configs/experiments/
+!conf/data/

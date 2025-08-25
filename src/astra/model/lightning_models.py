@@ -26,7 +26,8 @@ class AstraModule(L.LightningModule):
                 loss_func: nn.Module, 
                 optimizer_class: Type[torch.optim.Optimizer],
                 target_columns: List[str], 
-                recomposition_func: Optional[Callable] = None,  
+                recomposition_func: Optional[Callable] = None,
+                log_transform_active: bool = False,
                 lr_scheduler_class: Optional[Type] = None, 
                 lr_scheduler_kwargs: Optional[dict] = None
             ):
@@ -55,6 +56,7 @@ class AstraModule(L.LightningModule):
         self.model = model
         self.loss_func = loss_func
         self.recomposition_func = recomposition_func
+        self.log_transform_active = log_transform_active
 
         self.optimizer_class = optimizer_class
         self.lr_scheduler_class = lr_scheduler_class
@@ -133,7 +135,7 @@ class AstraModule(L.LightningModule):
 
         # Compute kinetic recomposition
         if self.recomposition_func:
-            y_hat = self.recomposition_func(output)
+            y_hat = self.recomposition_func(rates=output, log_transform=self.log_transform_active)
         else:
             y_hat = output
 

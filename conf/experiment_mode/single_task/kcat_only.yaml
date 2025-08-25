@@ -1,3 +1,4 @@
+# @package _global_
 defaults:
-  - base
-  - target_columns: kcat_only
+  - single_task/base
+  - override /target_columns: kcat_only

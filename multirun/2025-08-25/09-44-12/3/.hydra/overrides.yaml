@@ -1,0 +1,2 @@
+- model=cpi_pred_cross_attn
+- model.lightning_module.lr=0.0001

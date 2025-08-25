@@ -142,7 +142,10 @@ def create_manifests(
         split_df['ligand_feature_path'] = split_df['ligand_smiles'].map(ligand_map)
 
         # Select final columns
-        manifest_df = split_df[['protein_feature_path', 'ligand_feature_path', 'kcat', 'KM', 'Ki']] 
+        manifest_df = split_df[['protein_feature_path', 'ligand_feature_path', 'kcat', 'KM', 'Ki']]
+
+        # Drop NaN rows from only protein and ligand
+        manifest_df = manifest_df.dropna(subset=['protein_feature_path', 'ligand_feature_path'])
 
         # Save manifest files and their paths
         manifest_path = output_dir / f"manifest_{split_name}.csv"

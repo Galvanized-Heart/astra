@@ -1,18 +1,21 @@
 defaults:
-  # If _self_ is omitted, everything outside the `defaults` list will be ignored
-  - _self_
 
   # - folder_name: yaml_name
-  - experiment_mode: multi_task/direct # sets target_column, loss, and recomposition by default
-  #- target_columns: all
-  #- loss: masked_mse
-  #- recomposition: none
-  
+  - target_columns: all
+  - loss: masked_mse
+  - recomposition: none  
   - data: hpo
-  - model: linear
+  - architecture: linear
   - lr_scheduler: plateau
   - protein_featurizer: esm
   - ligand_featurizer: morgan
+
+  # Set this after all other defaults since it uses global's defined by the package imports above!
+  - experiment_mode: multi_task/direct # sets target_column, loss, and recomposition by default
+
+
+  # If _self_ is omitted, everything outside the `defaults` list will be ignored
+  - _self_
 
   # To use the slurm launcher by default, uncomment the line below
   # - override hydra/launcher: submitit_slurm
@@ -37,7 +40,7 @@ featurizers:
   ligand: ${ligand_featurizer}
 
 model:
-  architecture: ${model.architecture}
+  architecture: ${architecture}
   lightning_module:
     lr: 0.001
     optimizer: "AdamW"

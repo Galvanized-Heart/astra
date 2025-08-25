@@ -1,0 +1,4 @@
+name: "LinearBaselineModel"
+params: 
+  dim_1: 32
+  dim_2: 64

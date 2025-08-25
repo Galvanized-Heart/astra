@@ -1,3 +1,4 @@
+# @package _global_
 defaults:
-  - base
-  - recomposition: basic
+  - multi_task/base
+  - override /recomposition: basic

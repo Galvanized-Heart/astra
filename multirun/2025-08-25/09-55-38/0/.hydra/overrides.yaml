@@ -1,0 +1,2 @@
+- model=cpi_pred_conv
+- model.lightning_module.lr=0.001
