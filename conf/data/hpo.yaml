@@ -1,3 +1,5 @@
 # fold_0_train was split into hpo_train and hpo_valid
 train_path: "data/split/hpo_splits_balanced/hpo_train.csv"
 valid_path: "data/split/hpo_splits_balanced/hpo_valid.csv"
+
+tag: "hpo_split"

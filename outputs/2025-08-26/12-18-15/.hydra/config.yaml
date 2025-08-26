@@ -1,0 +1,65 @@
+target_columns:
+- kcat
+- KM
+- Ki
+loss:
+  name: MaskedMSELoss
+  params:
+    weights:
+    - 0.33
+    - 0.33
+    - 0.33
+recomposition:
+  recomposition_func: BasicRecomp
+tags:
+- +"arch:linear"
+data:
+  train_path: data/split/hpo_splits_balanced/hpo_train.csv
+  valid_path: data/split/hpo_splits_balanced/hpo_valid.csv
+  batch_size: 64
+  featurizer_batch_size: 128
+  target_columns: ${target_columns}
+  target_transform: log10
+architecture:
+  name: LinearBaselineModel
+  params:
+    dim_1: 32
+    dim_2: 64
+lr_scheduler:
+  name: ReduceLROnPlateau
+  params:
+    monitor: valid_loss_epoch
+    mode: min
+    factor: 0.1
+    patience: 3
+protein_featurizer:
+  name: ESMFeaturizer
+  params:
+    model_name: facebook/esm2_t33_650M_UR50D
+    max_length: 1022
+ligand_featurizer:
+  name: MorganFeaturizer
+  params:
+    radius: 2
+    fp_size: 2048
+seed: 42
+project_name: astra
+featurizers:
+  protein: ${protein_featurizer}
+  ligand: ${ligand_featurizer}
+model:
+  architecture: ${architecture}
+  lightning_module:
+    lr: 0.001
+    optimizer: AdamW
+    loss_function: ${loss}
+    recomposition_func: ${recomposition.recomposition_func}
+    lr_scheduler: ${lr_scheduler}
+trainer:
+  epochs: 20
+  device: auto
+  callbacks:
+    checkpoint:
+      monitor: valid_loss_epoch
+      save_top_k: 1
+      mode: min

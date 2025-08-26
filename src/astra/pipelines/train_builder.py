@@ -73,6 +73,12 @@ class PipelineBuilder:
         target_columns = data_cfg.setdefault('target_columns', ["kcat", "KM", "Ki"])
         lm_cfg = resolved_config['model']['lightning_module']
 
+        # Normalize the recomposition_func from a potentially empty dict to None
+        recomp_func_raw = lm_cfg.get('recomposition_func')
+        if isinstance(recomp_func_raw, dict) and not recomp_func_raw:
+            print("INFO: 'recomposition_func' was an empty dict. Coercing to 'None'.")
+            lm_cfg['recomposition_func'] = None
+
         # Normalize the loss_function part of the config to always be a dictionary
         loss_config_raw = lm_cfg.get('loss_function', {})
         if isinstance(loss_config_raw, str):
@@ -233,15 +239,30 @@ class PipelineBuilder:
             final_run_name = f"{model_name}_{timestamp}"
             print(f"INFO: No run name provided. Generated default name: {final_run_name}")
 
+        raw_tags = self.final_config.tags or []
+        final_tags = []
+        for tag in raw_tags:
+            if tag is None:
+                continue
+            if isinstance(tag, list) or isinstance(tag, tuple):
+                # If the tag is a list (like target_columns), extend the final list
+                final_tags.extend([str(t) for t in tag])
+            else:
+                # Otherwise, just append the tag
+                final_tags.append(str(tag))
+
+        # Remove duplicates and sort for consistency
+        final_tags = sorted(list(set(final_tags)))
+        print(f"INFO: Final W&B tags for this run: {final_tags}")
+
         group_name = wandb_cfg.get("group")
-        tags = wandb_cfg.get("tags")
 
         wandb_logger = WandbLogger(
             name=final_run_name,
             project=self.final_config.project_name,
             entity="lmse-university-of-toronto",
             group=group_name,
-            tags=tags,
+            tags=final_tags,
             log_model=False,
             config=self.final_config.dict()
         )
@@ -280,38 +301,47 @@ class PipelineBuilder:
 
     def run(self, extra_callbacks: list = None):
         """Builds all components in order and starts the training process."""
-        seed = self.final_config.seed
-        if seed is not None:
-            L.seed_everything(seed, workers=True)
+        try:
+            seed = self.final_config.seed
+            if seed is not None:
+                L.seed_everything(seed, workers=True)
 
-        self.build_featurizers()
-        self.build_datamodule()
-        self.build_model_architecture()
-        self.build_lightning_module()
-        self.build_trainer(extra_callbacks=extra_callbacks)
-        
-        print("\n--- LAUNCHING TRAINING ---")
-        self.trainer.fit(self.model, self.datamodule)
-
-        # Get checkpoint callback
-        checkpoint_callback = None
-        for cb in self.trainer.callbacks:
-            if isinstance(cb, ModelCheckpoint):
-                checkpoint_callback = cb
-                break
-
-        # Upload path to best model checkpoint to wandb
-        if checkpoint_callback and checkpoint_callback.best_model_path:
-            best_path = checkpoint_callback.best_model_path
-            print(f"INFO: Best model saved locally at: {best_path}")
+            self.build_featurizers()
+            self.build_datamodule()
+            self.build_model_architecture()
+            self.build_lightning_module()
+            self.build_trainer(extra_callbacks=extra_callbacks)
             
-            # Log the path as text metadata to the run's summary
-            self.trainer.logger.experiment.summary["best_local_checkpoint_path"] = best_path
+            print("\n--- LAUNCHING TRAINING ---")
+            self.trainer.fit(self.model, self.datamodule)
 
-        # Return metric
-        final_metric = self.trainer.callback_metrics.get(self.final_config.trainer.callbacks.checkpoint.monitor)
-        if final_metric is not None:
-            return final_metric.item()
-        else:
-            print(f"WARNING: Monitored metric '{self.final_config.trainer.callbacks.checkpoint.monitor}' not found in trainer.callback_metrics.")
-            return float('inf')
+            # Get checkpoint callback
+            checkpoint_callback = None
+            for cb in self.trainer.callbacks:
+                if isinstance(cb, ModelCheckpoint):
+                    checkpoint_callback = cb
+                    break
+
+            # Upload path to best model checkpoint to wandb
+            if checkpoint_callback and checkpoint_callback.best_model_path:
+                best_path = checkpoint_callback.best_model_path
+                print(f"INFO: Best model saved locally at: {best_path}")
+                
+                # Log the path as text metadata to the run's summary
+                self.trainer.logger.experiment.summary["best_local_checkpoint_path"] = best_path
+
+            # Return metric
+            final_metric = self.trainer.callback_metrics.get(self.final_config.trainer.callbacks.checkpoint.monitor)
+            if final_metric is not None:
+                return final_metric.item()
+            else:
+                print(f"WARNING: Monitored metric '{self.final_config.trainer.callbacks.checkpoint.monitor}' not found in trainer.callback_metrics.")
+                return float('inf')
+            
+        finally:
+            # Ensure that the W&B run is properly finished and the process is cleaned up
+            if self.trainer and self.trainer.logger:
+                print("INFO: Finalizing W&B run...")
+                # The logger is a WandbLogger instance, its experiment is the run object
+                self.trainer.logger.experiment.finish()
+                print("INFO: W&B run finalized.")

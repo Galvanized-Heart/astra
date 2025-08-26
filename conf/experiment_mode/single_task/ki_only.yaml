@@ -1,3 +1,4 @@
+# @package _global_
 defaults:
-  - base
-  - target_columns@_global_: ki_only
+  - single_task/base
+  - override /target_columns: ki_only
