@@ -7,7 +7,7 @@ defaults:
   - target_columns: all
   - loss: masked_mse
   - recomposition: basic
-  - data: hpo
+  - data: test_100
   - architecture: linear
   - lr_scheduler: plateau
   - protein_featurizer: esm

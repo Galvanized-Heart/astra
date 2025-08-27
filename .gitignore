@@ -211,6 +211,8 @@ __marimo__/
 # Directories from ML projects with large files
 data/
 results/
+outputs/
+multirun/
 experiments/
 wandb/
 checkpoints/

@@ -71,13 +71,13 @@ class AstraModule(L.LightningModule):
         # Track each target parameter
         for param_name in self.target_columns:
             metrics_for_param = MetricCollection({
-                'MSE': MeanSquaredError(),
+                #'MSE': MeanSquaredError(),
                 'RMSE': MeanSquaredError(squared=False),
                 'MAE': MeanAbsoluteError(),
                 'Pearson': PearsonCorrCoef(),
-                'R2': R2Score(),
-                'Spearman': SpearmanCorrCoef(),
-                'Kendall': KendallRankCorrCoef()
+                #'R2': R2Score(),
+                #'Spearman': SpearmanCorrCoef(),
+                #'Kendall': KendallRankCorrCoef()
             })
             
             # Create separate collections for train and valid, with a parameter-specific prefix
@@ -186,6 +186,9 @@ class AstraModule(L.LightningModule):
             mask = ~torch.isnan(targets_i)
             if mask.sum() > 0:
                 self.valid_metrics[param_name].update(preds_i[mask], targets_i[mask])
+        
+        # Return predictions for PredictionSaver callback
+        return {'preds': y_hat, 'targets': y}
 
     def on_training_epoch_end(self):
         """Functionality for logging training metrics at every epoch."""

@@ -9,6 +9,7 @@ from omegaconf import DictConfig, OmegaConf
 import lightning as L
 from lightning.pytorch.loggers import WandbLogger
 from lightning.pytorch.callbacks import ModelCheckpoint
+from astra.model.callbacks.predsaver import PredictionSaver
 
 # --- Astra Imports ---
 from astra.data_processing.datamodules import AstraDataModule
@@ -257,6 +258,14 @@ class PipelineBuilder:
 
         group_name = wandb_cfg.get("group")
 
+        split_tag = "untagged"  # A safe default if no split tag is found
+        for tag in final_tags:
+            if tag.endswith("_split"):
+                split_tag = tag
+                break  # Found the first one, stop searching
+        print(f"INFO: Using split tag '{split_tag}' for predictions directory.")
+
+        # Instantiate wandb logger
         wandb_logger = WandbLogger(
             name=final_run_name,
             project=self.final_config.project_name,
@@ -273,6 +282,7 @@ class PipelineBuilder:
             checkpoint_dir = f"checkpoints/{final_run_name}"
         print(f"INFO: Checkpoints will be saved in: {checkpoint_dir}")
 
+        # Instantiate model checkpoint callback
         cb_cfg = trainer_cfg.callbacks.checkpoint
         checkpoint_callback = ModelCheckpoint(
             monitor=cb_cfg.monitor,
@@ -283,7 +293,10 @@ class PipelineBuilder:
             save_last=True
         )
 
-        callbacks = [checkpoint_callback]
+        # Instantiate prediction saver callback
+        prediction_saver_callback = PredictionSaver(target_columns=self.final_config.data.target_columns, split_tag=split_tag)
+
+        callbacks = [checkpoint_callback, prediction_saver_callback]
 
         # If any extra_callbacks were passed, add them.
         if extra_callbacks:
