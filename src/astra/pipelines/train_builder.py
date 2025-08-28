@@ -335,13 +335,22 @@ class PipelineBuilder:
                     checkpoint_callback = cb
                     break
 
-            # Upload path to best model checkpoint to wandb
-            if checkpoint_callback and checkpoint_callback.best_model_path:
-                best_path = checkpoint_callback.best_model_path
-                print(f"INFO: Best model saved locally at: {best_path}")
-                
-                # Log the path as text metadata to the run's summary
-                self.trainer.logger.experiment.summary["best_local_checkpoint_path"] = best_path
+            if checkpoint_callback:
+                # Upload path to best model checkpoint to wandb
+                if checkpoint_callback.best_model_path:
+                    best_path = checkpoint_callback.best_model_path
+                    print(f"INFO: Best model saved locally at: {best_path}")
+                    
+                    # Log the path as text metadata to the run's summary
+                    self.trainer.logger.experiment.summary["best_local_checkpoint_path"] = best_path
+
+                # Upload path to last epoch model checkpoint to wandb
+                if checkpoint_callback.last_model_path:
+                    last_path = checkpoint_callback.last_model_path
+                    print(f"INFO: Last model saved locally at: {last_path}")
+
+                    # Log the path as text metadata to the run's summary
+                    self.trainer.logger.experiment.summary["last_local_checkpoint_path"] = last_path
 
             # Return metric
             final_metric = self.trainer.callback_metrics.get(self.final_config.trainer.callbacks.checkpoint.monitor)

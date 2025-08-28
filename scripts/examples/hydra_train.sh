@@ -11,8 +11,7 @@ echo "Running 4 experiments"
 
 # Execute the script by specifying its path from the root
 # The working directory remains the project root, so Hydra will correctly find ./conf
-uv run ${PROJECT_ROOT}/src/astra/pipelines/hydra_train.py experiment_mode=single_task/ki_only \
-    target_columns=ki_only \
+uv run ${PROJECT_ROOT}/src/astra/pipelines/hydra_train.py experiment_mode=single_task/km_only \
     data=test_100 \
     trainer.epochs=2
 

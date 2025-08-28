@@ -13,78 +13,81 @@ except ImportError:
     WandbLogger = None
 
 class PredictionSaver(L.Callback):
-    def __init__(self, target_columns, split_tag):
+    def __init__(self, target_columns, split_tag: str):
         super().__init__()
         self.target_columns = target_columns
         self.split_tag = split_tag
         self._val_outputs = []
 
     def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx=0):
-        # outputs is {'preds': y_hat, 'targets': y} from validation_step
         self._val_outputs.append(outputs)
 
     def on_validation_epoch_end(self, trainer, pl_module):
-        # Only perform saving/logging on the main process (rank 0) in DDP
         if not trainer.is_global_zero:
             return
-
-        # Check if this epoch is the best one so far
-        if self._is_best_epoch(trainer):
-            save_path = self._construct_save_path(trainer)
-
-            # 1. Gather all predictions and targets
-            preds = torch.cat([x['preds'] for x in self._val_outputs]).cpu().numpy()
-            targets = torch.cat([x['targets'] for x in self._val_outputs]).cpu().numpy()
-
-            # 2. Create a DataFrame
-            pred_cols = [f"{col}_pred" for col in self.target_columns]
-            results_df = pd.DataFrame(
-                data=np.hstack([targets, preds]),
-                columns=self.target_columns + pred_cols
-            )
-
-            # Save results
-            results_df.to_csv(save_path, index=False)
             
-            # --- THIS IS THE MODIFIED PART ---
-            # 4. Log the local file path to the W&B run summary
-            self._log_path_to_wandb_summary(trainer, save_path)
+        # Determine if we need to save for "best" or "last"
+        is_best = self._is_best_epoch(trainer)
+        # Check if it's the last validation epoch (current_epoch is 0-indexed)
+        is_last = trainer.current_epoch == trainer.max_epochs - 1
 
-        # Clear stored outputs for the next validation epoch
+        # Save the 'best' predictions if this is the best epoch so far.
+        if is_best:
+            print(f"\nINFO: New best model found. Saving 'best' predictions...")
+            self._save_and_log(trainer, "best")
+
+        # Save the 'last' predictions if this is the final epoch.
+        # This will run even if the last epoch is also the best, creating a separate file.
+        if is_last:
+            print(f"\nINFO: Final epoch reached. Saving 'last' predictions...")
+            self._save_and_log(trainer, "last")
+
+        # Clear the stored outputs for the next validation epoch
         self._val_outputs.clear()
 
-    def _construct_save_path(self, trainer: L.Trainer) -> Path:
-        """Constructs a descriptive, unique path for the predictions CSV."""
-        # Base directory for all predictions
-        base_dir = "predictions"
+    def _save_and_log(self, trainer: L.Trainer, save_type: str):
+        """
+        A helper method to handle the logic of gathering, saving, and logging predictions.
         
-        # Get the unique run name from the logger
+        Args:
+            trainer (L.Trainer): The trainer object.
+            save_type (str): The type of save, either 'best' or 'last'.
+        """
+        # 1. Construct the path with a filename based on the save_type
+        base_dir = "predictions"
         run_name = trainer.logger.experiment.name
-
-        # Create the specific directory for this run
         save_dir = Path(base_dir) / self.split_tag / run_name
         save_dir.mkdir(parents=True, exist_ok=True)
+        save_path = save_dir / f"{save_type}_model_preds.csv"
         
-        # Construct filename
-        filename = f"best_model_preds.csv"
+        # 2. Gather predictions and targets
+        preds = torch.cat([x['preds'] for x in self._val_outputs]).cpu().numpy()
+        targets = torch.cat([x['targets'] for x in self._val_outputs]).cpu().numpy()
+
+        # 3. Create and save the DataFrame
+        pred_cols = [f"{col}_pred" for col in self.target_columns]
+        results_df = pd.DataFrame(
+            data=np.hstack([targets, preds]),
+            columns=self.target_columns + pred_cols
+        )
+        results_df.to_csv(save_path, index=False)
         
-        return save_dir / filename
+        # 4. Log rich metadata to W&B
+        absolute_path = save_path.resolve()
+        print(f"INFO: Saved '{save_type}' predictions to: {absolute_path}")
+
+        if wandb and isinstance(trainer.logger, WandbLogger):
+            summary_data = {
+                f"{save_type}_predictions_path": str(absolute_path)
+            }
+            
+            trainer.logger.experiment.log(summary_data)
+            
+            print(f"INFO: Logged '{save_type}' prediction metadata to W&B.")
 
     def _is_best_epoch(self, trainer: L.Trainer) -> bool:
-        """Checks if the current epoch is the best one according to the checkpoint callback."""
         checkpoint_callback = trainer.checkpoint_callback
         return (
             checkpoint_callback.best_model_score is not None and
             checkpoint_callback.current_score == checkpoint_callback.best_model_score
         )
-    
-    def _log_path_to_wandb_summary(self, trainer: L.Trainer, file_path: Path):
-        """Logs the absolute path of the prediction file to the W&B run's summary."""
-        # It's best practice to resolve to an absolute path for unambiguous reference
-        absolute_path = file_path.resolve()
-
-        if wandb and isinstance(trainer.logger, WandbLogger):
-            # Access the summary dictionary and add our custom key
-            trainer.logger.experiment.log({"best_predictions_path": str(absolute_path)})
-        else:
-            print("WARNING: W&B logger not found. Skipping prediction path logging.")

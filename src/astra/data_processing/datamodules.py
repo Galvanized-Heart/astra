@@ -61,6 +61,8 @@ class AstraDataModule(L.LightningDataModule):
         """
         Can include download, tokenization, and featurization logic, but is not required.
 
+        TODO: Add create_manifests to this section.
+
         - Note: Lightning recommends not assigning states here (e.g. self.x = y).
         """
         pass

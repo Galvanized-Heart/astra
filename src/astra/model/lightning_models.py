@@ -75,7 +75,7 @@ class AstraModule(L.LightningModule):
                 'RMSE': MeanSquaredError(squared=False),
                 'MAE': MeanAbsoluteError(),
                 'Pearson': PearsonCorrCoef(),
-                #'R2': R2Score(),
+                'R2': R2Score(),
                 #'Spearman': SpearmanCorrCoef(),
                 #'Kendall': KendallRankCorrCoef()
             })
