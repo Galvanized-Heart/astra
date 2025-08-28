@@ -63,6 +63,7 @@ def generate_and_save_features(
 
 def create_manifests(
         split_files: Dict[str, str],
+        target_columns: List[str],
         emb_dir: Path = None,
         output_dir: Path = None,
         protein_featurizer: Featurizer = None,
@@ -75,6 +76,8 @@ def create_manifests(
     Args:
         split_files (Dict[str, str]): A dictionary mapping split names (e.g. 'train', 'val')
                                         to their corresponding raw CSV file paths.
+        target_columns (List[str]): A list of the target column names to be included in the manifest.
+                                     This is used to filter out rows where these specific targets are missing.
         output_dir (Path): The directory where manifests and feature sub-folders will be saved.
         protein_featurizer (Featurizer): Protein featurizer object.
         ligand_featurizer (Featurizer): Ligand featurizer object.
@@ -130,6 +133,9 @@ def create_manifests(
     protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, batch_size)
     ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, batch_size)
 
+    # Define required columns dynamically based on target_columns in config
+    required_columns = ['protein_feature_path', 'ligand_feature_path'] + target_columns
+
     # Create final manifests
     print("\n--- Step 3: Creating final manifest files ---")
     manifest_files = {}
@@ -141,11 +147,14 @@ def create_manifests(
         split_df['protein_feature_path'] = split_df['protein_sequence'].map(protein_map)
         split_df['ligand_feature_path'] = split_df['ligand_smiles'].map(ligand_map)
 
-        # Select final columns
-        manifest_df = split_df[['protein_feature_path', 'ligand_feature_path', 'kcat', 'KM', 'Ki']]
-
         # Drop NaN rows from only protein and ligand
-        manifest_df = manifest_df.dropna(subset=['protein_feature_path', 'ligand_feature_path'])
+        manifest_df = split_df.dropna(subset=['protein_feature_path', 'ligand_feature_path'])
+
+        # Drop NaN rows for specified target columns
+        manifest_df = manifest_df.dropna(subset=target_columns, how='all')
+
+        # Select final columns
+        manifest_df = manifest_df[required_columns]
 
         # Save manifest files and their paths
         manifest_path = output_dir / f"manifest_{split_name}.csv"

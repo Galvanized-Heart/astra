@@ -1,0 +1,5 @@
+parameters:
+  architecture.params.dim_1:
+    values: [32, 64, 128, 256, 512, 1024]
+  architecture.params.dim_2:
+    values: [32, 64, 128, 256, 512, 1024]

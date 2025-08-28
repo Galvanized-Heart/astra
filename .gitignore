@@ -217,7 +217,8 @@ experiments/
 wandb/
 checkpoints/
 *.out
-.archived
+.archived/
+predictions/
 
 # Exceptions
 !conf/data/

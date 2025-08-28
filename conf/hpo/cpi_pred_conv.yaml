@@ -1,0 +1,15 @@
+parameters:
+  architecture.params.hid_dim:
+    values: [32, 64, 128, 256, 512]
+  architecture.params.kernal_1:
+    values: [3, 5, 7, 9, 11]
+  architecture.params.conv_out_dim:
+    values: [32, 64, 128, 256, 512]
+  architecture.params.kernal_2:
+    values: [3, 5, 7, 9, 11]
+  architecture.params.last_hid:
+    values: [32, 64, 128, 256, 512]
+  architecture.params.dropout:
+    distribution: uniform
+    min: 0.0
+    max: 0.5

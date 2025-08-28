@@ -16,7 +16,7 @@ def train(cfg: DictConfig) -> float:
     """
     print("--- CONFIG LOADED ---")
     print(OmegaConf.to_yaml(cfg))
-
+    
     # 1. --- Set up Deterministic Environment (from your old launcher) ---
     # This logic is critical and must run first.
     if cfg.get("seed") is not None:

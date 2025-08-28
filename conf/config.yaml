@@ -7,8 +7,8 @@ defaults:
   - target_columns: all
   - loss: masked_mse
   - recomposition: basic
-  - data: test_100
-  - architecture: linear
+  - data: hpo
+  - architecture: cpi_pred_self_attn
   - lr_scheduler: plateau
   - protein_featurizer: esm
   - ligand_featurizer: morgan
@@ -16,11 +16,11 @@ defaults:
   # Set this after all other defaults since it uses global's defined by the package imports above!
   - experiment_mode: multi_task/basic # sets target_column, loss, and recomposition by default
 
+  # To use the slurm launcher by default, uncomment the line below
+  #- override hydra/launcher: balam_slurm
+
   # If _self_ is omitted, everything outside the `defaults` list will be ignored
   - _self_
-
-  # To use the slurm launcher by default, uncomment the line below
-  # - override hydra/launcher: submitit_slurm
 
 tags:
   - ${target_columns}

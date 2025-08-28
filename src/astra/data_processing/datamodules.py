@@ -39,6 +39,7 @@ class AstraDataModule(L.LightningDataModule):
         # Create manifest features
         manifest_files = create_manifests(
             split_files=data_paths, 
+            target_columns=target_columns, 
             output_dir=PROJECT_ROOT/"data"/"manifest", 
             protein_featurizer=protein_featurizer, 
             ligand_featurizer=ligand_featurizer,

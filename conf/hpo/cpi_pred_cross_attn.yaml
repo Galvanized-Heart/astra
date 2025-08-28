@@ -1,0 +1,5 @@
+parameters:
+  architecture.params.n_heads:
+    values: [1, 2, 4, 8, 16, 32]
+  architecture.params.d_ff:
+    values: [32, 64, 128, 256, 512, 1024]
