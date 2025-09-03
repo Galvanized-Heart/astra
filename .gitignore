@@ -217,6 +217,7 @@ experiments/
 wandb/
 checkpoints/
 *.out
+*.err
 .archived/
 predictions/
 
