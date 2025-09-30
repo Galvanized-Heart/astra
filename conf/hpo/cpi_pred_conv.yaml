@@ -13,3 +13,21 @@ parameters:
     distribution: uniform
     min: 0.0
     max: 0.5
+
+  model.lightning_module.lr:
+    distribution: log_uniform_values
+    min: 1.0e-5
+    max: 1.0e-2
+
+  model.lightning_module.loss_weights.w_kcat_logit:
+    distribution: uniform
+    min: -2.0
+    max: 2.0
+  model.lightning_module.loss_weights.w_km_logit:
+    distribution: uniform
+    min: -2.0
+    max: 2.0
+  model.lightning_module.loss_weights.w_ki_logit:
+    distribution: uniform
+    min: -2.0
+    max: 2.0

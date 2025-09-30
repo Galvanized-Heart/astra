@@ -8,7 +8,7 @@ defaults:
   - loss: masked_mse
   - recomposition: basic
   - data: hpo
-  - architecture: cpi_pred_self_attn
+  - architecture: cpi_pred_conv
   - lr_scheduler: plateau
   - protein_featurizer: esm
   - ligand_featurizer: morgan
@@ -22,6 +22,9 @@ defaults:
   # If _self_ is omitted, everything outside the `defaults` list will be ignored
   - _self_
 
+wandb:
+  group: null
+
 tags:
   - ${target_columns}
   - ${recomposition.recomposition_func}
@@ -29,6 +32,7 @@ tags:
   - ${architecture.name}
   - ${protein_featurizer.name}
   - ${ligand_featurizer.name}
+  - "v2"
 
 # --- Static Configurations ---
 seed: 42
@@ -53,14 +57,19 @@ model:
     lr: 0.001
     optimizer: "AdamW"
     loss_function: ${loss}
+    loss_weights:
+      w_kcat_logit: 0.33
+      w_km_logit: 0.33
+      w_ki_logit: 0.33
     recomposition_func: ${recomposition.recomposition_func}
     lr_scheduler: ${lr_scheduler}
 
 trainer:
-  epochs: 20
+  epochs: 10
   device: "auto"
   callbacks:
     checkpoint:
       monitor: "valid_loss_epoch"
       save_top_k: 1
       mode: "min"
+

@@ -7,6 +7,7 @@ from omegaconf import DictConfig, OmegaConf
 
 # --- PyTorch Lightning and W&B ---
 import lightning as L
+import torch.nn.functional as F 
 from lightning.pytorch.loggers import WandbLogger
 from lightning.pytorch.callbacks import ModelCheckpoint
 from astra.model.callbacks.predsaver import PredictionSaver
@@ -68,6 +69,25 @@ class PipelineBuilder:
 
         # Temporarily disable struct mode to allow dynamic modifications
         OmegaConf.set_struct(resolved_config, False)
+
+        lm_cfg = resolved_config.model.lightning_module
+        if 'loss_weights' in lm_cfg and 'w_kcat_logit' in lm_cfg.loss_weights:
+            print("INFO: Found loss weight logits. Converting to weights list for MaskedMSELoss.")
+            
+            # Access the logits from the config using your new path
+            logits = torch.tensor([
+                lm_cfg.loss_weights.w_kcat_logit,
+                lm_cfg.loss_weights.w_km_logit,
+                lm_cfg.loss_weights.w_ki_logit
+            ])
+
+            # Softmax weights to get normalized positive numbers
+            weights = F.softmax(logits, dim=0)
+            weights_list = weights.tolist()
+
+            # Inject the generated weights list into the loss function's parameters
+            lm_cfg.loss_function.setdefault('params', {})
+            lm_cfg.loss_function.params['weights'] = weights_list
 
         # Resolve `target_columns` and establish lightning_module config (`lm_cfg`)
         data_cfg = resolved_config.setdefault('data', {})

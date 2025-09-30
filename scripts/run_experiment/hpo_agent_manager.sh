@@ -51,6 +51,7 @@ function init_campaign() {
 program: src/astra/pipelines/wandb_hydra_launcher.py
 method: bayes
 metric: {name: valid_loss_epoch, goal: minimize}
+
 command:
   - \${env}
   - uv

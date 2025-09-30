@@ -135,7 +135,7 @@ class AstraModule(L.LightningModule):
 
         # Compute kinetic recomposition
         if self.recomposition_func:
-            y_hat = self.recomposition_func(rates=output, log_transform=self.log_transform_active)
+            y_hat = self.recomposition_func(rates=output) #, log_transform=self.log_transform_active) # TODO: Remove this if new log-space recomp works
         else:
             y_hat = output
 
