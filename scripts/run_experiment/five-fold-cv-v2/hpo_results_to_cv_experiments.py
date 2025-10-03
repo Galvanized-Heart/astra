@@ -1,3 +1,7 @@
+"""
+This script calls the wandb API to collect necessary configs for best kcat, KM, Ki Peasron correlation results. Then, it creates a json file to prepare the best configs to train on 5 fold CV.
+"""
+
 import wandb
 import json
 import math
@@ -35,21 +39,21 @@ KNOWN_HYPERPARAMETERS = {
     'w_km_logit': 'model.lightning_module.loss_weights.w_km_logit',
     'w_ki_logit': 'model.lightning_module.loss_weights.w_ki_logit',
     # Linear Params
-    'dim_1': 'model.architecture.params.dim_1',
-    'dim_2': 'model.architecture.params.dim_2',
+    'dim_1': 'architecture.params.dim_1',
+    'dim_2': 'architecture.params.dim_2',
     # Conv Params
-    'hid_dim': 'model.architecture.params.hid_dim',
-    'kernal_1': 'model.architecture.params.kernal_1',
-    'conv_out_dim': 'model.architecture.params.conv_out_dim',
-    'kernal_2': 'model.architecture.params.kernal_2',
-    'last_hid': 'model.architecture.params.last_hid',
-    'dropout': 'model.architecture.params.dropout',
+    'hid_dim': 'architecture.params.hid_dim',
+    'kernal_1': 'architecture.params.kernal_1',
+    'conv_out_dim': 'architecture.params.conv_out_dim',
+    'kernal_2': 'architecture.params.kernal_2',
+    'last_hid': 'architecture.params.last_hid',
+    'dropout': 'architecture.params.dropout',
     # Attention Params
-    'n_heads': 'model.architecture.params.n_heads',
-    'd_ff': 'model.architecture.params.d_ff',
-    'd_k': 'model.architecture.params.d_k',
-    'd_v': 'model.architecture.params.d_v',
-    'attn_out_dim': 'model.architecture.params.attn_out_dim',
+    'n_heads': 'architecture.params.n_heads',
+    'd_ff': 'architecture.params.d_ff',
+    'd_k': 'architecture.params.d_k',
+    'd_v': 'architecture.params.d_v',
+    'attn_out_dim': 'architecture.params.attn_out_dim',
 }
 
 

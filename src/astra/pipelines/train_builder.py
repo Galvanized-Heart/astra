@@ -328,7 +328,8 @@ class PipelineBuilder:
             logger=wandb_logger,
             callbacks=callbacks,
             deterministic=(self.final_config.seed is not None),
-            accelerator=trainer_cfg.device
+            accelerator=trainer_cfg.accelerator,
+            devices=trainer_cfg.devices,
         )
         return self
 

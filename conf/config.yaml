@@ -1,8 +1,4 @@
 defaults:
-
-  # Set this for wandb tags
-  #- wandb: base
-
   # - folder_name: yaml_name
   - target_columns: all
   - loss: masked_mse
@@ -32,7 +28,7 @@ tags:
   - ${architecture.name}
   - ${protein_featurizer.name}
   - ${ligand_featurizer.name}
-  - "v2"
+  #- "v2"
 
 # --- Static Configurations ---
 seed: 42
@@ -65,8 +61,9 @@ model:
     lr_scheduler: ${lr_scheduler}
 
 trainer:
-  epochs: 10
-  device: "auto"
+  epochs: 20
+  devices: 1
+  accelerator: "gpu"
   callbacks:
     checkpoint:
       monitor: "valid_loss_epoch"

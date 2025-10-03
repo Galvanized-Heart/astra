@@ -1,4 +1,3 @@
-# submit_cv_jobs.py
 import json
 import subprocess
 import os
@@ -6,19 +5,26 @@ import hashlib
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 
-# --- Configuration ---
-CV_RUN_CONFIGS_FILE = "cv_run_configs.json"
-LAST_SUBMITTED_INDEX_FILE = "last_submitted_index.txt" # Simple persistence file
-SBATCH_TEMPLATE_SCRIPT = "run_slurm_job.sh" # Your SLURM wrapper script (see below)
-SUBMISSION_BATCH_SIZE = 60 # How many jobs to submit in one invocation of this script
 
-# --- Helper to generate a unique hash for each config (for job naming) ---
+
+# --- Configuration ---
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CV_RUN_CONFIGS_FILE = os.path.join(SCRIPT_DIR, "cv_run_configs.json")
+LAST_SUBMITTED_INDEX_FILE = os.path.join(SCRIPT_DIR, "last_submitted_index.txt")
+SBATCH_TEMPLATE_SCRIPT = os.path.join(SCRIPT_DIR, "cv_runner.sh")
+SUBMISSION_BATCH_SIZE = 1
+
+
+
+# --- Hash for job naming ---
 def get_config_hash(config: Dict[str, Any]) -> str:
-    # Convert dict to a sorted JSON string to ensure consistent hashing
+    """Convert dict to a sorted JSON string to ensure consistent hashing."""
     sorted_json = json.dumps(config, sort_keys=True)
     return hashlib.md5(sorted_json.encode('utf-8')).hexdigest()
 
-# --- Load / Save Last Submitted Index ---
+
+
+# --- Index Persistence ---
 def load_last_submitted_index() -> int:
     """Loads the index of the last config that was submitted."""
     if os.path.exists(LAST_SUBMITTED_INDEX_FILE):
@@ -38,9 +44,11 @@ def save_last_submitted_index(index: int):
     """Saves the index of the last config that was submitted."""
     with open(LAST_SUBMITTED_INDEX_FILE, 'w') as f:
         f.write(str(index))
-    # print(f"Saved last submitted index {index} to {LAST_SUBMITTED_INDEX_FILE}") # Uncomment for more verbose saving
+    # print(f"Saved last submitted index {index} to {LAST_SUBMITTED_INDEX_FILE}")
 
-# --- SLURM Command Builder ---
+
+
+# --- Slurm Command Builder ---
 def build_sbatch_command(config: Dict[str, Any], config_hash: str) -> str:
     """Constructs the sbatch command with Hydra overrides and metadata."""
     if not os.path.exists(SBATCH_TEMPLATE_SCRIPT):
@@ -68,11 +76,16 @@ def build_sbatch_command(config: Dict[str, Any], config_hash: str) -> str:
 
     command_parts = [
         "sbatch",
-        f"--job-name={job_name}", 
+        f"--job-name={job_name}",
+        "--output=slurm_logs/cv_worker-%j.out",
+        "--error=slurm_logs/agent_worker-%j.err",
+        "--gpus-per-node=1",
+        "--time=12:00:00",
         SBATCH_TEMPLATE_SCRIPT,
         *hydra_overrides, 
     ]
     return " ".join(command_parts)
+
 
 
 def main():
@@ -135,7 +148,6 @@ def main():
     print(f"Next batch will start from index {current_index}.")
     if current_index >= len(all_configs):
         print("All configurations have now been submitted.")
-
 
 if __name__ == "__main__":
     main()

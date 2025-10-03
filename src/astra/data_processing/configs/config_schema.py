@@ -61,7 +61,8 @@ class CallbacksConfig(BaseModel):
 
 class TrainerConfig(BaseModel):
     epochs: PositiveInt = 10
-    device: str = "auto"
+    devices: PositiveInt = 1
+    accelerator: str = "gpu"
     callbacks: CallbacksConfig
 
 # --- Top-Level Configuration Model ---
