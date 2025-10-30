@@ -1,11 +1,12 @@
 from pathlib import Path
 from typing import Dict, List, Optional
+from omegaconf import DictConfig
 
 import lightning as L
 from torch.utils.data import DataLoader
 
 from astra.data_processing.datasets import ProteinLigandDataset
-from astra.data_processing.manifests.manifest import create_manifests
+from astra.data_processing.manifests.manifest import create_manifests, generate_manifest_hash
 from astra.data_processing.featurizers import Featurizer
 from astra.constants import PROJECT_ROOT
 
@@ -14,13 +15,13 @@ from astra.constants import PROJECT_ROOT
 class AstraDataModule(L.LightningDataModule):
     """DataModule for Astra."""
     def __init__(self, 
-                 data_paths: Dict[str, str] = None, 
-                 protein_featurizer: Featurizer = None, 
-                 ligand_featurizer: Featurizer = None, 
+                 data_cfg: DictConfig,
+                 protein_featurizer_cfg: DictConfig,
+                 ligand_featurizer_cfg: DictConfig,
+                 protein_featurizer: Featurizer,
+                 ligand_featurizer: Featurizer,
                  batch_size: int = 32,
                  featurizer_batch_size: int = 32,
-                 target_columns: List[str] = None,
-                 target_transform: Optional[str] = None
             ):
         """
         Meant to instantiate states for `torch.utils.data.Dataset` classes.
@@ -36,15 +37,40 @@ class AstraDataModule(L.LightningDataModule):
         self.protein_feature_spec = protein_featurizer.feature_spec
         self.ligand_feature_spec = ligand_featurizer.feature_spec
 
-        # Create manifest features
-        manifest_files = create_manifests(
-            split_files=data_paths, 
-            target_columns=target_columns, 
-            output_dir=PROJECT_ROOT/"data"/"manifest", 
-            protein_featurizer=protein_featurizer, 
-            ligand_featurizer=ligand_featurizer,
-            batch_size=featurizer_batch_size
+        # Extract necessary info from configs
+        split_files = {'train': str(data_cfg.train_path), 'valid': str(data_cfg.valid_path)}
+        target_columns = data_cfg.target_columns
+        
+        # Generate manifest hash for unique data preparation
+        config_hash = generate_manifest_hash(
+            split_files=split_files,
+            target_columns=target_columns,
+            protein_featurizer_cfg=protein_featurizer_cfg,
+            ligand_featurizer_cfg=ligand_featurizer_cfg
         )
+        
+        manifest_dir = PROJECT_ROOT / "data" / "manifest" / config_hash
+        print(f"INFO: Using manifest directory: {manifest_dir}")
+        
+        # Check if manifests already exist
+        expected_manifests = {name: manifest_dir / f"manifest_{name}.csv" for name in split_files.keys()}
+        all_manifests_exist = all(p.exists() for p in expected_manifests.values())
+
+        if all_manifests_exist:
+            # Set cached manifest files
+            print(f"INFO: Found cached manifests in {manifest_dir}. Skipping generation.")
+            manifest_files = expected_manifests
+        else:
+            # Generate and cache manifest files
+            print(f"INFO: Manifests not found. Generating new ones in {manifest_dir}.")
+            manifest_files = create_manifests(
+                split_files=split_files, 
+                target_columns=target_columns, 
+                output_dir=manifest_dir,
+                protein_featurizer=protein_featurizer, 
+                ligand_featurizer=ligand_featurizer,
+                batch_size=featurizer_batch_size
+            )
 
         # Set file paths if they exist, else set to None
         self.train_path = manifest_files.get("train")
@@ -53,6 +79,7 @@ class AstraDataModule(L.LightningDataModule):
 
         # Set configs
         self.batch_size = batch_size
+        self.target_transform = data_cfg.target_transform
 
         # TODO: Train/Inference configs (possibly split function or seperate train/valid sets in config)
 

@@ -9,7 +9,7 @@ echo "Working directory: $(pwd)"
 echo "Start time: $(date)"
 
 # Set cache
-export SCRATCH_CACHE_DIR="/gpfs/fs0/scratch/m/mahadeva/maxkirby/.cache"
+export SCRATCH_CACHE_DIR="home/maxkirby/scratch/.cache"
 export WANDB_DATA_DIR="$SCRATCH_CACHE_DIR/wandb-data"
 export WANDB_CACHE_DIR="$SCRATCH_CACHE_DIR/wandb"
 export WANDB_CONFIG_DIR="$SCRATCH_CACHE_DIR/wandb-config"
@@ -20,7 +20,7 @@ mkdir -p "$WANDB_DATA_DIR" "$WANDB_CACHE_DIR" "$WANDB_CONFIG_DIR" "$WANDB_DIR" "
 export HYDRA_FULL_ERROR=1
 
 # Change to the project directory to ensure all paths are correct
-cd "/gpfs/fs0/scratch/m/mahadeva/maxkirby/astra" || exit 1
+cd "/home/maxkirby/scratch/astra" || exit 1 # This path is specific to Fir!!
 
 echo "Running Python script with arguments:"
 echo "$@"

@@ -166,28 +166,31 @@ class PipelineBuilder:
         p_cfg = self.final_config.featurizers.protein
         l_cfg = self.final_config.featurizers.ligand
 
+        protein_params = p_cfg.params.copy()
+        ligand_params = l_cfg.params.copy()
+
         # This logic could be improved with a `requires_device` flag in the config schema.
         # For now, this pragmatic approach works for ESM.
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if p_cfg.name == 'ESMFeaturizer':
-            p_cfg.params['device'] = device
+            protein_params['device'] = device
             
-
-        self.protein_featurizer = FEATURIZER_REGISTRY[p_cfg.name](**p_cfg.params)
-        self.ligand_featurizer = FEATURIZER_REGISTRY[l_cfg.name](**l_cfg.params)
+        # Instantiate the featurizers using the modified copies.
+        self.protein_featurizer = FEATURIZER_REGISTRY[p_cfg.name](**protein_params)
+        self.ligand_featurizer = FEATURIZER_REGISTRY[l_cfg.name](**ligand_params)
         return self
 
     def build_datamodule(self):
         print("INFO: Building datamodule...")
         data_cfg = self.final_config.data
         self.datamodule = AstraDataModule(
-            data_paths={'train': str(data_cfg.train_path), 'valid': str(data_cfg.valid_path)},
+            data_cfg=data_cfg,
+            protein_featurizer_cfg=self.final_config.featurizers.protein,
+            ligand_featurizer_cfg=self.final_config.featurizers.ligand,
             protein_featurizer=self.protein_featurizer,
             ligand_featurizer=self.ligand_featurizer,
             batch_size=data_cfg.batch_size,
             featurizer_batch_size=data_cfg.featurizer_batch_size,
-            target_columns=data_cfg.target_columns,
-            target_transform=data_cfg.target_transform
         )
         return self
 

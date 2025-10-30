@@ -28,7 +28,7 @@ tags:
   - ${architecture.name}
   - ${protein_featurizer.name}
   - ${ligand_featurizer.name}
-  #- "v2"
+  - "RAC test"
 
 # --- Static Configurations ---
 seed: 42
@@ -61,7 +61,7 @@ model:
     lr_scheduler: ${lr_scheduler}
 
 trainer:
-  epochs: 20
+  epochs: 10
   devices: 1
   accelerator: "gpu"
   callbacks:

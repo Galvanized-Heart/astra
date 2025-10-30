@@ -1,4 +1,4 @@
-import sys
+squimport sys
 import yaml
 from pathlib import Path
 
