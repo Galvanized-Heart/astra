@@ -221,5 +221,8 @@ checkpoints/
 .archived/
 predictions/
 
+# Files meant to be abstracted
+last_submitted_index.txt
+
 # Exceptions
 !conf/data/
