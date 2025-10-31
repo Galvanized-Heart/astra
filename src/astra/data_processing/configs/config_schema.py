@@ -61,7 +61,8 @@ class CallbacksConfig(BaseModel):
 
 class TrainerConfig(BaseModel):
     epochs: PositiveInt = 10
-    device: str = "auto"
+    devices: PositiveInt = 1
+    accelerator: str = "gpu"
     callbacks: CallbacksConfig
 
 # --- Top-Level Configuration Model ---
@@ -71,7 +72,7 @@ class FullConfig(BaseModel):
     project_name: str = "astra"
     run_name: Optional[str] = None
     seed: Optional[int] = None
-
+    tags: Optional[List[Any]] = Field(default_factory=list)
     data: DataConfig
     featurizers: FeaturizersConfig
     model: ModelConfig

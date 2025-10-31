@@ -1,0 +1,7 @@
+name: "CpiPredSelfAttnModel"
+params: 
+  n_heads: 4      # Number of attention heads
+  d_k: 64         # Dimension of Key/Query
+  d_v: 64         # Dimension of Value
+  attn_out_dim: 1 # Output dimension of the attention layer itself (meant to be 1)
+  d_ff: 1024      # Hidden dimension of the final feed-forward network

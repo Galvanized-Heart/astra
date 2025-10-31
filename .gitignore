@@ -211,11 +211,18 @@ __marimo__/
 # Directories from ML projects with large files
 data/
 results/
+outputs/
+multirun/
 experiments/
 wandb/
 checkpoints/
 *.out
+*.err
+.archived/
+predictions/
+
+# Files meant to be abstracted
+last_submitted_index.txt
 
 # Exceptions
-!configs/data/
-!configs/experiments/
+!conf/data/

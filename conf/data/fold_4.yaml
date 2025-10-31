@@ -1,0 +1,4 @@
+train_path: "data/cv_splits_pangenomic/fold_4_train.csv"
+valid_path: "data/cv_splits_pangenomic/fold_4_valid.csv"
+
+tag: "fold4_split"

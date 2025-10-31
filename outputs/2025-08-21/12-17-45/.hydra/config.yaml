@@ -1,0 +1,3 @@
+message: This is the main test config
+group:
+  setting: Value from Option A

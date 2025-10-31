@@ -1,0 +1,6 @@
+name: "ReduceLROnPlateau"
+params:
+  monitor: "valid_loss_epoch"
+  mode: "min"
+  factor: 0.1
+  patience: 3

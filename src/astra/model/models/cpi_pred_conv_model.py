@@ -111,5 +111,5 @@ class CpiPredConvModel(nn.Module):
         output = self.fc_2(output)
         output = nn.functional.relu(output)
         output = self.fc_3(output)
-        
+
         return output

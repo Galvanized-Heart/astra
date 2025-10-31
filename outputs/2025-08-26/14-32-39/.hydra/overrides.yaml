@@ -1,0 +1,2 @@
+- experiment_mode=multi_task/direct
+- trainer.epochs=1

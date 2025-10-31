@@ -26,7 +26,8 @@ class AstraModule(L.LightningModule):
                 loss_func: nn.Module, 
                 optimizer_class: Type[torch.optim.Optimizer],
                 target_columns: List[str], 
-                recomposition_func: Optional[Callable] = None,  
+                recomposition_func: Optional[Callable] = None,
+                log_transform_active: bool = False,
                 lr_scheduler_class: Optional[Type] = None, 
                 lr_scheduler_kwargs: Optional[dict] = None
             ):
@@ -55,6 +56,7 @@ class AstraModule(L.LightningModule):
         self.model = model
         self.loss_func = loss_func
         self.recomposition_func = recomposition_func
+        self.log_transform_active = log_transform_active
 
         self.optimizer_class = optimizer_class
         self.lr_scheduler_class = lr_scheduler_class
@@ -69,13 +71,13 @@ class AstraModule(L.LightningModule):
         # Track each target parameter
         for param_name in self.target_columns:
             metrics_for_param = MetricCollection({
-                'MSE': MeanSquaredError(),
+                #'MSE': MeanSquaredError(),
                 'RMSE': MeanSquaredError(squared=False),
                 'MAE': MeanAbsoluteError(),
                 'Pearson': PearsonCorrCoef(),
                 'R2': R2Score(),
-                'Spearman': SpearmanCorrCoef(),
-                'Kendall': KendallRankCorrCoef()
+                #'Spearman': SpearmanCorrCoef(),
+                #'Kendall': KendallRankCorrCoef()
             })
             
             # Create separate collections for train and valid, with a parameter-specific prefix
@@ -133,7 +135,7 @@ class AstraModule(L.LightningModule):
 
         # Compute kinetic recomposition
         if self.recomposition_func:
-            y_hat = self.recomposition_func(output)
+            y_hat = self.recomposition_func(rates=output) #, log_transform=self.log_transform_active) # TODO: Remove this if new log-space recomp works
         else:
             y_hat = output
 
@@ -184,6 +186,9 @@ class AstraModule(L.LightningModule):
             mask = ~torch.isnan(targets_i)
             if mask.sum() > 0:
                 self.valid_metrics[param_name].update(preds_i[mask], targets_i[mask])
+        
+        # Return predictions for PredictionSaver callback
+        return {'preds': y_hat, 'targets': y}
 
     def on_training_epoch_end(self):
         """Functionality for logging training metrics at every epoch."""
@@ -216,120 +221,4 @@ model = AstraModule()
 trainer = L.Trainer()
 trainer.fit(model, datamodule)
 trainer.test(model, dataloaders=DataLoader(test_set)) 
-"""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class XGBoostLightning(L.LightningModule):
-    def __init__(self, xgb_params: dict):
-        super().__init__()
-        # Save hyperparameters
-        self.save_hyperparameters()
-        
-        # Model is instatiated in on_train_epoch_end(), default to None here
-        self.model = None
-
-        # Lists to store batch data for training
-        self._train_x = []
-        self._train_y = []
-        
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Forward pass for inference.
-        Note: The input x should be a tensor, but the model expects a numpy array.
-        """
-        # Make sure model is trained
-        if self.model is None:
-            raise RuntimeError("The XGBoost model has not been trained yet. Call trainer.fit() first.")
-            
-        predictions = self.model.predict(x.cpu().numpy())
-        return torch.from_numpy(predictions).to(self.device)
-
-    def configure_optimizers(self):
-        # No optimizer required for XGBoost
-        return None
-
-    def training_step(self, batch, batch_idx):
-        """
-        Collect the data from each batch.
-        """
-        x, y = batch
-        self._train_x.append(x.cpu().numpy())
-        self._train_y.append(y.cpu().numpy())
-
-        # Not using LightningModules's optimizer, so return None
-        return None 
-
-    def on_train_epoch_end(self):
-        """
-        Train XGBoost in on_train_epoch_end hook (after entire training loop).
-        """
-        print("\nTraining XGBoost model")
-        
-        # Concatenate all collected data
-        X_train = np.concatenate(self._train_x)
-        y_train = np.concatenate(self._train_y)
-
-        # Instantiate the XGBoost model with the given parameters
-        self.model = xgb.XGBRegressor(**self.hparams.xgb_params)
-
-        # Train model
-        self.model.fit(X_train, y_train)
-        print("XGBoost model training finished\n")
-
-        # Clear the collected data to free up memory
-        self._train_x.clear()
-        self._train_y.clear()
-
-    def validation_step(self, batch, batch_idx):
-        x, y = batch
-        
-        # Ensure the model is trained
-        if self.model is None:
-            return
-
-        preds_np = self.model.predict(x.cpu().numpy())
-        y_np = y.cpu().numpy()
-        mse = mean_squared_error(y_np, preds_np)        
-        self.log('test_mse', mse, on_step=False, on_epoch=True)
-        return mse
-    
-# Example usage
-"""
-trainer = L.Trainer(
-    max_epochs=1, # Only need 1 epoch to collect all data and train the model
-    accelerator='gpu',
-    devices=1 # Number of GPUs you want to run it on
-)
-
-xgb_params = {
-    'objective': 'reg:squarederror',
-    'eval_metric': 'mse',
-    'n_estimators': 150,
-    'learning_rate': 0.05,
-    'max_depth': 4,
-    'tree_method': 'gpu_hist',
-    'seed': 42
-}
-xgb_lightning_model = XGBoostRegressionLightning(xgb_params=xgb_params)
-trainer.fit(xgb_lightning_model, train_dataloaders=train_loader, val_dataloaders=val_loader)
-trainer.test(xgb_lightning_model, dataloaders=test_loader)
-
-TODO: Consider how to use multiple regression with XGBoost 
-- sklearn has MultiOutputRegressor wrapper that creates ensemble
 """

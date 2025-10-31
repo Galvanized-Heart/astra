@@ -1,15 +1,42 @@
 import pandas as pd
 import torch
 import hashlib
+import json
 from pathlib import Path
 from tqdm import tqdm
-from typing import Dict, List
+from typing import Dict, List, Any
+from omegaconf import OmegaConf
 
 from safetensors.torch import save_file
 
 from astra.data_processing.featurizers import Featurizer
 from astra.data_processing.utils import preprocess_and_validate_data
 from astra.constants import EMB_PATH, DATA_PATH
+
+
+def generate_manifest_hash(
+    split_files: Dict[str, str],
+    target_columns: List[str],
+    protein_featurizer_cfg: Any,
+    ligand_featurizer_cfg: Any
+) -> str:
+    """
+    Creates a stable SHA256 hash from the data configuration to uniquely identify a manifest set.
+    """
+    # Create a dictionary with all the defining components
+    config_to_hash = {
+        "split_files": sorted(split_files.items()), # Sort for consistency
+        "target_columns": sorted(target_columns), # Sort for consistency
+        "protein_featurizer": protein_featurizer_cfg.dict(),
+        "ligand_featurizer": ligand_featurizer_cfg.dict(),
+    }
+
+    # Convert the dictionary to a canonical JSON string.
+    config_str = json.dumps(config_to_hash, sort_keys=True).encode('utf-8')
+    
+    # Create a SHA256 hash and return the first 16 characters for a usable filename.
+    hasher = hashlib.sha256(config_str)
+    return hasher.hexdigest()[:16]
 
 
 def generate_and_save_features(
@@ -63,40 +90,26 @@ def generate_and_save_features(
 
 def create_manifests(
         split_files: Dict[str, str],
+        target_columns: List[str],
+        output_dir: Path,
+        protein_featurizer: Featurizer,
+        ligand_featurizer: Featurizer,
         emb_dir: Path = None,
-        output_dir: Path = None,
-        protein_featurizer: Featurizer = None,
-        ligand_featurizer: Featurizer = None,
         batch_size: int = 32
     ) -> Dict[str, Path]:
     """
     Generates precomputed features and separate manifests for predefined data splits.
-
-    Args:
-        split_files (Dict[str, str]): A dictionary mapping split names (e.g. 'train', 'val')
-                                        to their corresponding raw CSV file paths.
-        output_dir (Path): The directory where manifests and feature sub-folders will be saved.
-        protein_featurizer (Featurizer): Protein featurizer object.
-        ligand_featurizer (Featurizer): Ligand featurizer object.
-
-    Returns:
-        manifest_files (Dict[str, Path]): A dictionary mapping split names (e.g. 'train', 'val')
-                                        to their corresponding manifest CSV file paths.
+    This version saves manifests to a specific, unique output directory.
     """
     # Set default embedding directory
     if emb_dir is None:
         emb_dir = EMB_PATH
         assert emb_dir.exists(), "Please define an existing path for emb_dir."
     
-
-    # Set default output directory
-    if output_dir is None:
-        output_dir = DATA_PATH/"manifest"
-    
     # Create output directory
     output_dir.mkdir(parents=True, exist_ok=True)
 
-
+    # Create embedding directories
     protein_features_dir = EMB_PATH / protein_featurizer.name
     ligand_features_dir = EMB_PATH / ligand_featurizer.name
     protein_features_dir.mkdir(parents=True, exist_ok=True)
@@ -126,12 +139,15 @@ def create_manifests(
     print(f"Found {len(unique_proteins)} unique proteins and {len(unique_ligands)} unique ligands.")
 
     # Run feature generation process
-    print("\n--- Step 3: Generating features ---")
+    print("\n--- Step 2: Generating features ---")
     protein_map = generate_and_save_features(unique_proteins, protein_featurizer, protein_features_dir, batch_size)
     ligand_map = generate_and_save_features(unique_ligands, ligand_featurizer, ligand_features_dir, batch_size)
 
+    # Define required columns dynamically based on target_columns in config
+    required_columns = ['protein_feature_path', 'ligand_feature_path'] + target_columns
+
     # Create final manifests
-    print("\n--- Step 4: Creating final manifest files ---")
+    print("\n--- Step 3: Creating final manifest files ---")
     manifest_files = {}
     for split_name, file_path in split_files.items():
         print(f"Creating manifest for '{split_name}'...")
@@ -141,8 +157,14 @@ def create_manifests(
         split_df['protein_feature_path'] = split_df['protein_sequence'].map(protein_map)
         split_df['ligand_feature_path'] = split_df['ligand_smiles'].map(ligand_map)
 
-        # Select final columns and drop any invalid rows
-        manifest_df = split_df[['protein_feature_path', 'ligand_feature_path', 'kcat', 'KM', 'Ki']].dropna()
+        # Drop NaN rows from only protein and ligand
+        manifest_df = split_df.dropna(subset=['protein_feature_path', 'ligand_feature_path'])
+
+        # Drop NaN rows for specified target columns
+        manifest_df = manifest_df.dropna(subset=target_columns, how='all')
+
+        # Select final columns
+        manifest_df = manifest_df[required_columns]
 
         # Save manifest files and their paths
         manifest_path = output_dir / f"manifest_{split_name}.csv"

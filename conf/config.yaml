@@ -1,0 +1,72 @@
+defaults:
+  # - folder_name: yaml_name
+  - target_columns: all
+  - loss: masked_mse
+  - recomposition: basic
+  - data: hpo
+  - architecture: cpi_pred_conv
+  - lr_scheduler: plateau
+  - protein_featurizer: esm
+  - ligand_featurizer: morgan
+
+  # Set this after all other defaults since it uses global's defined by the package imports above!
+  - experiment_mode: multi_task/basic # sets target_column, loss, and recomposition by default
+
+  # To use the slurm launcher by default, uncomment the line below
+  #- override hydra/launcher: balam_slurm
+
+  # If _self_ is omitted, everything outside the `defaults` list will be ignored
+  - _self_
+
+wandb:
+  group: null
+
+tags:
+  - ${target_columns}
+  - ${recomposition.recomposition_func}
+  - ${data.tag}
+  - ${architecture.name}
+  - ${protein_featurizer.name}
+  - ${ligand_featurizer.name}
+  - "RAC test"
+
+# --- Static Configurations ---
+seed: 42
+project_name: "astra"
+
+data:
+  batch_size: 64
+  featurizer_batch_size: 128
+  target_columns: ${target_columns}
+  target_transform: "log10"
+
+
+
+# --- Composed Configurations ---
+featurizers:
+  protein: ${protein_featurizer}
+  ligand: ${ligand_featurizer}
+
+model:
+  architecture: ${architecture}
+  lightning_module:
+    lr: 0.001
+    optimizer: "AdamW"
+    loss_function: ${loss}
+    loss_weights:
+      w_kcat_logit: 0.33
+      w_km_logit: 0.33
+      w_ki_logit: 0.33
+    recomposition_func: ${recomposition.recomposition_func}
+    lr_scheduler: ${lr_scheduler}
+
+trainer:
+  epochs: 10
+  devices: 1
+  accelerator: "gpu"
+  callbacks:
+    checkpoint:
+      monitor: "valid_loss_epoch"
+      save_top_k: 1
+      mode: "min"
+

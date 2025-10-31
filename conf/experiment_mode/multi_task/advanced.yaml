@@ -1,0 +1,4 @@
+# @package _global_
+defaults:
+  - multi_task/base
+  - override /recomposition: advanced

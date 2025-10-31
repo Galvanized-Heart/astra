@@ -1,0 +1,61 @@
+defaults:
+  - override /hydra/launcher: submitit_slurm
+
+hydra:
+  launcher:
+    # --- Balam Specific Configuration ---
+
+    # Balam docs state single-GPU jobs don't need a partition.
+    # For full-node jobs (4 GPUs), you would set: partition: compute_full_node
+    partition: null # Let Slurm use the default partition for single-GPU jobs
+
+    # Max walltime. Your script uses 16 hours (16 * 60 = 960 mins).
+    timeout_min: 1440
+
+    # Resource requests per job. Balam docs say a single GPU request
+    # automatically allocates 16 cores and ~256GB RAM.
+    gpus_per_node: 1
+    
+    # Balam docs: "Users should never ask for CPUs or memory explicitly."
+    # We will comment these out, but keep them here for reference if needed.
+    # cpus_per_task: 16
+    # mem_gb: 256
+
+    # --- User Workflow & Environment ---
+    
+    # This is a powerful feature to run commands before your main program.
+    # We will load modules and set up your WANDB environment here.
+    setup:
+      - 'module purge'
+      - 'module load BalamEnv'
+      # This provides the base `python` executable for `uv`.
+      - 'module load python/3.11' 
+      # This ensures PyTorch can correctly communicate with the NVIDIA driver.
+      - 'module load cuda/12.3.1' 
+      # Often needed if `uv` has to compile a package from source.
+      - 'module load gcc/12.3.0' 
+
+      # --- WANDB CACHE SETUP ---
+      # This moves WANDB cache/log directories to your scratch space,
+      # which is critical on a cluster like Balam.
+      - 'export SCRATCH_CACHE_DIR="/gpfs/fs0/scratch/m/mahadeva/maxkirby/.cache"'
+      - 'export WANDB_DATA_DIR="$SCRATCH_CACHE_DIR/wandb-data"'
+      - 'export WANDB_CACHE_DIR="$SCRATCH_CACHE_DIR/wandb"'
+      - 'export WANDB_CONFIG_DIR="$SCRATCH_CACHE_DIR/wandb-config"'
+      - 'export WANDB_DIR="$SCRATCH_CACHE_DIR/wandb-logs"'
+      - 'export HF_HOME="${SCRATCH_CACHE_DIR}/huggingface"'
+      - 'mkdir -p "$WANDB_DATA_DIR" "$WANDB_CACHE_DIR" "$WANDB_CONFIG_DIR" "$WANDB_DIR" "$HF_HOME"'
+
+    # The command_wrapper allows you to prepend something to the main execution command.
+    # This is the PERFECT place for `uv run`. Hydra will now submit jobs that
+    # look like: `uv run wandb agent ...`
+    command_wrapper: "uv run"
+
+    # --- Job Management ---
+    
+    # Where submitit stores Slurm scripts and logs for each job
+    submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+
+    # This controls how many jobs in a Slurm job array can run at once.
+    # Set this to a reasonable number to not flood the scheduler.
+    array_parallelism: 60

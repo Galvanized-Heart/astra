@@ -3,11 +3,14 @@ import warnings
 import copy
 from pathlib import Path
 from datetime import datetime
+from omegaconf import DictConfig, OmegaConf
 
 # --- PyTorch Lightning and W&B ---
 import lightning as L
+import torch.nn.functional as F 
 from lightning.pytorch.loggers import WandbLogger
 from lightning.pytorch.callbacks import ModelCheckpoint
+from astra.model.callbacks.predsaver import PredictionSaver
 
 # --- Astra Imports ---
 from astra.data_processing.datamodules import AstraDataModule
@@ -27,15 +30,15 @@ class PipelineBuilder:
     an internal helper method, ensuring the object is always in a valid state.
     """
 
-    def __init__(self, config_dict: dict):
+    def __init__(self, config_dict: DictConfig):
         """
         Initializes the builder by creating a fully validated and resolved configuration.
 
         Args:
-            config_dict (dict): The raw dictionary loaded directly from the YAML file.
+            config_dict (DictConfig): The raw config object from Hydra.
         """
         print("INFO: Initializing PipelineBuilder...")
-        # Correct and validate config provided by user
+        # The config is now a DictConfig object, not a dict
         self.final_config: FullConfig = self._resolve_and_validate_config(config_dict)
         print("INFO: Configuration resolved and validated successfully!")
 
@@ -47,13 +50,13 @@ class PipelineBuilder:
         self.model = None
         self.trainer = None
 
-    def _resolve_and_validate_config(self, config_dict: dict) -> FullConfig:
+    def _resolve_and_validate_config(self, config_dict: DictConfig) -> FullConfig:
         """
         Takes a raw config dict, applies defaults and validation logic, and returns
         a validated Pydantic FullConfig object.
 
         Args:
-            config_dict (dict): The raw user-provided configuration.
+            config_dict (DictConfig): The raw config object from Hydra.
 
         Returns:
             FullConfig: A validated and resolved Pydantic configuration object.
@@ -62,41 +65,40 @@ class PipelineBuilder:
             ValueError: If the configuration is logically inconsistent.
             pydantic.ValidationError: If the configuration violates the defined schema.
         """
-        resolved_config = copy.deepcopy(config_dict)
+        resolved_config = config_dict.copy()
 
-        # --- START OF MODIFIED SECTION ---
+        # Temporarily disable struct mode to allow dynamic modifications
+        OmegaConf.set_struct(resolved_config, False)
 
-        """# Resolve `target_columns` and `loss_function`
-        data_cfg = resolved_config.setdefault('data', {})
-        target_columns = data_cfg.setdefault('target_columns', ["kcat", "KM", "Ki"])
-        lm_cfg = resolved_config['model']['lightning_module']
+        lm_cfg = resolved_config.model.lightning_module
+        if 'loss_weights' in lm_cfg and 'w_kcat_logit' in lm_cfg.loss_weights:
+            print("INFO: Found loss weight logits. Converting to weights list for MaskedMSELoss.")
+            
+            # Access the logits from the config using your new path
+            logits = torch.tensor([
+                lm_cfg.loss_weights.w_kcat_logit,
+                lm_cfg.loss_weights.w_km_logit,
+                lm_cfg.loss_weights.w_ki_logit
+            ])
 
-        # Set default loss function
-        if 'loss_function' not in lm_cfg or lm_cfg['loss_function'] is None:
-            loss_name = "MaskedMSELoss" if len(target_columns) > 1 else "MSELoss"
-            lm_cfg['loss_function'] = {'name': loss_name, 'params': {}} # Default to a dict structure
-            print(f"INFO: Defaulted 'loss_function' to '{loss_name}'.")
+            # Softmax weights to get normalized positive numbers
+            weights = F.softmax(logits, dim=0)
+            weights_list = weights.tolist()
 
-        # Normalize loss function config to a dictionary for consistent handling
-        loss_config_raw = lm_cfg['loss_function']
-        if isinstance(loss_config_raw, str):
-            loss_config_dict = {'name': loss_config_raw, 'params': {}}
-        else:
-            loss_config_dict = loss_config_raw
-            loss_config_dict.setdefault('params', {})
-
-        # Clean up incompatible parameters (MSELoss can't take 'weights' as param)
-        if loss_config_dict['name'] == 'MSELoss' and 'weights' in loss_config_dict['params']:
-            print("INFO: 'weights' parameter is not applicable for 'MSELoss'. It will be removed from the configuration.")
-            del loss_config_dict['params']['weights']
-
-        # Update the main config with the cleaned and normalized loss function dict
-        lm_cfg['loss_function'] = loss_config_dict"""
+            # Inject the generated weights list into the loss function's parameters
+            lm_cfg.loss_function.setdefault('params', {})
+            lm_cfg.loss_function.params['weights'] = weights_list
 
         # Resolve `target_columns` and establish lightning_module config (`lm_cfg`)
         data_cfg = resolved_config.setdefault('data', {})
         target_columns = data_cfg.setdefault('target_columns', ["kcat", "KM", "Ki"])
         lm_cfg = resolved_config['model']['lightning_module']
+
+        # Normalize the recomposition_func from a potentially empty dict to None
+        recomp_func_raw = lm_cfg.get('recomposition_func')
+        if isinstance(recomp_func_raw, dict) and not recomp_func_raw:
+            print("INFO: 'recomposition_func' was an empty dict. Coercing to 'None'.")
+            lm_cfg['recomposition_func'] = None
 
         # Normalize the loss_function part of the config to always be a dictionary
         loss_config_raw = lm_cfg.get('loss_function', {})
@@ -126,8 +128,6 @@ class PipelineBuilder:
         # Update the main config with the fully resolved and cleaned loss function dictionary
         lm_cfg['loss_function'] = loss_config_dict
 
-        # --- END OF MODIFIED SECTION ---
-
         # Resolve the model's `out_dim`
         arch_params = resolved_config['model']['architecture'].setdefault('params', {})
         recomp_func_name = lm_cfg.get('recomposition_func')
@@ -144,11 +144,21 @@ class PipelineBuilder:
         elif user_out_dim != expected_out_dim:
             raise ValueError(f"Config Mismatch: Model 'out_dim' ({user_out_dim}) must be {expected_out_dim} to match {source}.")
 
+        # Re-enable struct mode for safety
+        OmegaConf.set_struct(resolved_config, True)
+
         # Validate corrected configuration with Pydantic
         try:
-            return FullConfig(**resolved_config)
+            # Convert the OmegaConf object to a primitive python dict for Pydantic.
+            # `resolve=True` ensures all interpolations like `${...}` are resolved to their values.
+            final_dict = OmegaConf.to_container(resolved_config, resolve=True, throw_on_missing=True)
+            return FullConfig(**final_dict)
         except ValidationError as e:
             print("\nERROR: The final, resolved configuration is invalid!")
+            # Also print the resolved config to help debug
+            print("--- Final Resolved Config ---")
+            print(OmegaConf.to_yaml(resolved_config))
+            print("-----------------------------")
             raise e
 
     def build_featurizers(self):
@@ -156,28 +166,31 @@ class PipelineBuilder:
         p_cfg = self.final_config.featurizers.protein
         l_cfg = self.final_config.featurizers.ligand
 
+        protein_params = p_cfg.params.copy()
+        ligand_params = l_cfg.params.copy()
+
         # This logic could be improved with a `requires_device` flag in the config schema.
         # For now, this pragmatic approach works for ESM.
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if p_cfg.name == 'ESMFeaturizer':
-            p_cfg.params['device'] = device
+            protein_params['device'] = device
             
-
-        self.protein_featurizer = FEATURIZER_REGISTRY[p_cfg.name](**p_cfg.params)
-        self.ligand_featurizer = FEATURIZER_REGISTRY[l_cfg.name](**l_cfg.params)
+        # Instantiate the featurizers using the modified copies.
+        self.protein_featurizer = FEATURIZER_REGISTRY[p_cfg.name](**protein_params)
+        self.ligand_featurizer = FEATURIZER_REGISTRY[l_cfg.name](**ligand_params)
         return self
 
     def build_datamodule(self):
         print("INFO: Building datamodule...")
         data_cfg = self.final_config.data
         self.datamodule = AstraDataModule(
-            data_paths={'train': data_cfg.train_path, 'valid': data_cfg.valid_path},
+            data_cfg=data_cfg,
+            protein_featurizer_cfg=self.final_config.featurizers.protein,
+            ligand_featurizer_cfg=self.final_config.featurizers.ligand,
             protein_featurizer=self.protein_featurizer,
             ligand_featurizer=self.ligand_featurizer,
             batch_size=data_cfg.batch_size,
             featurizer_batch_size=data_cfg.featurizer_batch_size,
-            target_columns=data_cfg.target_columns,
-            target_transform=data_cfg.target_transform
         )
         return self
 
@@ -209,6 +222,10 @@ class PipelineBuilder:
 
         target_columns = self.final_config.data.target_columns
 
+        log_transform_active = (self.final_config.data.target_transform == "log10")
+        if log_transform_active:
+            print("INFO: Log10 transformation is active. Recomposition will operate in log space.")
+
         self.model = AstraModule(
             model=self.model_architecture,
             lr=lm_cfg.lr,
@@ -216,6 +233,7 @@ class PipelineBuilder:
             optimizer_class=optimizer_class,
             target_columns=target_columns,
             recomposition_func=recomp_func,
+            log_transform_active=log_transform_active,
             lr_scheduler_class=scheduler_class,
             lr_scheduler_kwargs=scheduler_kwargs
         )
@@ -245,15 +263,38 @@ class PipelineBuilder:
             final_run_name = f"{model_name}_{timestamp}"
             print(f"INFO: No run name provided. Generated default name: {final_run_name}")
 
-        group_name = wandb_cfg.get("group")
-        tags = wandb_cfg.get("tags")
+        raw_tags = self.final_config.tags or []
+        final_tags = []
+        for tag in raw_tags:
+            if tag is None:
+                continue
+            if isinstance(tag, list) or isinstance(tag, tuple):
+                # If the tag is a list (like target_columns), extend the final list
+                final_tags.extend([str(t) for t in tag])
+            else:
+                # Otherwise, just append the tag
+                final_tags.append(str(tag))
 
+        # Remove duplicates and sort for consistency
+        final_tags = sorted(list(set(final_tags)))
+        print(f"INFO: Final W&B tags for this run: {final_tags}")
+
+        group_name = wandb_cfg.get("group")
+
+        split_tag = "untagged"  # A safe default if no split tag is found
+        for tag in final_tags:
+            if tag.endswith("_split"):
+                split_tag = tag
+                break  # Found the first one, stop searching
+        print(f"INFO: Using split tag '{split_tag}' for predictions directory.")
+
+        # Instantiate wandb logger
         wandb_logger = WandbLogger(
             name=final_run_name,
             project=self.final_config.project_name,
             entity="lmse-university-of-toronto",
             group=group_name,
-            tags=tags,
+            tags=final_tags,
             log_model=False,
             config=self.final_config.dict()
         )
@@ -264,6 +305,7 @@ class PipelineBuilder:
             checkpoint_dir = f"checkpoints/{final_run_name}"
         print(f"INFO: Checkpoints will be saved in: {checkpoint_dir}")
 
+        # Instantiate model checkpoint callback
         cb_cfg = trainer_cfg.callbacks.checkpoint
         checkpoint_callback = ModelCheckpoint(
             monitor=cb_cfg.monitor,
@@ -274,7 +316,10 @@ class PipelineBuilder:
             save_last=True
         )
 
-        callbacks = [checkpoint_callback]
+        # Instantiate prediction saver callback
+        prediction_saver_callback = PredictionSaver(target_columns=self.final_config.data.target_columns, split_tag=split_tag)
+
+        callbacks = [checkpoint_callback, prediction_saver_callback]
 
         # If any extra_callbacks were passed, add them.
         if extra_callbacks:
@@ -286,44 +331,63 @@ class PipelineBuilder:
             logger=wandb_logger,
             callbacks=callbacks,
             deterministic=(self.final_config.seed is not None),
-            accelerator=trainer_cfg.device
+            accelerator=trainer_cfg.accelerator,
+            devices=trainer_cfg.devices,
         )
         return self
 
     def run(self, extra_callbacks: list = None):
         """Builds all components in order and starts the training process."""
-        seed = self.final_config.seed
-        if seed is not None:
-            L.seed_everything(seed, workers=True)
+        try:
+            seed = self.final_config.seed
+            if seed is not None:
+                L.seed_everything(seed, workers=True)
 
-        self.build_featurizers()
-        self.build_datamodule()
-        self.build_model_architecture()
-        self.build_lightning_module()
-        self.build_trainer(extra_callbacks=extra_callbacks)
-        
-        print("\n--- LAUNCHING TRAINING ---")
-        self.trainer.fit(self.model, self.datamodule)
-
-        # Get checkpoint callback
-        checkpoint_callback = None
-        for cb in self.trainer.callbacks:
-            if isinstance(cb, ModelCheckpoint):
-                checkpoint_callback = cb
-                break
-
-        # Upload path to best model checkpoint to wandb
-        if checkpoint_callback and checkpoint_callback.best_model_path:
-            best_path = checkpoint_callback.best_model_path
-            print(f"INFO: Best model saved locally at: {best_path}")
+            self.build_featurizers()
+            self.build_datamodule()
+            self.build_model_architecture()
+            self.build_lightning_module()
+            self.build_trainer(extra_callbacks=extra_callbacks)
             
-            # Log the path as text metadata to the run's summary
-            self.trainer.logger.experiment.summary["best_local_checkpoint_path"] = best_path
+            print("\n--- LAUNCHING TRAINING ---")
+            self.trainer.fit(self.model, self.datamodule)
 
-        # Return metric
-        final_metric = self.trainer.callback_metrics.get(self.final_config.trainer.callbacks.checkpoint.monitor)
-        if final_metric is not None:
-            return final_metric.item()
-        else:
-            print(f"WARNING: Monitored metric '{self.final_config.trainer.callbacks.checkpoint.monitor}' not found in trainer.callback_metrics.")
-            return float('inf')
+            # Get checkpoint callback
+            checkpoint_callback = None
+            for cb in self.trainer.callbacks:
+                if isinstance(cb, ModelCheckpoint):
+                    checkpoint_callback = cb
+                    break
+
+            if checkpoint_callback:
+                # Upload path to best model checkpoint to wandb
+                if checkpoint_callback.best_model_path:
+                    best_path = checkpoint_callback.best_model_path
+                    print(f"INFO: Best model saved locally at: {best_path}")
+                    
+                    # Log the path as text metadata to the run's summary
+                    self.trainer.logger.experiment.summary["best_local_checkpoint_path"] = best_path
+
+                # Upload path to last epoch model checkpoint to wandb
+                if checkpoint_callback.last_model_path:
+                    last_path = checkpoint_callback.last_model_path
+                    print(f"INFO: Last model saved locally at: {last_path}")
+
+                    # Log the path as text metadata to the run's summary
+                    self.trainer.logger.experiment.summary["last_local_checkpoint_path"] = last_path
+
+            # Return metric
+            final_metric = self.trainer.callback_metrics.get(self.final_config.trainer.callbacks.checkpoint.monitor)
+            if final_metric is not None:
+                return final_metric.item()
+            else:
+                print(f"WARNING: Monitored metric '{self.final_config.trainer.callbacks.checkpoint.monitor}' not found in trainer.callback_metrics.")
+                return float('inf')
+            
+        finally:
+            # Ensure that the W&B run is properly finished and the process is cleaned up
+            if self.trainer and self.trainer.logger:
+                print("INFO: Finalizing W&B run...")
+                # The logger is a WandbLogger instance, its experiment is the run object
+                self.trainer.logger.experiment.finish()
+                print("INFO: W&B run finalized.")

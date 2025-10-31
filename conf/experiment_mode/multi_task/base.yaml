@@ -1,0 +1,5 @@
+# @package _global_
+defaults:
+  - override /target_columns: all
+  - override /loss: masked_mse
+  - override /recomposition: none
