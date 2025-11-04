@@ -9,7 +9,7 @@ echo "Working directory: $(pwd)"
 echo "Start time: $(date)"
 
 # Set cache
-export SCRATCH_CACHE_DIR="home/maxkirby/scratch/.cache"
+export SCRATCH_CACHE_DIR=".cache"
 export WANDB_DATA_DIR="$SCRATCH_CACHE_DIR/wandb-data"
 export WANDB_CACHE_DIR="$SCRATCH_CACHE_DIR/wandb"
 export WANDB_CONFIG_DIR="$SCRATCH_CACHE_DIR/wandb-config"

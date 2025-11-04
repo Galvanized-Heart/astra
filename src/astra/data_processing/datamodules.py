@@ -39,12 +39,13 @@ class AstraDataModule(L.LightningDataModule):
 
         # Extract necessary info from configs
         split_files = {'train': str(data_cfg.train_path), 'valid': str(data_cfg.valid_path)}
-        target_columns = data_cfg.target_columns
+        self.target_columns = data_cfg.target_columns
+        self.target_transform = data_cfg.target_transform
         
         # Generate manifest hash for unique data preparation
         config_hash = generate_manifest_hash(
             split_files=split_files,
-            target_columns=target_columns,
+            target_columns=self.target_columns,
             protein_featurizer_cfg=protein_featurizer_cfg,
             ligand_featurizer_cfg=ligand_featurizer_cfg
         )
@@ -65,7 +66,7 @@ class AstraDataModule(L.LightningDataModule):
             print(f"INFO: Manifests not found. Generating new ones in {manifest_dir}.")
             manifest_files = create_manifests(
                 split_files=split_files, 
-                target_columns=target_columns, 
+                target_columns=self.target_columns, 
                 output_dir=manifest_dir,
                 protein_featurizer=protein_featurizer, 
                 ligand_featurizer=ligand_featurizer,
@@ -79,7 +80,6 @@ class AstraDataModule(L.LightningDataModule):
 
         # Set configs
         self.batch_size = batch_size
-        self.target_transform = data_cfg.target_transform
 
         # TODO: Train/Inference configs (possibly split function or seperate train/valid sets in config)
 
@@ -101,8 +101,8 @@ class AstraDataModule(L.LightningDataModule):
         # TODO: Splitting needs to be optional so users can provide their own training splits (possibly in config)
             # NOTE: For now, splits will be premade and user will provide the paths for the split
         common_params = {
-            "target_columns": self.hparams.target_columns,
-            "target_transform": self.hparams.target_transform
+            "target_columns": self.target_columns,
+            "target_transform": self.target_transform
         }
 
         if stage == "fit":

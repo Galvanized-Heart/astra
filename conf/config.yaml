@@ -28,7 +28,7 @@ tags:
   - ${architecture.name}
   - ${protein_featurizer.name}
   - ${ligand_featurizer.name}
-  - "RAC test"
+  - "5fcv"
 
 # --- Static Configurations ---
 seed: 42
