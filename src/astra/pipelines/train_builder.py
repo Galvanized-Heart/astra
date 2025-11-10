@@ -333,6 +333,7 @@ class PipelineBuilder:
             deterministic=(self.final_config.seed is not None),
             accelerator=trainer_cfg.accelerator,
             devices=trainer_cfg.devices,
+            num_sanity_val_steps=0, # Remove sanity check due to errors while predicting with certain missing columns in small batch sizes
         )
         return self
 

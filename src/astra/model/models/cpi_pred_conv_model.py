@@ -43,6 +43,8 @@ class CpiPredConvModel(nn.Module):
         # --- Model Layers ---
         self.norm       = nn.BatchNorm1d(in_dim_internal)
         self.conv1      = nn.Conv1d(in_dim_internal, hid_dim, kernal_1, padding=int((kernal_1 - 1) / 2))
+        # NOTE: We can convert padding to 'same' to try allowing for even kernels to function correctly
+        #       but it is not the original CPIPred implementation with that fix.
         self.dropout1   = nn.Dropout(dropout)
         
         # Branch 1

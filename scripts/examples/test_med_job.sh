@@ -1,8 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name="hpo-job"
 #SBATCH --gpus-per-node=h100:1
-#SBATCH --time=5:00:00
-#SBATCH --mem=64G
+#SBATCH --time=00:20:00
+#SBATCH --mem=12G
+#SBATCH --output=test-%j.out
+#SBATCH --error=test-%j.err
 
 # Getting training speed test on Fir's H100 for one of Max's HPO jobs
 
@@ -19,19 +21,19 @@ export HYDRA_FULL_ERROR=1
 
 uv run /scratch/maxkirby/astra/src/astra/pipelines/hydra_train.py \
     architecture=cpi_pred_conv \
-    data=fold_2 \
+    data=fold_3 \
     target_columns=all \
     recomposition=basic \
     wandb.group=CpiPredConvModel-all-basic-valid/kcat_Pearson-top0 \
     model.lightning_module.lr=0.00011850028139507138 \
-    data.batch_size=64 \
+    data.batch_size=128 \
     model.lightning_module.loss_weights.w_kcat_logit=1.0690237342069868 \
     model.lightning_module.loss_weights.w_km_logit=-0.056844873968354026 \
     model.lightning_module.loss_weights.w_ki_logit=1.0935193892314623 \
-    architecture.params.hid_dim=64 \
-    architecture.params.kernal_1=5 \
-    architecture.params.conv_out_dim=64 \
+    architecture.params.hid_dim=2 \
+    architecture.params.kernal_1=3 \
+    architecture.params.conv_out_dim=2 \
     architecture.params.kernal_2=3 \
-    architecture.params.last_hid=512 \
+    architecture.params.last_hid=2 \
     architecture.params.dropout=0.1751070468832112 \
     trainer.epochs=2 \
