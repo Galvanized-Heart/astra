@@ -1,4 +1,10 @@
 #!/bin/bash
+#SBATCH --job-name=job_name
+#SBATCH --output=slurm_logs/%j/cv_runner-%j.out
+#SBATCH --error=slurm_logs/%j/cv_runner-%j.err
+#SBATCH --gpus-per-node=h100:1
+#SBATCH --time=20:00:00
+#SBATCH --mem=24G
 
 # Create a logs directory if it doesn't exist
 mkdir -p slurm_logs
@@ -17,7 +23,9 @@ export WANDB_DIR="$SCRATCH_CACHE_DIR/wandb-logs"
 export HF_HOME="${SCRATCH_CACHE_DIR}/huggingface"
 mkdir -p "$WANDB_DATA_DIR" "$WANDB_CACHE_DIR" "$WANDB_CONFIG_DIR" "$WANDB_DIR" "$HF_HOME"
 
+# Set HF env variables
 export HYDRA_FULL_ERROR=1
+export HF_HUB_OFFLINE=1
 
 # Change to the project directory to ensure all paths are correct
 cd "/home/maxkirby/scratch/astra" || exit 1 # This path is specific to Fir!!

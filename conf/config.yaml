@@ -61,7 +61,7 @@ model:
     lr_scheduler: ${lr_scheduler}
 
 trainer:
-  epochs: 10
+  epochs: 20
   devices: 1
   accelerator: "gpu"
   callbacks:
