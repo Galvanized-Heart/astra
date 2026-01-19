@@ -1,7 +1,7 @@
 import torch
 
 from astra.model.models import DummyModel, CpiPredConvModel, CpiPredSelfAttnModel, CpiPredCrossAttnModel, LinearBaselineModel
-from astra.model.loss.masked_mse_loss import MaskedMSELoss
+from astra.model.loss import MaskedMSELoss, MaskedUncertaintyMSELoss
 from astra.data_processing.featurizers import ESMFeaturizer, MorganFeaturizer
 from astra.model.modules.kinetics import elemtary_to_michaelis_menten_basic, elemtary_to_michaelis_menten_advanced
 
@@ -23,6 +23,7 @@ OPTIMIZER_REGISTRY = {
 
 # Loss functions
 LOSS_FN_REGISTRY = {
+    "MaskedUncertaintyMSELoss": MaskedUncertaintyMSELoss,
     "MaskedMSELoss": MaskedMSELoss,
     "MSELoss": torch.nn.MSELoss,
 }
@@ -33,7 +34,7 @@ FEATURIZER_REGISTRY = {
     "MorganFeaturizer": MorganFeaturizer,
 }
 
-# Kinetic ecomposition functions
+# Kinetic recomposition functions
 RECOMPOSITION_REGISTRY = {
     "BasicRecomp": elemtary_to_michaelis_menten_basic,
     "AdvancedRecomp": elemtary_to_michaelis_menten_advanced,
