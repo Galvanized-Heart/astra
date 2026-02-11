@@ -1,51 +1,62 @@
 import click
 from pathlib import Path
 from astra.analysis.loader import RunLoader
-from astra.analysis.plotting import plot_parity, plot_metrics_comparison
+from astra.analysis.plotting import (
+    calculate_metrics, 
+    plot_performance_overview, 
+    plot_architecture_comparison,
+    plot_comprehensive_parity,
+    plot_residuals,
+    print_summary_table
+)
 from astra.constants import PROJECT_ROOT
 
 @click.command()
-@click.option('--tags', multiple=True, default=['5fcv'], help='W&B tags to filter runs (e.g., 5fcv)')
-@click.option('--output', default='results/figures', help='Output directory for plots')
+@click.option('--tags', multiple=True, default=['5fcv'], help='W&B tags to filter runs')
+@click.option('--output', default='results/figures/5cv_report', help='Output directory')
 def main(tags, output):
-    """
-    Generates analysis plots for Astra experiments.
-    """
     entity = "lmse-university-of-toronto"
     project = "astra"
     
     out_dir = PROJECT_ROOT / output
     out_dir.mkdir(parents=True, exist_ok=True)
     
-    print(f"--- Starting Analysis for tags: {tags} ---")
-    
-    # Load Data
+    print(f"--- Starting Analysis ---")
     loader = RunLoader(entity, project)
     runs = loader.get_runs(list(tags))
     
     if not runs:
-        print("No runs found. Exiting.")
+        print("No runs found.")
         return
 
+    print("Loading prediction data...")
     df = loader.load_predictions(runs)
-    
-    if df.empty:
-        print("No prediction data loaded (check if files exist locally).")
-        return
+    if df.empty: return
         
-    print(f"Loaded {len(df)} total predictions across {df['run_id'].nunique()} runs.")
-    
-    # Define Targets
     targets = ['kcat', 'KM', 'Ki']
     
-    # Generate Plots
-    print("Generating Parity Plots...")
-    plot_parity(df, targets, out_dir)
+    print("Calculating metrics...")
+    metrics_df = calculate_metrics(df, targets)
+    metrics_df.to_csv(out_dir / "full_metrics.csv", index=False)
+
+    print("Generating Visualizations...")
     
-    print("Generating Metric Comparisons...")
-    plot_metrics_comparison(df, targets, out_dir)
+    # 1. Performance Overview
+    plot_performance_overview(metrics_df, out_dir)
     
-    print("Analysis Complete.")
+    # 2. Architecture Comparison
+    plot_architecture_comparison(metrics_df, out_dir)
+    
+    # 3. Comprehensive Parity Plots (The requested Grid with Colorbar)
+    plot_comprehensive_parity(df, targets, out_dir)
+    
+    # 4. Residual Plots (New Evaluation angle)
+    plot_residuals(df, targets, out_dir)
+    
+    # 5. Summary Table
+    print_summary_table(metrics_df)
+    
+    print("\nAnalysis Complete.")
 
 if __name__ == '__main__':
     main()
