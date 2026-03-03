@@ -13,7 +13,7 @@ CV_RUN_CONFIGS_FILE = os.path.join(SCRIPT_DIR, "cv_run_configs.json")
 LAST_SUBMITTED_INDEX_FILE = os.path.join(SCRIPT_DIR, "last_submitted_index.txt")
 SBATCH_TEMPLATE_SCRIPT = os.path.join(SCRIPT_DIR, "cv_runner.sh")
 SUBMISSION_BATCH_SIZE = 30
-
+EXCLUDE_NODES = "fc10512" # Do not trust fc10512
 
 
 # --- Hash for job naming ---
@@ -77,6 +77,7 @@ def build_sbatch_command(config: Dict[str, Any], config_hash: str) -> str:
     command_parts = [
         "sbatch",
         f"--job-name={job_name}",
+        f"--exclude={EXCLUDE_NODES}",
         SBATCH_TEMPLATE_SCRIPT,
         *hydra_overrides, 
     ]

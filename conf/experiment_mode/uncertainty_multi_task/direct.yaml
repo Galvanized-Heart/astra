@@ -1,0 +1,4 @@
+# @package _global_
+defaults:
+  - uncertainty_multi_task/base
+  - override /recomposition: none
