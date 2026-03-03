@@ -348,3 +348,104 @@ def print_summary_table(metrics_df: pd.DataFrame):
             ki_val = get_fmt('Ki', metric)
             print(f"{metric:<15} | {kcat_val:<20} | {km_val:<20} | {ki_val:<20}")
     print("="*100 + "\n")
+
+
+
+def plot_clustered_bar_charts(metrics_df: pd.DataFrame, out_dir: Path):
+    """
+    Creates clustered bar charts with Architecture on the X-axis.
+    Generates two sets of charts for each Metric (R2, RMSE, etc.):
+      1. Clustered by Target (kcat, KM, Ki in the legend)
+      2. Clustered by Experiment Mode (Single vs Multi-task in the legend)
+    """
+    # Create sub-directory to keep things organized
+    plot_dir = out_dir / "clustered_bar_charts"
+    plot_dir.mkdir(parents=True, exist_ok=True)
+
+    # Use capitalized column names as output by calculate_metrics
+    target_col = 'Target' 
+    if target_col not in metrics_df.columns:
+        print("Warning: Could not find Target column. Skipping clustered bar charts.")
+        return
+
+    # Identify metadata columns vs metric columns dynamically
+    meta_cols = ['Architecture', 'Mode', 'Fold', target_col]
+    existing_meta = [c for c in meta_cols if c in metrics_df.columns]
+    metric_cols = [c for c in metrics_df.columns if c not in existing_meta]
+
+    # Melt DataFrame for Seaborn
+    melted_df = metrics_df.melt(
+        id_vars=existing_meta,
+        value_vars=metric_cols,
+        var_name='Metric',
+        value_name='Value'
+    )
+    
+    # Define orders to keep charts perfectly consistent
+    arch_order = ["Linear", "Conv1D", "Self-Attn", "Cross-Attn"]
+    mode_order = ["Single Task", "Multi-Task (Direct)", "Multi-Task (Basic)", "Multi-Task (Advanced)"]
+    
+    final_arch_order = [a for a in arch_order if a in melted_df['Architecture'].unique()]
+    final_mode_order = [m for m in mode_order if m in melted_df['Mode'].unique()]
+    
+    # Plot separately for each Metric (R2, RMSE, etc.)
+    for metric in melted_df['Metric'].unique():
+        df_metric = melted_df[melted_df['Metric'] == metric]
+
+        # =========================================================
+        # VIEW 1: X = Architecture, Legend = Target (kcat, KM, Ki)
+        # =========================================================
+        g1 = sns.catplot(
+            data=df_metric,
+            x='Architecture',
+            y='Value',
+            hue=target_col,
+            col='Mode',            # Separate panels for Single vs Multi-task
+            col_order=final_mode_order,
+            kind='bar',
+            errorbar='sd',
+            capsize=0.1,
+            height=4.5,
+            aspect=1.2,
+            palette='Set2',
+            order=final_arch_order
+        )
+        
+        g1.fig.suptitle(f"{metric} Comparison: Architecture vs. Target Task", y=1.05)
+        g1.set_axis_labels("Architecture", metric)
+        g1.set_titles("{col_name}")
+        
+        # Save View 1
+        save_path_1 = plot_dir / f"clustered_arch_by_target_{metric.lower()}.png"
+        g1.savefig(save_path_1, dpi=300, bbox_inches='tight')
+        plt.close(g1.fig)
+
+        # =========================================================
+        # VIEW 2: X = Architecture, Legend = Experiment Mode
+        # =========================================================
+        g2 = sns.catplot(
+            data=df_metric,
+            x='Architecture',
+            y='Value',
+            hue='Mode',
+            hue_order=final_mode_order,
+            col=target_col,        # Separate panels for kcat, KM, Ki
+            kind='bar',
+            errorbar='sd',
+            capsize=0.1,
+            height=4.5,
+            aspect=1.2,
+            palette='viridis',
+            order=final_arch_order
+        )
+        
+        g2.fig.suptitle(f"{metric} Comparison: Architecture vs. Experiment Mode", y=1.05)
+        g2.set_axis_labels("Architecture", metric)
+        g2.set_titles("Target: {col_name}")
+
+        # Save View 2
+        save_path_2 = plot_dir / f"clustered_arch_by_mode_{metric.lower()}.png"
+        g2.savefig(save_path_2, dpi=300, bbox_inches='tight')
+        plt.close(g2.fig)
+        
+    print(f"Saved clustered architecture comparison charts to {plot_dir}")

@@ -7,7 +7,8 @@ from astra.analysis.plotting import (
     plot_architecture_comparison,
     plot_comprehensive_parity,
     plot_residuals,
-    print_summary_table
+    plot_clustered_bar_charts,
+    print_summary_table,
 )
 from astra.constants import PROJECT_ROOT
 
@@ -52,8 +53,11 @@ def main(tags, output):
     
     # 4. Residual Plots (New Evaluation angle)
     plot_residuals(df, targets, out_dir)
+
+    # 5. Clustered Bar Charts (Architecture on X, Tasks in Legend)
+    plot_clustered_bar_charts(metrics_df, out_dir)
     
-    # 5. Summary Table
+    # 6. Summary Table
     print_summary_table(metrics_df)
     
     print("\nAnalysis Complete.")

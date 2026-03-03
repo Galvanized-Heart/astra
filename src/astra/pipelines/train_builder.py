@@ -113,12 +113,12 @@ class PipelineBuilder:
         loss_config_dict.setdefault('params', {})
 
         # Unconditionally determine the correct loss function name based on the number of targets
-        correct_loss_name = "MaskedMSELoss" if len(target_columns) > 1 else "MSELoss"
+        #correct_loss_name = "MaskedMSELoss" if len(target_columns) > 1 else "MSELoss"
         
         # If the current name is different, update it and print a helpful message.
-        if loss_config_dict.get('name') != correct_loss_name:
-             print(f"INFO: Overriding loss function. Setting name to '{correct_loss_name}' based on {len(target_columns)} target column(s).")
-             loss_config_dict['name'] = correct_loss_name
+        #if loss_config_dict.get('name') != correct_loss_name:
+        #     print(f"INFO: Overriding loss function. Setting name to '{correct_loss_name}' based on {len(target_columns)} target column(s).")
+        #     loss_config_dict['name'] = correct_loss_name
 
         # Clean up incompatible parameters. This logic is now guaranteed to work correctly.
         if loss_config_dict['name'] == 'MSELoss' and 'weights' in loss_config_dict['params']:

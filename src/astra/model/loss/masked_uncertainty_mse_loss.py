@@ -1,5 +1,5 @@
 # Numerically stable vectorized reimplementation of regression loss from Multi-task learning using uncertainty to weigh losses for 
-# scene geometry and semantics by Kendall, Alex, Yarin Gal, and Roberto Cipolla in 2017. https://doi.org/10.48550/arXiv.1705.07115
+# scene geometry and semantics by Alex Kendall, Yarin Gal, and Roberto Cipolla in 2017. https://doi.org/10.48550/arXiv.1705.07115
 
 # Formula:
 # total_loss = sum(0.5 * exp(-s) * loss + 0.5 * s)

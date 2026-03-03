@@ -20,9 +20,9 @@ uv run ${PROJECT_ROOT}/src/astra/pipelines/hydra_train.py experiment_mode=multi_
     architecture.params.kernal_1=3 \
     architecture.params.kernal_2=3 \
     architecture.params.last_hid=32 \
-    model.lightning_module.loss_weights.w_kcat_logit=2 \
-    model.lightning_module.loss_weights.w_km_logit=2 \
-    model.lightning_module.loss_weights.w_ki_logit=2 \
+    model.lightning_module.loss_weights.w_kcat_logit=2.0 \
+    model.lightning_module.loss_weights.w_km_logit=2.0 \
+    model.lightning_module.loss_weights.w_ki_logit=2.0 \
     model.lightning_module.lr=0.0002
 
     #--multirun \

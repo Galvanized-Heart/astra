@@ -15,7 +15,10 @@ class RunLoader:
 
     def get_runs(self, tag_filter: List[str]) -> List[wandb.apis.public.Run]:
         """Fetch runs matching all tags."""
-        filters = {"tags": {"$all": tag_filter}, "state": "finished"}
+        filters = {
+            "tags": {"$all": tag_filter}, 
+            "state": {"$in": ["finished", "crashed"]}
+        }
         runs = self.api.runs(f"{self.entity}/{self.project}", filters=filters)
         print(f"Found {len(runs)} runs matching tags: {tag_filter}")
         return runs

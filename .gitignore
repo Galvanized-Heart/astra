@@ -223,6 +223,8 @@ predictions/
 
 # Files meant to be abstracted
 last_submitted_index.txt
+astra_context.txt
+dir_context.py
 
 # Exceptions
 !conf/data/
