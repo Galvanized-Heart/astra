@@ -135,7 +135,7 @@ class AstraModule(L.LightningModule):
 
         # Compute kinetic recomposition
         if self.recomposition_func:
-            y_hat = self.recomposition_func(rates=output) #, log_transform=self.log_transform_active) # TODO: Remove this if new log-space recomp works
+            y_hat = self.recomposition_func(rates=output)
         else:
             y_hat = output
 
@@ -153,6 +153,16 @@ class AstraModule(L.LightningModule):
         
         # Log loss
         self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True) 
+
+        if hasattr(self.loss_func, 'log_variance'):
+            # Map log_variance tensor target columns (kcat, KM, Ki) for logging
+            for i, param_name in enumerate(self.target_columns):
+                # Log exp(-s)
+                precision = torch.exp(-self.loss_func.log_variance[i])
+                self.log(f'loss_weights/precision_{param_name}', precision, on_step=False, on_epoch=True)
+                # log raw log_variance parameter
+                self.log(f'loss_weights/log_var_{param_name}', self.loss_func.log_variance[i], on_step=False, on_epoch=True)
+
 
         # Update the metrics for each target parameter
         for i, param_name in enumerate(self.target_columns):

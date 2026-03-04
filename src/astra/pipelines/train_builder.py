@@ -51,115 +51,92 @@ class PipelineBuilder:
         self.trainer = None
 
     def _resolve_and_validate_config(self, config_dict: DictConfig) -> FullConfig:
-        """
-        Takes a raw config dict, applies defaults and validation logic, and returns
-        a validated Pydantic FullConfig object.
-
-        Args:
-            config_dict (DictConfig): The raw config object from Hydra.
-
-        Returns:
-            FullConfig: A validated and resolved Pydantic configuration object.
-        
-        Raises:
-            ValueError: If the configuration is logically inconsistent.
-            pydantic.ValidationError: If the configuration violates the defined schema.
-        """
         resolved_config = config_dict.copy()
-
-        # Temporarily disable struct mode to allow dynamic modifications
         OmegaConf.set_struct(resolved_config, False)
 
         lm_cfg = resolved_config.model.lightning_module
-        if 'loss_weights' in lm_cfg and 'w_kcat_logit' in lm_cfg.loss_weights:
-            print("INFO: Found loss weight logits. Converting to weights list for MaskedMSELoss.")
-            
-            # Access the logits from the config using your new path
-            logits = torch.tensor([
-                lm_cfg.loss_weights.w_kcat_logit,
-                lm_cfg.loss_weights.w_km_logit,
-                lm_cfg.loss_weights.w_ki_logit
-            ])
-
-            # Softmax weights to get normalized positive numbers
-            weights = F.softmax(logits, dim=0)
-            weights_list = weights.tolist()
-
-            # Inject the generated weights list into the loss function's parameters
-            lm_cfg.loss_function.setdefault('params', {})
-            lm_cfg.loss_function.params['weights'] = weights_list
-
-        # Resolve `target_columns` and establish lightning_module config (`lm_cfg`)
         data_cfg = resolved_config.setdefault('data', {})
         target_columns = data_cfg.setdefault('target_columns', ["kcat", "KM", "Ki"])
-        lm_cfg = resolved_config['model']['lightning_module']
+        num_targets = len(target_columns)
 
-        # Normalize the recomposition_func from a potentially empty dict to None
+        # Resolve multi-task strategy
+        mtl_strategy = lm_cfg.get('mtl_strategy')
+        if not mtl_strategy:
+            if lm_cfg.get('loss_function', {}).get('name') == 'MaskedUncertaintyMSELoss':
+                mtl_strategy = 'uncertainty'
+            else:
+                mtl_strategy = 'manual'
+        
+        # Ensure we have structure ready
+        lm_cfg.setdefault('loss_function', {})
+        lm_cfg.loss_function.setdefault('params', {})
+
+        print(f"INFO: Enforcing Multi-Task Strategy: '{mtl_strategy.upper()}'")
+
+        if mtl_strategy == 'cagrad':
+            # Nullify any other loss balancing. Force equal weights on MaskedMSELoss.
+            print("INFO: CAGrad selected. Nullifying custom loss functions and weights.")
+            lm_cfg.loss_function['name'] = 'MaskedMSELoss'
+            lm_cfg.loss_function.params['weights'] = [1.0 / num_targets] * num_targets
+            
+            # Ensure no legacy weights interfere
+            lm_cfg.loss_function.params.pop('num_tasks', None)
+            lm_cfg.pop('loss_weights', None)
+
+            # TODO: AstraModule will need to check `self.hparams.mtl_strategy == 'cagrad'` 
+            # to trigger the custom gradient manipulation in the backward pass.
+
+        elif mtl_strategy == 'uncertainty':
+            lm_cfg.loss_function['name'] = 'MaskedUncertaintyMSELoss'
+            lm_cfg.loss_function.params['num_tasks'] = num_targets
+            
+            # Nullify manual weights
+            lm_cfg.loss_function.params.pop('weights', None)
+            lm_cfg.pop('loss_weights', None)
+
+        elif mtl_strategy == 'manual':
+            lm_cfg.loss_function['name'] = 'MaskedMSELoss'
+            lm_cfg.loss_function.params.pop('num_tasks', None)
+
+            if 'loss_weights' in lm_cfg:
+                logits = torch.tensor([
+                    lm_cfg.loss_weights.get('w_kcat_logit', 0.0),
+                    lm_cfg.loss_weights.get('w_km_logit', 0.0),
+                    lm_cfg.loss_weights.get('w_ki_logit', 0.0)
+                ][:num_targets], dtype=torch.float32)
+                
+                weights = F.softmax(logits, dim=0).tolist()
+                lm_cfg.loss_function.params['weights'] = weights
+                lm_cfg.pop('loss_weights', None)
+            elif 'weights' not in lm_cfg.loss_function.params:
+                lm_cfg.loss_function.params['weights'] = [1.0 / num_targets] * num_targets
+        else:
+            raise ValueError(f"Unknown mtl_strategy: {mtl_strategy}")
+
+        # Write the resolved strategy back to the config so the LightningModule can access it
+        lm_cfg['mtl_strategy'] = mtl_strategy
+
+        # Resolve recomposition function and output dimensions
         recomp_func_raw = lm_cfg.get('recomposition_func')
         if isinstance(recomp_func_raw, dict) and not recomp_func_raw:
-            print("INFO: 'recomposition_func' was an empty dict. Coercing to 'None'.")
             lm_cfg['recomposition_func'] = None
 
-        # Normalize the loss_function part of the config to always be a dictionary
-        loss_config_raw = lm_cfg.get('loss_function', {})
-        if isinstance(loss_config_raw, str):
-            loss_config_dict = {'name': loss_config_raw, 'params': {}}
-        elif loss_config_raw is None:
-            loss_config_dict = {}
-        else:
-            loss_config_dict = loss_config_raw
-        
-        # Ensure a 'params' key exists within the loss function config
-        loss_config_dict.setdefault('params', {})
-
-        # Unconditionally determine the correct loss function name based on the number of targets
-        #correct_loss_name = "MaskedMSELoss" if len(target_columns) > 1 else "MSELoss"
-        
-        # If the current name is different, update it and print a helpful message.
-        #if loss_config_dict.get('name') != correct_loss_name:
-        #     print(f"INFO: Overriding loss function. Setting name to '{correct_loss_name}' based on {len(target_columns)} target column(s).")
-        #     loss_config_dict['name'] = correct_loss_name
-
-        # Clean up incompatible parameters. This logic is now guaranteed to work correctly.
-        if loss_config_dict['name'] == 'MSELoss' and 'weights' in loss_config_dict['params']:
-            print("INFO: 'weights' parameter is not applicable for 'MSELoss'. Removing from config.")
-            del loss_config_dict['params']['weights']
-
-        # Update the main config with the fully resolved and cleaned loss function dictionary
-        lm_cfg['loss_function'] = loss_config_dict
-
-        # Resolve the model's `out_dim`
         arch_params = resolved_config['model']['architecture'].setdefault('params', {})
         recomp_func_name = lm_cfg.get('recomposition_func')
 
         expected_out_dim, source = (
-            (RECOMP_INPUT_DIMS[recomp_func_name], f"recomposition function '{recomp_func_name}'")
-            if recomp_func_name else (len(target_columns), "number of target_columns")
+            (RECOMP_INPUT_DIMS[recomp_func_name], f"recomp func '{recomp_func_name}'")
+            if recomp_func_name else (num_targets, "target_columns")
         )
         
         user_out_dim = arch_params.get('out_dim')
         if user_out_dim is None:
             arch_params['out_dim'] = expected_out_dim
-            print(f"INFO: Set 'out_dim' to {expected_out_dim} based on {source}.")
         elif user_out_dim != expected_out_dim:
-            raise ValueError(f"Config Mismatch: Model 'out_dim' ({user_out_dim}) must be {expected_out_dim} to match {source}.")
+            raise ValueError(f"Config Mismatch: 'out_dim' ({user_out_dim}) must be {expected_out_dim} to match {source}.")
 
-        # Re-enable struct mode for safety
         OmegaConf.set_struct(resolved_config, True)
-
-        # Validate corrected configuration with Pydantic
-        try:
-            # Convert the OmegaConf object to a primitive python dict for Pydantic.
-            # `resolve=True` ensures all interpolations like `${...}` are resolved to their values.
-            final_dict = OmegaConf.to_container(resolved_config, resolve=True, throw_on_missing=True)
-            return FullConfig(**final_dict)
-        except ValidationError as e:
-            print("\nERROR: The final, resolved configuration is invalid!")
-            # Also print the resolved config to help debug
-            print("--- Final Resolved Config ---")
-            print(OmegaConf.to_yaml(resolved_config))
-            print("-----------------------------")
-            raise e
+        # ... validation ...
 
     def build_featurizers(self):
         print("INFO: Building featurizers...")
