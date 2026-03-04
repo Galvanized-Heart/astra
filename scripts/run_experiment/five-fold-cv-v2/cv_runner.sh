@@ -3,7 +3,7 @@
 #SBATCH --output=slurm_logs/%j/cv_runner-%j.out
 #SBATCH --error=slurm_logs/%j/cv_runner-%j.err
 #SBATCH --gpus-per-node=h100:1
-#SBATCH --time=20:00:00
+#SBATCH --time=00:05:00
 #SBATCH --mem=24G
 
 # Create a logs directory if it doesn't exist

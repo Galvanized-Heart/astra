@@ -21,14 +21,15 @@ defaults:
 wandb:
   group: null
 
-tags:
+base_tags:
   - ${target_columns}
   - ${recomposition.recomposition_func}
   - ${data.tag}
   - ${architecture.name}
   - ${protein_featurizer.name}
   - ${ligand_featurizer.name}
-  - "5fcv"
+
+extra_tags:
 
 # --- Static Configurations ---
 seed: 42
