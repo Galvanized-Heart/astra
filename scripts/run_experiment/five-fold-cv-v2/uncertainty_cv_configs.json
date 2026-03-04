@@ -5,7 +5,7 @@
     "data": "fold_0",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -21,7 +21,7 @@
     "data": "fold_1",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -37,7 +37,7 @@
     "data": "fold_2",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -53,7 +53,7 @@
     "data": "fold_3",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -69,7 +69,7 @@
     "data": "fold_4",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -85,7 +85,7 @@
     "data": "fold_0",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -101,7 +101,7 @@
     "data": "fold_1",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -117,7 +117,7 @@
     "data": "fold_2",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -133,7 +133,7 @@
     "data": "fold_3",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -149,7 +149,7 @@
     "data": "fold_4",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -165,7 +165,7 @@
     "data": "fold_0",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -181,7 +181,7 @@
     "data": "fold_1",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -197,7 +197,7 @@
     "data": "fold_2",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -213,7 +213,7 @@
     "data": "fold_3",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -229,7 +229,7 @@
     "data": "fold_4",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-Linear",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -245,7 +245,7 @@
     "data": "fold_0",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -264,7 +264,7 @@
     "data": "fold_1",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -283,7 +283,7 @@
     "data": "fold_2",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -302,7 +302,7 @@
     "data": "fold_3",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -321,7 +321,7 @@
     "data": "fold_4",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -340,7 +340,7 @@
     "data": "fold_0",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -359,7 +359,7 @@
     "data": "fold_1",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -378,7 +378,7 @@
     "data": "fold_2",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -397,7 +397,7 @@
     "data": "fold_3",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -416,7 +416,7 @@
     "data": "fold_4",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -435,7 +435,7 @@
     "data": "fold_0",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -454,7 +454,7 @@
     "data": "fold_1",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -473,7 +473,7 @@
     "data": "fold_2",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -492,7 +492,7 @@
     "data": "fold_3",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],
@@ -511,7 +511,7 @@
     "data": "fold_4",
     "+model.lightning_module.mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-SelfAttn",
-    "tags": [
+    "extra_tags": [
       "uncertainty_exp",
       "5fcv"
     ],

@@ -14,6 +14,14 @@ def train(cfg: DictConfig) -> float:
     """
     The main training entry point managed by Hydra.
     """
+       
+    # Extend tags list
+    OmegaConf.set_struct(cfg, False)
+    base = list(cfg.get("base_tags") or [])
+    extra = list(cfg.get("extra_tags") or [])
+    cfg.tags = base + [t for t in extra if t not in base]
+    OmegaConf.set_struct(cfg, True)
+
     print("--- CONFIG LOADED ---")
     print(OmegaConf.to_yaml(cfg))
     

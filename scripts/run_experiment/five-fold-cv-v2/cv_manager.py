@@ -68,7 +68,6 @@ def build_sbatch_command(config: Dict[str, Any], config_hash: str) -> str:
 
 
 def build_hydra_overrides(config: Dict[str, Any]) -> List[str]:
-    """Builds the list of Hydra override strings from a config dict."""
     hydra_overrides = []
     for key, value in config.items():
         if isinstance(value, list):
@@ -87,7 +86,12 @@ def build_hydra_overrides(config: Dict[str, Any]) -> List[str]:
             escaped_value = value
         else:
             escaped_value = json.dumps(value)
-        hydra_overrides.append(f"{key}={escaped_value}")
+
+        override = f"{key}={escaped_value}"
+        if any(c in escaped_value for c in "()[]{}"):
+            override = f'"{override}"'
+
+        hydra_overrides.append(override)
     return hydra_overrides
 
 

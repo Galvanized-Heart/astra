@@ -199,7 +199,7 @@ def main():
                     "data": fold,
                     "+model.lightning_module.mtl_strategy": "uncertainty",
                     "wandb.group": f"Uncertainty-{mode_short_name}-{arch_short_name}",
-                    "tags": ["uncertainty_exp", "5fcv"], 
+                    "extra_tags": ["uncertainty_exp", "5fcv"], 
                     "trainer.epochs": 20 
                 }
                 
