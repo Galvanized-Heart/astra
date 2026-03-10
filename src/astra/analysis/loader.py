@@ -81,47 +81,39 @@ class RunLoader:
                 deduplicated_runs.append(run)
         return deduplicated_runs
 
-    def _derive_metadata(self, config: dict) -> Tuple[str, str]:
-        """
-        Infers clean Architecture and Experiment Mode labels based on the 
-        verified nested config structure.
-        """
-        # Get achitecture
+    def _derive_metadata(self, run: wandb.apis.public.Run) -> Tuple[str, str, str]:
+        """Infers Architecture, Experiment Mode, and MTL Strategy."""
+        config = run.config
+        
+        # 1. Get Architecture
         try:
             arch_raw = config['model']['architecture']['name']
         except (KeyError, TypeError):
             arch_raw = config.get('architecture.name', 'Unknown')
 
-        # Map raw class names to pretty names
         arch_map = {
             "LinearBaselineModel": "Linear",
             "CpiPredConvModel": "Conv1D",
             "CpiPredSelfAttnModel": "Self-Attn",
             "CpiPredCrossAttnModel": "Cross-Attn"
         }
-        arch = arch_map.get(arch_raw, arch_raw) # Returns raw name if not in map
+        arch = arch_map.get(arch_raw, arch_raw)
 
-        # Get experiment mode
+        # 2. Get Experiment Mode
         try:
             targets = config['data']['target_columns']
         except (KeyError, TypeError):
             targets = config.get('data.target_columns', [])
 
-        # Path: model -> lightning_module -> recomposition_func
         try:
             recomp = config['model']['lightning_module']['recomposition_func']
         except (KeyError, TypeError):
             recomp = config.get('model.lightning_module.recomposition_func')
 
-        # Logic to determine Mode
         is_single_task = False
-        
-        # Handle targets being a list OR a string representation of a list
         if isinstance(targets, list):
             is_single_task = (len(targets) == 1)
         elif isinstance(targets, str):
-            # If string contains comma, it's likely multi-task e.g. "['kcat', 'KM']"
-            # If no comma, likely single task e.g. "['kcat']" or "kcat"
             is_single_task = (',' not in targets)
 
         if is_single_task:
@@ -131,46 +123,57 @@ class RunLoader:
         elif recomp == "AdvancedRecomp":
             mode = "Multi-Task (Advanced)"
         else:
-            # Multi-task implies 3 targets, if recomp is None/Null, it's Direct
             mode = "Multi-Task (Direct)"
 
-        return arch, mode
+        # 3. Get MTL Strategy (BULLETPROOF EXTRACTION)
+        strategy = 'manual' # Default
+        
+        # A: Check the group name first! Your generator script prefixed them perfectly.
+        if run.group and run.group.startswith('Uncertainty-'):
+            strategy = 'uncertainty'
+        else:
+            # B: Fallback to checking flattened config keys
+            for k, v in config.items():
+                if k.endswith('mtl_strategy') and isinstance(v, str):
+                    strategy = v.lower()
+                    break
+            # C: Fallback to nested config
+            if strategy == 'manual':
+                try:
+                    val = config.get('model', {}).get('lightning_module', {}).get('mtl_strategy')
+                    if val: strategy = str(val).lower()
+                except AttributeError:
+                    pass
+
+        return arch, mode, strategy
 
     def load_predictions(self, runs: List[wandb.apis.public.Run]) -> pd.DataFrame:
-        """
-        Aggregates prediction CSVs from W&B runs.
-        """
+        """Aggregates prediction CSVs from W&B runs."""
         all_preds = []
 
         for run in tqdm(runs, desc="Loading Run Data"):
-            # 1. Derive Metadata
-            arch, mode = self._derive_metadata(run.config)
+            # 1. Derive Metadata (Notice we pass 'run' now, not 'run.config')
+            arch, mode, strategy = self._derive_metadata(run)
             
-            # 2. Extract Fold from W&B Tags
-            # Looks for "fold_X", "fold-X", or "hpo_split"
+            # Create a unified Method label for easy plotting
+            if mode == "Single Task":
+                method = "Single Task"
+            else:
+                method = f"{mode} ({strategy.capitalize()})"
+            
+            # 2. Extract Fold
             fold = 'fold_unknown'
             for t in run.tags:
-                # Check for standard fold tags
                 match = re.search(r"fold[_-]?(\d+)", t)
-                if match:
-                    fold = f"{match.group(1)}"
-                    break
-                # Check for HPO split
-                if t == 'hpo_split':
-                    fold = 'hpo'
+                if match: fold = f"{match.group(1)}"; break
+                if t == 'hpo_split': fold = 'hpo'
             
             # 3. Locate Prediction File
-            # We check both best and last to ensure we get data
-            pred_path_str = run.summary.get("best_predictions_path") # or run.summary.get("last_predictions_path")
-
-            if not pred_path_str:
-                continue
+            pred_path_str = run.summary.get("best_predictions_path")
+            if not pred_path_str: continue
 
             pred_path = Path(pred_path_str)
-            
-            # Simple check if file exists (for running on cluster)
-            if not pred_path.exists():
-                continue
+            if not pred_path.exists(): continue
 
             try:
                 df = pd.read_csv(pred_path)
@@ -179,13 +182,13 @@ class RunLoader:
                 df['run_id'] = run.id
                 df['architecture'] = arch
                 df['experiment_mode'] = mode
+                df['mtl_strategy'] = strategy
+                df['Method'] = method  # <-- CRITICAL for plotting
                 df['fold'] = fold
                 
                 all_preds.append(df)
             except Exception:
                 continue
 
-        if not all_preds:
-            return pd.DataFrame()
-            
+        if not all_preds: return pd.DataFrame()
         return pd.concat(all_preds, ignore_index=True)
