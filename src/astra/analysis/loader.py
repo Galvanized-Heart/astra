@@ -169,7 +169,7 @@ class RunLoader:
                 if t == 'hpo_split': fold = 'hpo'
             
             # 3. Locate Prediction File
-            pred_path_str = run.summary.get("best_predictions_path")
+            pred_path_str = run.summary.get("last_predictions_path")
             if not pred_path_str: continue
 
             pred_path = Path(pred_path_str)

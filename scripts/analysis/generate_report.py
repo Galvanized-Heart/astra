@@ -62,7 +62,7 @@ def main(tags, output):
     #print_summary_table(metrics_df)
 
     # 7. Add the new comparison plot!
-    plot_uncertainty_comparison_bar_charts(metrics_df, out_dir)
+    plot_uncertainty_comparison_bar_charts(metrics_df, out_dir / "last")
     
     print("\nAnalysis Complete.")
 
