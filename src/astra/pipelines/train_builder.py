@@ -85,18 +85,7 @@ class PipelineBuilder:
 
         print(f"INFO: Enforcing Multi-Task Strategy: '{mtl_strategy.upper()}'")
 
-        if mtl_strategy == 'cagrad':
-            # --- CAGRAD STRATEGY ---
-            # Nullify any other loss balancing. Force equal weights on MaskedMSELoss.
-            print("INFO: CAGrad selected. Nullifying custom loss functions and weights.")
-            lm_cfg.loss_function['name'] = 'MaskedMSELoss'
-            lm_cfg.loss_function.params['weights'] = [1.0 / num_targets] * num_targets
-            
-            # Ensure no legacy weights interfere
-            lm_cfg.loss_function.params.pop('num_tasks', None)
-            lm_cfg.pop('loss_weights', None)
-
-        elif mtl_strategy == 'uncertainty':
+        if mtl_strategy == 'uncertainty':
             # --- UNCERTAINTY STRATEGY ---
             lm_cfg.loss_function['name'] = 'MaskedUncertaintyMSELoss'
             lm_cfg.loss_function.params['num_tasks'] = num_targets
@@ -235,6 +224,10 @@ class PipelineBuilder:
         if log_transform_active:
             print("INFO: Log10 transformation is active. Recomposition will operate in log space.")
 
+        mtl_strategy = lm_cfg.mtl_strategy
+        mtl_optimizer = lm_cfg.mtl_optimizer
+        mtl_optimizer_kwargs = lm_cfg.mtl_optimizer_kwargs
+
         self.model = AstraModule(
             model=self.model_architecture,
             lr=lm_cfg.lr,
@@ -244,7 +237,10 @@ class PipelineBuilder:
             recomposition_func=recomp_func,
             log_transform_active=log_transform_active,
             lr_scheduler_class=scheduler_class,
-            lr_scheduler_kwargs=scheduler_kwargs
+            lr_scheduler_kwargs=scheduler_kwargs,
+            mtl_strategy=mtl_strategy,
+            mtl_optimizer=mtl_optimizer,
+            mtl_optimizer_kwargs=mtl_optimizer_kwargs,
         )
         return self
 

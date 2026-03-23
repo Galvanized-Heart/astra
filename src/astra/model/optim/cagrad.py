@@ -78,7 +78,8 @@ class CAGrad:
                     p.grad.detach_()
                     p.grad.zero_()
 
-            task_losses[i].backward(retain_graph=(i < num_tasks - 1)) # retain_graph for all but last
+            task_key = valid_task_indices[i]
+            task_losses[task_key].backward(retain_graph=(i < num_tasks - 1)) # retain_graph for all but last
             grad_vec = utils.parameters_to_vector([p.grad.clone() for p in params if p.grad is not None])
             grads.append(grad_vec)
 
