@@ -14,7 +14,7 @@ class MaskedUncertaintyMSELoss(nn.Module):
         # Initialize s=0 for equal initial weighting
         self.log_variance = nn.Parameter(torch.zeros(num_tasks))
 
-    def forward(self, predictions, targets):
+    def forward(self, predictions, targets, return_individual_losses=False):
         # Ensure correct device
         device = predictions.device
 
@@ -49,6 +49,11 @@ class MaskedUncertaintyMSELoss(nn.Module):
 
         # Calculate loss per task
         task_losses = 0.5 * (precision * mean_loss_per_task + stds)
+
+        if return_individual_losses:
+            # Return mean individual losses as dict
+            has_data_mask = (num_valid_samples > 0)
+            return {i: task_losses[i] for i, has_data in enumerate(has_data_mask) if has_data}
 
         # Zero out tasks with no data in a batch
         masked_task_losses = task_losses * has_data_mask
