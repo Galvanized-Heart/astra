@@ -73,7 +73,7 @@ class AstraModule(L.LightningModule):
         self.mtl_strategy = mtl_strategy
 
         self.mtl_optimizer = mtl_optimizer
-        self.mtl_optimizer_kwargs = mtl_optimizer_kwargs
+        self.mtl_optimizer_kwargs = mtl_optimizer_kwargs or {}
         if self.mtl_optimizer is not None:
             self.automatic_optimization = False
 

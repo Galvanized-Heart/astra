@@ -18,7 +18,7 @@ ENTITY = "lmse-university-of-toronto"
 PROJECT = "astra"  
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_FILE = os.path.join(SCRIPT_DIR, "uncertainty_cv_configs.json")
+OUTPUT_FILE = os.path.join(SCRIPT_DIR, "cagrad_cv_configs.json")
 
 # We only need to find champions for these two architectures
 TARGET_MODELS = {
@@ -29,6 +29,15 @@ TARGET_MODELS = {
 # The target experiment modes we are generating for Hydra
 TARGET_MODES = ["multi_task/direct", "multi_task/basic", "multi_task/advanced"]
 FOLDS = ["fold_0", "fold_1", "fold_2", "fold_3", "fold_4"]
+
+EXPERIMENTS = [
+    ("manual", 0.5),
+    ("uncertainty", 0.5),
+    ("manual", 0.9),
+    ("manual", 0.1),
+    ("uncertainty", 0.9),
+    ("uncertainty", 0.1),
+]
 
 KNOWN_HYPERPARAMETERS = {
     'lr': 'model.lightning_module.lr', 
@@ -180,32 +189,38 @@ def main():
         # Get a dictionary of champions: { "multi_task/direct": {hparams...}, ... }
         champions_dict = get_all_champions_for_architecture(api, model_tag)
 
-        # Generate 5 folds for every mode that successfully found a champion
-        for mode in TARGET_MODES:
-            if mode not in champions_dict:
-                continue # Skip if we didn't find a champion for this mode
+        for strategy, c_val in EXPERIMENTS:
+            # Generate 5 folds for every mode that successfully found a champion
+            for mode in TARGET_MODES:
+                if mode not in champions_dict:
+                    continue # Skip if we didn't find a champion for this mode
+                    
+                champion_data = champions_dict[mode]
+                hparams = champion_data["hparams"]
+                manual_group_name = champion_data["group_name"]
                 
-            champion_data = champions_dict[mode]
-            hparams = champion_data["hparams"]
-            manual_group_name = champion_data["group_name"]
-            
-            mode_short_name = mode.split('/')[-1].capitalize()
-            arch_short_name = "SelfAttn" if "self_attn" in arch_name else "Linear"
+                mode_short_name = mode.split('/')[-1].capitalize()
+                arch_short_name = "SelfAttn" if "self_attn" in arch_name else "Linear"
 
-            for fold in FOLDS:
-                run_overrides = {
-                    "experiment_mode": mode,
-                    "architecture": arch_name,
-                    "data": fold,
-                    "mtl_strategy": "uncertainty",
-                    "wandb.group": f"Uncertainty-{mode_short_name}-{arch_short_name}",
-                    "extra_tags": ["uncertainty_exp", "5fcv"], 
-                    "trainer.epochs": 20 
-                }
-                
-                # Apply the extracted champion parameters
-                run_overrides.update(hparams)
-                all_generated_configs.append(run_overrides)
+                for fold in FOLDS:
+                    run_overrides = {
+                        "experiment_mode": mode,
+                        "architecture": arch_name,
+                        "data": fold,
+                        
+                        "mtl_strategy": strategy,    
+                        "mtl_optimizer": "cagrad",   
+                        
+                        "model.lightning_module.mtl_optimizer_kwargs.c": c_val,
+                        
+                        "wandb.group": f"CAGrad-{strategy.capitalize()}-c_{c_val}-{mode_short_name}-{arch_short_name}",
+                        "extra_tags": ["cagrad_exp", f"c_{c_val}", strategy, "5fcv"], 
+                        "trainer.epochs": 20
+                    }
+                    
+                    # Apply the extracted champion parameters
+                    run_overrides.update(hparams)
+                    all_generated_configs.append(run_overrides)
 
     # Save to JSON
     print(f"\n========================================================")

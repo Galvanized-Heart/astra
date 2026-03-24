@@ -8,6 +8,8 @@ defaults:
   - lr_scheduler: plateau
   - protein_featurizer: esm
   - ligand_featurizer: morgan
+  - mtl_strategy: manual
+  - mtl_optimizer: base
 
   # Set this after all other defaults since it uses global's defined by the package imports above!
   - experiment_mode: multi_task/basic # sets target_column, loss, and recomposition by default

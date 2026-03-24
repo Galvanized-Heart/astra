@@ -3,7 +3,7 @@
     "experiment_mode": "multi_task/direct",
     "architecture": "linear",
     "data": "fold_0",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -19,7 +19,7 @@
     "experiment_mode": "multi_task/direct",
     "architecture": "linear",
     "data": "fold_1",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -35,7 +35,7 @@
     "experiment_mode": "multi_task/direct",
     "architecture": "linear",
     "data": "fold_2",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -51,7 +51,7 @@
     "experiment_mode": "multi_task/direct",
     "architecture": "linear",
     "data": "fold_3",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -67,7 +67,7 @@
     "experiment_mode": "multi_task/direct",
     "architecture": "linear",
     "data": "fold_4",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -83,7 +83,7 @@
     "experiment_mode": "multi_task/basic",
     "architecture": "linear",
     "data": "fold_0",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -99,7 +99,7 @@
     "experiment_mode": "multi_task/basic",
     "architecture": "linear",
     "data": "fold_1",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -115,7 +115,7 @@
     "experiment_mode": "multi_task/basic",
     "architecture": "linear",
     "data": "fold_2",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -131,7 +131,7 @@
     "experiment_mode": "multi_task/basic",
     "architecture": "linear",
     "data": "fold_3",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -147,7 +147,7 @@
     "experiment_mode": "multi_task/basic",
     "architecture": "linear",
     "data": "fold_4",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -163,7 +163,7 @@
     "experiment_mode": "multi_task/advanced",
     "architecture": "linear",
     "data": "fold_0",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -179,7 +179,7 @@
     "experiment_mode": "multi_task/advanced",
     "architecture": "linear",
     "data": "fold_1",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -195,7 +195,7 @@
     "experiment_mode": "multi_task/advanced",
     "architecture": "linear",
     "data": "fold_2",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -211,7 +211,7 @@
     "experiment_mode": "multi_task/advanced",
     "architecture": "linear",
     "data": "fold_3",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -227,7 +227,7 @@
     "experiment_mode": "multi_task/advanced",
     "architecture": "linear",
     "data": "fold_4",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-Linear",
     "extra_tags": [
       "uncertainty_exp",
@@ -243,7 +243,7 @@
     "experiment_mode": "multi_task/direct",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_0",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -262,7 +262,7 @@
     "experiment_mode": "multi_task/direct",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_1",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -281,7 +281,7 @@
     "experiment_mode": "multi_task/direct",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_2",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -300,7 +300,7 @@
     "experiment_mode": "multi_task/direct",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_3",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -319,7 +319,7 @@
     "experiment_mode": "multi_task/direct",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_4",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Direct-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -338,7 +338,7 @@
     "experiment_mode": "multi_task/basic",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_0",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -357,7 +357,7 @@
     "experiment_mode": "multi_task/basic",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_1",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -376,7 +376,7 @@
     "experiment_mode": "multi_task/basic",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_2",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -395,7 +395,7 @@
     "experiment_mode": "multi_task/basic",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_3",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -414,7 +414,7 @@
     "experiment_mode": "multi_task/basic",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_4",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Basic-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -433,7 +433,7 @@
     "experiment_mode": "multi_task/advanced",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_0",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -452,7 +452,7 @@
     "experiment_mode": "multi_task/advanced",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_1",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -471,7 +471,7 @@
     "experiment_mode": "multi_task/advanced",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_2",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -490,7 +490,7 @@
     "experiment_mode": "multi_task/advanced",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_3",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",
@@ -509,7 +509,7 @@
     "experiment_mode": "multi_task/advanced",
     "architecture": "cpi_pred_self_attn",
     "data": "fold_4",
-    "+model.lightning_module.mtl_strategy": "uncertainty",
+    "mtl_strategy": "uncertainty",
     "wandb.group": "Uncertainty-Advanced-SelfAttn",
     "extra_tags": [
       "uncertainty_exp",

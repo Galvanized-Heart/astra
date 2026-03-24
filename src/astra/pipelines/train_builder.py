@@ -224,9 +224,9 @@ class PipelineBuilder:
         if log_transform_active:
             print("INFO: Log10 transformation is active. Recomposition will operate in log space.")
 
-        mtl_strategy = lm_cfg.mtl_strategy
-        mtl_optimizer = lm_cfg.mtl_optimizer
-        mtl_optimizer_kwargs = lm_cfg.mtl_optimizer_kwargs
+        mtl_strategy = lm_cfg.get('mtl_strategy', 'manual')
+        mtl_optimizer = lm_cfg.get('mtl_optimizer', None)
+        mtl_optimizer_kwargs = lm_cfg.get('mtl_optimizer_kwargs', {})
 
         self.model = AstraModule(
             model=self.model_architecture,
