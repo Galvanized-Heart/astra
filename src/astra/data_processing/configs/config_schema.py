@@ -46,6 +46,9 @@ class LightningModuleConfig(BaseModel):
     loss_function: Optional[Union[Literal[tuple(LOSS_FN_REGISTRY.keys())], LossFunctionConfig]] = None
     recomposition_func: Optional[Literal[tuple(RECOMPOSITION_REGISTRY.keys())]] = None
     lr_scheduler: Optional[SchedulerConfig] = None
+    mtl_strategy: str = "manual"
+    mtl_optimizer: Optional[str] = None
+    mtl_optimizer_kwargs: Optional[Dict[str, Any]] = Field(default_factory=dict)
 
 class ModelConfig(BaseModel):
     architecture: ModelArchitectureConfig

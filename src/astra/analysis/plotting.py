@@ -23,11 +23,13 @@ def get_present_order(available_items, desired_order):
 def calculate_metrics(df: pd.DataFrame, target_cols: list) -> pd.DataFrame:
     """Calculates metrics per fold."""
     results = []
-    groups = df.groupby(['architecture', 'experiment_mode', 'fold'])
+    
+    # CRITICAL FIX: Group by 'Method' so Uncertainty and Manual stay separate!
+    groups = df.groupby(['architecture', 'experiment_mode', 'Method', 'fold'])
     
     print(f"Calculating metrics for {len(groups)} experimental groups...")
     
-    for (arch, mode, fold), group in groups:
+    for (arch, mode, method, fold), group in groups:
         for target in target_cols:
             pred_col = f"{target}_pred"
             if pred_col not in group.columns or group[pred_col].isna().all(): continue
@@ -45,9 +47,20 @@ def calculate_metrics(df: pd.DataFrame, target_cols: list) -> pd.DataFrame:
             mae = mean_absolute_error(y_true, y_pred)
             r2 = r2_score(y_true, y_pred)
             
+            # OOM Accuracy
+            abs_err = np.abs(y_true - y_pred)
+            acc_half_oom = np.mean(abs_err < 0.5) * 100.0
+            acc_1_oom = np.mean(abs_err < 1.0) * 100.0
+            
             results.append({
-                'Architecture': arch, 'Mode': mode, 'Fold': fold, 'Target': target,
-                'Pearson': p_r, 'Spearman': s_r, 'R2': r2, 'RMSE': rmse, 'MAE': mae
+                'Architecture': arch, 
+                'Mode': mode, 
+                'Method': method, # <-- Propagating Method to the final metrics df
+                'Fold': fold, 
+                'Target': target,
+                'Pearson': p_r, 'Spearman': s_r, 'R2': r2, 'RMSE': rmse, 'MAE': mae,
+                'Within 0.5 OOM (%)': acc_half_oom,
+                'Within 1.0 OOM (%)': acc_1_oom,
             })
             
     return pd.DataFrame(results)
@@ -449,3 +462,93 @@ def plot_clustered_bar_charts(metrics_df: pd.DataFrame, out_dir: Path):
         plt.close(g2.fig)
         
     print(f"Saved clustered architecture comparison charts to {plot_dir}")
+
+def plot_uncertainty_comparison_bar_charts(metrics_df: pd.DataFrame, out_dir: Path):
+    """
+    Specifically generates the comparison plots for Manual vs Uncertainty
+    for the Linear and Self-Attn architectures.
+    """
+    plot_dir = out_dir / "uncertainty_comparison"
+    plot_dir.mkdir(parents=True, exist_ok=True)
+
+    # 1. Filter data to only the architectures we care about for this test
+    target_archs = ['Linear', 'Self-Attn']
+    df_plot = metrics_df[metrics_df['Architecture'].isin(target_archs)].copy()
+
+    if df_plot.empty:
+        print("No Linear or Self-Attn data found for uncertainty comparison.")
+        return
+
+    # 2. Enforce exact legend/bar ordering
+    method_order = [
+        'Single Task',
+        'Multi-Task (Direct) (Manual)',
+        'Multi-Task (Direct) (Uncertainty)',
+        'Multi-Task (Basic) (Manual)',
+        'Multi-Task (Basic) (Uncertainty)',
+        'Multi-Task (Advanced) (Manual)',
+        'Multi-Task (Advanced) (Uncertainty)'
+    ]
+    
+    # Filter out any weird anomalies and sort
+    df_plot = df_plot[df_plot['Method'].isin(method_order)]
+    
+    metrics_to_plot = [
+        'Pearson', 'Spearman', 'RMSE', 'MAE', 'R2', 
+        #'Within 0.5 OOM (%)',
+        'Within 1.0 OOM (%)'
+    ]
+
+    for metric in metrics_to_plot:
+        try:
+            g = sns.catplot(
+                data=df_plot,
+                kind="bar",
+                x="Architecture",
+                y=metric,
+                hue="Method",
+                col="Target",
+                order=target_archs,
+                hue_order=method_order,
+                palette="viridis",
+                errorbar="sd",
+                capsize=0.05,
+                err_kws={'linewidth': 1.5},
+                height=5,
+                aspect=1.2,
+                # Share Y makes sense for Pearson/Spearman/R2/Percentages.
+                # Don't share for unbounded error metrics.
+                sharey=(metric not in ['RMSE', 'MAE'])
+            )
+
+            g.set_axis_labels("Architecture", metric)
+            g.set_titles("Target: {col_name}", size=14)
+            g.despine(left=True)
+            g.legend.set_title("Training Strategy")
+            sns.move_legend(g, "center right", bbox_to_anchor=(1.05, 0.5))
+
+            # Update the title map to include the new metrics
+            title_map = {
+                "Pearson": "Pearson Correlation (Higher is Better)",
+                "RMSE": "Root Mean Squared Error (Lower is Better)",
+                "R2": "R² Score (Higher is Better)",
+                "MAE": "Mean Absolute Error / Mean OOM Error (Lower is Better)",
+                #"Within 0.5 OOM (%)": "Accuracy Within 0.5 Orders of Magnitude (Higher is Better)",
+                'Within 1.0 OOM (%)': "Accuracy Within 1.0 Order of Magnitude (Higher is Better)"
+            }
+            g.fig.suptitle(f"Impact of Uncertainty Weighting: {title_map.get(metric, metric)}", y=1.05, size=16, weight='bold')
+
+            # Force the Y-axis to 0-100 for the percentage metrics for easier reading
+            if "OOM (%)" in metric:
+                g.set(ylim=(0, 100))
+
+            # Fix filename saving for special characters
+            safe_metric_name = metric.replace(' ', '_').replace('.', '_').replace('%', 'pct').replace('(', '').replace(')', '').lower()
+            save_path = plot_dir / f"comparison_{safe_metric_name}.png"
+            
+            g.savefig(save_path, dpi=300, bbox_inches='tight')
+            plt.close()
+        except Exception as e:
+            print(f"Error generating uncertainty plot for {metric}: {e}")
+
+    print(f"Saved Uncertainty Comparison plots to {plot_dir}")

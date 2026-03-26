@@ -9,6 +9,7 @@ from astra.analysis.plotting import (
     plot_residuals,
     plot_clustered_bar_charts,
     print_summary_table,
+    plot_uncertainty_comparison_bar_charts,
 )
 from astra.constants import PROJECT_ROOT
 
@@ -43,22 +44,25 @@ def main(tags, output):
     print("Generating Visualizations...")
     
     # 1. Performance Overview
-    plot_performance_overview(metrics_df, out_dir)
+    #plot_performance_overview(metrics_df, out_dir)
     
     # 2. Architecture Comparison
-    plot_architecture_comparison(metrics_df, out_dir)
+    #plot_architecture_comparison(metrics_df, out_dir)
     
     # 3. Comprehensive Parity Plots (The requested Grid with Colorbar)
-    plot_comprehensive_parity(df, targets, out_dir)
+    #plot_comprehensive_parity(df, targets, out_dir)
     
     # 4. Residual Plots (New Evaluation angle)
-    plot_residuals(df, targets, out_dir)
+    #plot_residuals(df, targets, out_dir)
 
     # 5. Clustered Bar Charts (Architecture on X, Tasks in Legend)
-    plot_clustered_bar_charts(metrics_df, out_dir)
+    #plot_clustered_bar_charts(metrics_df, out_dir)
     
     # 6. Summary Table
-    print_summary_table(metrics_df)
+    #print_summary_table(metrics_df)
+
+    # 7. Add the new comparison plot!
+    plot_uncertainty_comparison_bar_charts(metrics_df, out_dir / "last")
     
     print("\nAnalysis Complete.")
 

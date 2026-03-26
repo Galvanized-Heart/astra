@@ -1,0 +1,7 @@
+# @package model.lightning_module
+mtl_optimizer: "cagrad"
+mtl_optimizer_kwargs:
+  c: 0.5
+  lr_w: 25.0
+  momentum_w: 0.5
+  epochs_w: 20

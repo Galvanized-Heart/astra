@@ -8,7 +8,7 @@ class MaskedMSELoss(nn.Module):
         # automatically when you call .to(device) or .cuda() on the model.
         self.register_buffer('weights', torch.tensor(weights, dtype=torch.float32))
 
-    def forward(self, predictions, targets):
+    def forward(self, predictions, targets, return_individual_losses=False):
         """
         Calculates the weighted, masked Mean Squared Error robustly.
         
@@ -39,8 +39,14 @@ class MaskedMSELoss(nn.Module):
         # Calculate the mean loss per task
         mean_loss_per_task = total_loss_per_task / num_valid_samples_per_task
         
-        # Apply weights and sum to get the final scalar loss
+        if return_individual_losses:
+            # Return mean individual losses as dict
+            return {i: mean_loss_per_task[i] for i in range(len(mean_loss_per_task))}
+
+        # Zero out tasks with no data in a batch
         weighted_loss_per_task = mean_loss_per_task * self.weights
+
+        # Sum total loss together
         total_loss = torch.sum(weighted_loss_per_task)
         
         return total_loss

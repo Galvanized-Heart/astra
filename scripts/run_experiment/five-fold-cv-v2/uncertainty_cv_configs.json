@@ -1,0 +1,527 @@
+[
+  {
+    "experiment_mode": "multi_task/direct",
+    "architecture": "linear",
+    "data": "fold_0",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Direct-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0013374409661630064,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/direct",
+    "architecture": "linear",
+    "data": "fold_1",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Direct-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0013374409661630064,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/direct",
+    "architecture": "linear",
+    "data": "fold_2",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Direct-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0013374409661630064,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/direct",
+    "architecture": "linear",
+    "data": "fold_3",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Direct-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0013374409661630064,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/direct",
+    "architecture": "linear",
+    "data": "fold_4",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Direct-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0013374409661630064,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/basic",
+    "architecture": "linear",
+    "data": "fold_0",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Basic-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00020446424549369735,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/basic",
+    "architecture": "linear",
+    "data": "fold_1",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Basic-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00020446424549369735,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/basic",
+    "architecture": "linear",
+    "data": "fold_2",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Basic-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00020446424549369735,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/basic",
+    "architecture": "linear",
+    "data": "fold_3",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Basic-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00020446424549369735,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/basic",
+    "architecture": "linear",
+    "data": "fold_4",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Basic-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00020446424549369735,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/advanced",
+    "architecture": "linear",
+    "data": "fold_0",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Advanced-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0014117485201455109,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/advanced",
+    "architecture": "linear",
+    "data": "fold_1",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Advanced-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0014117485201455109,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/advanced",
+    "architecture": "linear",
+    "data": "fold_2",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Advanced-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0014117485201455109,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/advanced",
+    "architecture": "linear",
+    "data": "fold_3",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Advanced-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0014117485201455109,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/advanced",
+    "architecture": "linear",
+    "data": "fold_4",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Advanced-Linear",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0014117485201455109,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 128
+  },
+  {
+    "experiment_mode": "multi_task/direct",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_0",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Direct-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0014662757363074833,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 4,
+    "architecture.params.d_ff": 512,
+    "architecture.params.d_k": 32,
+    "architecture.params.d_v": 512,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/direct",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_1",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Direct-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0014662757363074833,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 4,
+    "architecture.params.d_ff": 512,
+    "architecture.params.d_k": 32,
+    "architecture.params.d_v": 512,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/direct",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_2",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Direct-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0014662757363074833,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 4,
+    "architecture.params.d_ff": 512,
+    "architecture.params.d_k": 32,
+    "architecture.params.d_v": 512,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/direct",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_3",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Direct-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0014662757363074833,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 4,
+    "architecture.params.d_ff": 512,
+    "architecture.params.d_k": 32,
+    "architecture.params.d_v": 512,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/direct",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_4",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Direct-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0014662757363074833,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 4,
+    "architecture.params.d_ff": 512,
+    "architecture.params.d_k": 32,
+    "architecture.params.d_v": 512,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/basic",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_0",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Basic-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0011027370526406678,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 16,
+    "architecture.params.d_ff": 512,
+    "architecture.params.d_k": 128,
+    "architecture.params.d_v": 128,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/basic",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_1",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Basic-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0011027370526406678,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 16,
+    "architecture.params.d_ff": 512,
+    "architecture.params.d_k": 128,
+    "architecture.params.d_v": 128,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/basic",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_2",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Basic-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0011027370526406678,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 16,
+    "architecture.params.d_ff": 512,
+    "architecture.params.d_k": 128,
+    "architecture.params.d_v": 128,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/basic",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_3",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Basic-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0011027370526406678,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 16,
+    "architecture.params.d_ff": 512,
+    "architecture.params.d_k": 128,
+    "architecture.params.d_v": 128,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/basic",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_4",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Basic-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0011027370526406678,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 16,
+    "architecture.params.d_ff": 512,
+    "architecture.params.d_k": 128,
+    "architecture.params.d_v": 128,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/advanced",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_0",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Advanced-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.001522061407492348,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 8,
+    "architecture.params.d_ff": 128,
+    "architecture.params.d_k": 32,
+    "architecture.params.d_v": 128,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/advanced",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_1",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Advanced-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.001522061407492348,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 8,
+    "architecture.params.d_ff": 128,
+    "architecture.params.d_k": 32,
+    "architecture.params.d_v": 128,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/advanced",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_2",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Advanced-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.001522061407492348,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 8,
+    "architecture.params.d_ff": 128,
+    "architecture.params.d_k": 32,
+    "architecture.params.d_v": 128,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/advanced",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_3",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Advanced-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.001522061407492348,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 8,
+    "architecture.params.d_ff": 128,
+    "architecture.params.d_k": 32,
+    "architecture.params.d_v": 128,
+    "architecture.params.attn_out_dim": 1
+  },
+  {
+    "experiment_mode": "multi_task/advanced",
+    "architecture": "cpi_pred_self_attn",
+    "data": "fold_4",
+    "mtl_strategy": "uncertainty",
+    "wandb.group": "Uncertainty-Advanced-SelfAttn",
+    "extra_tags": [
+      "uncertainty_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.001522061407492348,
+    "data.batch_size": 64,
+    "architecture.params.n_heads": 8,
+    "architecture.params.d_ff": 128,
+    "architecture.params.d_k": 32,
+    "architecture.params.d_v": 128,
+    "architecture.params.attn_out_dim": 1
+  }
+]

@@ -51,7 +51,13 @@ class PipelineBuilder:
         self.trainer = None
 
     def _resolve_and_validate_config(self, config_dict: DictConfig) -> FullConfig:
+        """
+        Takes a raw config dict, applies defaults and validation logic, and returns
+        a validated Pydantic FullConfig object.
+        """
         resolved_config = config_dict.copy()
+        
+        # Temporarily disable struct mode to allow dynamic modifications
         OmegaConf.set_struct(resolved_config, False)
 
         lm_cfg = resolved_config.model.lightning_module
@@ -59,34 +65,28 @@ class PipelineBuilder:
         target_columns = data_cfg.setdefault('target_columns', ["kcat", "KM", "Ki"])
         num_targets = len(target_columns)
 
-        # Resolve multi-task strategy
+        # =====================================================================
+        # 1. RESOLVE MULTI-TASK STRATEGY (MUTUALLY EXCLUSIVE)
+        # =====================================================================
+        
+        # Determine the high-level strategy. Default to 'manual' if not specified.
         mtl_strategy = lm_cfg.get('mtl_strategy')
+        
+        # Fallback logic if strategy isn't explicit
         if not mtl_strategy:
             if lm_cfg.get('loss_function', {}).get('name') == 'MaskedUncertaintyMSELoss':
                 mtl_strategy = 'uncertainty'
             else:
                 mtl_strategy = 'manual'
         
-        # Ensure we have structure ready
+        # Ensure we have the structure ready
         lm_cfg.setdefault('loss_function', {})
         lm_cfg.loss_function.setdefault('params', {})
 
         print(f"INFO: Enforcing Multi-Task Strategy: '{mtl_strategy.upper()}'")
 
-        if mtl_strategy == 'cagrad':
-            # Nullify any other loss balancing. Force equal weights on MaskedMSELoss.
-            print("INFO: CAGrad selected. Nullifying custom loss functions and weights.")
-            lm_cfg.loss_function['name'] = 'MaskedMSELoss'
-            lm_cfg.loss_function.params['weights'] = [1.0 / num_targets] * num_targets
-            
-            # Ensure no legacy weights interfere
-            lm_cfg.loss_function.params.pop('num_tasks', None)
-            lm_cfg.pop('loss_weights', None)
-
-            # TODO: AstraModule will need to check `self.hparams.mtl_strategy == 'cagrad'` 
-            # to trigger the custom gradient manipulation in the backward pass.
-
-        elif mtl_strategy == 'uncertainty':
+        if mtl_strategy == 'uncertainty':
+            # --- UNCERTAINTY STRATEGY ---
             lm_cfg.loss_function['name'] = 'MaskedUncertaintyMSELoss'
             lm_cfg.loss_function.params['num_tasks'] = num_targets
             
@@ -95,6 +95,7 @@ class PipelineBuilder:
             lm_cfg.pop('loss_weights', None)
 
         elif mtl_strategy == 'manual':
+            # --- MANUAL STRATEGY (Baseline) ---
             lm_cfg.loss_function['name'] = 'MaskedMSELoss'
             lm_cfg.loss_function.params.pop('num_tasks', None)
 
@@ -107,8 +108,9 @@ class PipelineBuilder:
                 
                 weights = F.softmax(logits, dim=0).tolist()
                 lm_cfg.loss_function.params['weights'] = weights
-                lm_cfg.pop('loss_weights', None)
+                lm_cfg.pop('loss_weights', None) # Clean up
             elif 'weights' not in lm_cfg.loss_function.params:
+                # Default to equal weights if no weights provided
                 lm_cfg.loss_function.params['weights'] = [1.0 / num_targets] * num_targets
         else:
             raise ValueError(f"Unknown mtl_strategy: {mtl_strategy}")
@@ -116,11 +118,16 @@ class PipelineBuilder:
         # Write the resolved strategy back to the config so the LightningModule can access it
         lm_cfg['mtl_strategy'] = mtl_strategy
 
-        # Resolve recomposition function and output dimensions
+        # =====================================================================
+        # 2. RESOLVE RECOMPOSITION AND OUTPUT DIMENSIONS
+        # =====================================================================
+
+        # Normalize the recomposition_func from a potentially empty dict to None
         recomp_func_raw = lm_cfg.get('recomposition_func')
         if isinstance(recomp_func_raw, dict) and not recomp_func_raw:
             lm_cfg['recomposition_func'] = None
 
+        # Resolve the model's `out_dim`
         arch_params = resolved_config['model']['architecture'].setdefault('params', {})
         recomp_func_name = lm_cfg.get('recomposition_func')
 
@@ -132,11 +139,25 @@ class PipelineBuilder:
         user_out_dim = arch_params.get('out_dim')
         if user_out_dim is None:
             arch_params['out_dim'] = expected_out_dim
+            print(f"INFO: Set architecture 'out_dim' to {expected_out_dim} based on {source}.")
         elif user_out_dim != expected_out_dim:
             raise ValueError(f"Config Mismatch: 'out_dim' ({user_out_dim}) must be {expected_out_dim} to match {source}.")
 
+        # Re-enable struct mode for safety
         OmegaConf.set_struct(resolved_config, True)
-        # ... validation ...
+
+        # Validate corrected configuration with Pydantic
+        try:
+            # Convert the OmegaConf object to a primitive python dict for Pydantic.
+            final_dict = OmegaConf.to_container(resolved_config, resolve=True, throw_on_missing=True)
+            # THIS RETURN WAS MISSING:
+            return FullConfig(**final_dict)
+        except ValidationError as e:
+            print("\nERROR: The final, resolved configuration is invalid!")
+            print("--- Final Resolved Config ---")
+            print(OmegaConf.to_yaml(resolved_config))
+            print("-----------------------------")
+            raise e
 
     def build_featurizers(self):
         print("INFO: Building featurizers...")
@@ -203,6 +224,10 @@ class PipelineBuilder:
         if log_transform_active:
             print("INFO: Log10 transformation is active. Recomposition will operate in log space.")
 
+        mtl_strategy = lm_cfg.mtl_strategy
+        mtl_optimizer = lm_cfg.mtl_optimizer
+        mtl_optimizer_kwargs = lm_cfg.mtl_optimizer_kwargs or {}
+
         self.model = AstraModule(
             model=self.model_architecture,
             lr=lm_cfg.lr,
@@ -212,7 +237,10 @@ class PipelineBuilder:
             recomposition_func=recomp_func,
             log_transform_active=log_transform_active,
             lr_scheduler_class=scheduler_class,
-            lr_scheduler_kwargs=scheduler_kwargs
+            lr_scheduler_kwargs=scheduler_kwargs,
+            mtl_strategy=mtl_strategy,
+            mtl_optimizer=mtl_optimizer,
+            mtl_optimizer_kwargs=mtl_optimizer_kwargs,
         )
         return self
 
