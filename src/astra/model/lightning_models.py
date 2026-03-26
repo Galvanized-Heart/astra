@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from typing import Optional, Type, List
+from typing import Optional, Type, List, Dict, Any
 
 import lightning as L
 import numpy as np
@@ -35,7 +35,7 @@ class AstraModule(L.LightningModule):
                 lr_scheduler_kwargs: Optional[dict] = None,
                 mtl_strategy: str = "manual",
                 mtl_optimizer: Optional[str] = None,
-                mtl_optimizer_kwargs: Optional[dict] = None,
+                mtl_optimizer_kwargs: Optional[Dict[str, Any]] = None,
             ):
         """
         A flexible LightningModule that can optionally apply a final
@@ -74,8 +74,12 @@ class AstraModule(L.LightningModule):
 
         self.mtl_optimizer = mtl_optimizer
         self.mtl_optimizer_kwargs = mtl_optimizer_kwargs or {}
+
         if self.mtl_optimizer is not None:
             self.automatic_optimization = False
+
+        if self.mtl_optimizer == 'cagrad':
+            self.mtl_solver = CAGrad(**self.mtl_optimizer_kwargs)
 
         # Create collections for metrics
         self.train_metrics = nn.ModuleDict()
@@ -100,34 +104,24 @@ class AstraModule(L.LightningModule):
 
     def configure_optimizers(self):
         """Instantiate the optimizer and, optionally, the lr_scheduler."""
-        base_optimizer = self.optimizer_class(self.parameters(), lr=self.hparams.lr)
-
-        if self.mtl_optimizer == 'cagrad':
-            final_optimizer = CAGrad(optimizer=base_optimizer, **self.mtl_optimizer_kwargs)
-        else:
-            final_optimizer = base_optimizer
+        optimizer = self.optimizer_class(self.parameters(), lr=self.hparams.lr)
         
-        # If there's no lr_scheduler, return optimizer
         if self.lr_scheduler_class is None:
-            return final_optimizer
+            return optimizer
 
-        # If there's a lr_scheduler, return dict w/ optimizer and lr_scheduler
-        else:
-            scheduler_params = self.lr_scheduler_kwargs.copy()
-            
-            monitor_metric = scheduler_params.pop("monitor", "valid_loss_epoch")
-
-            lr_scheduler = self.lr_scheduler_class(base_optimizer, **scheduler_params)
-            
-            return {
-                "optimizer": final_optimizer,
-                "lr_scheduler": {
-                    "scheduler": lr_scheduler,
-                    "monitor": monitor_metric,
-                    "interval": "epoch",
-                    "frequency": 1,
-                },
-            }
+        scheduler_params = self.lr_scheduler_kwargs.copy()
+        monitor_metric = scheduler_params.pop("monitor", "valid_loss_epoch")
+        lr_scheduler = self.lr_scheduler_class(optimizer, **scheduler_params)
+        
+        return {
+            "optimizer": optimizer,
+            "lr_scheduler": {
+                "scheduler": lr_scheduler,
+                "monitor": monitor_metric,
+                "interval": "epoch",
+                "frequency": 1,
+            },
+        }
     
 
     def _shared_step(self, batch):
@@ -199,7 +193,7 @@ class AstraModule(L.LightningModule):
             return loss
 
         ### CAGRAD MANUAL OPTIMIZATION LOGIC ###
-        opt = self.optimizers() # This is now our CAGrad wrapper object
+        opt = self.optimizers()
 
         # 1. Forward pass to get predictions
         y = batch.pop("targets")
@@ -209,13 +203,49 @@ class AstraModule(L.LightningModule):
         # 2. Get individual task losses (both loss functions now support this)
         task_losses_dict = self.loss_func(y_hat, y, return_individual_losses=True)
 
-        # 3. The custom `step` method handles everything: backward, grad calculation, and optimizer step
-        opt.step(task_losses=task_losses_dict)
+        # 3. Compute gradients for each task
+        task_grads = []
+        valid_task_indices = sorted(task_losses_dict.keys())
+        num_tasks = len(valid_task_indices)
+        
+        # Get only parameters that require gradients
+        params = [p for p in self.parameters() if p.requires_grad]
+
+        opt.zero_grad()
+
+        for i in range(num_tasks):
+            # Isolate the gradient for the current task
+            for p in params:
+                if p.grad is not None:
+                    p.grad.detach_()
+                    p.grad.zero_()
+
+            task_key = valid_task_indices[i]
+            
+            self.manual_backward(task_losses_dict[task_key], retain_graph=(i < num_tasks - 1)) 
+            
+            grad_vec = utils.parameters_to_vector([p.grad.clone() for p in params if p.grad is not None])
+            task_grads.append(grad_vec)
+
+        if task_grads:
+            # 4. Compute CAGrad mathematical update
+            update_vector = self.mtl_solver(task_grads)
+            
+            # 5. Overwrite the .grad attributes with the CAGrad direction
+            utils.vector_to_parameters(update_vector, [p.grad for p in params if p.grad is not None])
+            
+            # 6. Step the Lightning optimizer
+            opt.step()
+
 
         # 6. Step learning rate scheduler
         sch = self.lr_schedulers()
         if sch is not None:
-             sch.step() # Or sch.step(self.trainer.callback_metrics["some_metric"]) if it's ReduceLROnPlateau
+             monitored_metric = self.trainer.callback_metrics.get("valid_loss_epoch")
+             if monitored_metric is not None:
+                 sch.step(monitored_metric)
+             else:
+                 sch.step()
 
         overall_loss = torch.mean(torch.stack(list(task_losses_dict.values()))) if task_losses_dict else 0
         self.log('train_loss', overall_loss, on_step=True, on_epoch=True, prog_bar=True)

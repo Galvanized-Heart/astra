@@ -2,21 +2,21 @@
 # Multi-task Learning by Bo Liu, Xingchao Liu, Xiaojie Jin, Peter Stone, Qiang Liu in 2021. https://doi.org/10.48550/arXiv.2110.14048
 
 import torch
-import torch.nn.utils as utils
 
 class CAGrad:
-    def __init__(self, optimizer, c=0.5, lr_w=25, momentum_w=0.5, epochs_w=20):
-        self.optimizer = optimizer
+    def __init__(self, c=0.5, lr_w=25, momentum_w=0.5, epochs_w=20):
         self.c = c # TODO: Experiment with c = {0.1, 0.5, 0.9}
         self.lr_w = lr_w
         self.momentum_w = momentum_w
         self.epochs_w = epochs_w
         
-    def _solve_update_vector_gpu(self, task_grads):
+    def __call__(self, task_grads):
         """
-        Solves objective function (F(w)) to obtain optimal w (w*) and compute optimal update vector (d*).
+        Takes a list of flattened task gradients to solve objective function (F(w)) to obtain 
+        optimal w (w*) and compute optimal update vector (d*).
         """
-        
+        task_grads = torch.stack(task_grads) 
+
         num_tasks = len(task_grads)
         avg_grad = torch.mean(task_grads, dim=0)
         phi = self.c**2 * (avg_grad @ avg_grad) # phi = c^2 * ||g_0||_2^2
@@ -57,42 +57,3 @@ class CAGrad:
             return avg_grad
         else:
             return avg_grad + (torch.sqrt(phi) / gw_norm) * gw_optimal
-
-    def step(self, task_losses: dict):
-        """
-        Performs a single step of CAGrad multi-task updates.
-        """
-
-        self.optimizer.zero_grad()
-        
-        params = self.optimizer.param_groups[0]['params']
-        
-        # Compute individual gradients
-        grads = []
-        valid_task_indices = sorted(task_losses.keys())
-        num_tasks = len(valid_task_indices)
-        
-        for i in range(num_tasks):
-            for p in params:
-                if p.grad is not None:
-                    p.grad.detach_()
-                    p.grad.zero_()
-
-            task_key = valid_task_indices[i]
-            task_losses[task_key].backward(retain_graph=(i < num_tasks - 1)) # retain_graph for all but last
-            grad_vec = utils.parameters_to_vector([p.grad.clone() for p in params if p.grad is not None])
-            grads.append(grad_vec)
-
-        if not grads: 
-            return
-
-        task_grads = torch.stack(grads) # [num_tasks, num_params]
-        
-        # Compute update direction (d*)
-        update_vector = self._solve_update_vector_gpu(task_grads)
-        
-        # Set final gradient on the parameters
-        utils.vector_to_parameters(update_vector, [p.grad for p in params])
-        
-        # Step internal optimizer
-        self.optimizer.step()

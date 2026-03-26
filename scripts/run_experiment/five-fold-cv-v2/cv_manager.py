@@ -10,10 +10,10 @@ from typing import List, Dict, Any, Optional
 
 # --- Configuration ---
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-CV_RUN_CONFIGS_FILE = os.path.join(SCRIPT_DIR, "uncertainty_cv_configs.json")
-LAST_SUBMITTED_INDEX_FILE = os.path.join(SCRIPT_DIR, "last_submitted_index_uncertainty.txt")
+CV_RUN_CONFIGS_FILE = os.path.join(SCRIPT_DIR, "cagrad_cv_configs.json")
+LAST_SUBMITTED_INDEX_FILE = os.path.join(SCRIPT_DIR, "last_submitted_index_cagrad.txt")
 SBATCH_TEMPLATE_SCRIPT = os.path.join(SCRIPT_DIR, "cv_runner.sh")
-SUBMISSION_BATCH_SIZE = 30
+SUBMISSION_BATCH_SIZE = 1
 EXCLUDE_NODES = "fc10512" # Do not trust fc10512
 
 

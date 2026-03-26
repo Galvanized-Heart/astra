@@ -66,7 +66,7 @@ model:
 trainer:
   epochs: 20
   devices: 1
-  accelerator: "gpu"
+  accelerator: "cpu"
   callbacks:
     checkpoint:
       monitor: "valid_loss_epoch"
