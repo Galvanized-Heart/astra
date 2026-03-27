@@ -1,6 +1,6 @@
 # Astra
 
-Astra is a multi-task learning framework for enzyme kinetics predictiong. Given a protein sequence and a substrate SMILES string, Astra jointly predicts $`k_\text{cat}`$, $`K_M`$, and $`K_i`$ by learning the underlying elementary rate constants from which these observable quantities are derived, enforcing physical consistency directly in the model's parameterization.
+Astra is a multi-task learning framework for enzyme kinetics prediction. Given a protein sequence and a substrate SMILES string, Astra jointly predicts $`k_\text{cat}`$, $`K_M`$, and $`K_i`$ by learning the underlying elementary rate constants from which these observable quantities are derived, enforcing physical consistency directly in the model's parameterization.
 
 ---
 
