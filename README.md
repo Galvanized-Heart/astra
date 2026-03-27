@@ -26,7 +26,7 @@ An additional practical benefit is that not every protein-ligand pair in real da
 
 ## Architecture
 
-![Architecture Diagram](/astra/images/architecture.svg)
+![Architecture Diagram](images/architecture.svg)
 
 ### Featurization
 
