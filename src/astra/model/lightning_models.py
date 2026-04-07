@@ -237,16 +237,6 @@ class AstraModule(L.LightningModule):
             # 6. Step the Lightning optimizer
             opt.step()
 
-
-        # 6. Step learning rate scheduler
-        sch = self.lr_schedulers()
-        if sch is not None:
-             monitored_metric = self.trainer.callback_metrics.get("valid_loss_epoch")
-             if monitored_metric is not None:
-                 sch.step(monitored_metric)
-             else:
-                 sch.step()
-
         overall_loss = torch.mean(torch.stack(list(task_losses_dict.values()))) if task_losses_dict else 0
         self.log('train_loss', overall_loss, on_step=True, on_epoch=True, prog_bar=True)
 
@@ -302,6 +292,15 @@ class AstraModule(L.LightningModule):
             self.valid_metrics[param_name].reset()
 
         self.log_dict(all_metrics, on_step=False, on_epoch=True)
+
+        # Step scheduler
+        sch = self.lr_schedulers()
+        if sch is not None:
+            monitored_metric = self.trainer.callback_metrics.get("valid_loss_epoch")
+            if monitored_metric is not None:
+                sch.step(monitored_metric)
+            else:
+                print("WARNING: valid_loss metric not found in callback_metrics")
 
 # Example usage
 """ 
