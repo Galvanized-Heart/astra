@@ -1,0 +1,11 @@
+wandb_project: "astra"
+run_ids: # The 5 W&B Run IDs for your 5 folds
+  - "3abc123"
+  - "4def456"
+  - "5ghi789"
+  - "6jkl012"
+  - "7mno345"
+ablation_name: "full_model" # or "protein_only", "ligand_only"
+recomposition_type: "basic" # or "advanced"
+output_csv: "results/inference/${ablation_name}_oof_predictions.csv"
+batch_size: 128

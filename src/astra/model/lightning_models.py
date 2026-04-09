@@ -36,6 +36,7 @@ class AstraModule(L.LightningModule):
                 mtl_strategy: str = "manual",
                 mtl_optimizer: Optional[str] = None,
                 mtl_optimizer_kwargs: Optional[Dict[str, Any]] = None,
+                ablation_mode: str = "full",
             ):
         """
         A flexible LightningModule that can optionally apply a final
@@ -130,6 +131,13 @@ class AstraModule(L.LightningModule):
 
         # Pop out targets
         y = batch.pop("targets")
+
+        # Set ablation mode
+        ablation_mode = getattr(self.hparams, "ablation_mode", "full")
+        if ablation_mode == "protein_only":
+            batch['ligand_embedding'] = torch.zeros_like(batch['ligand_embedding'])
+        elif ablation_mode == "ligand_only":
+            batch['protein_embedding'] = torch.zeros_like(batch['protein_embedding'])
 
         # Make predictions
         output = self.model(**batch)

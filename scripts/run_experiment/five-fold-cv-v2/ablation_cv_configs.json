@@ -1,0 +1,482 @@
+[
+  {
+    "experiment_mode": "single_task/kcat_only",
+    "architecture": "linear",
+    "data": "fold_0",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-kcat",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0006517176113143676,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 64
+  },
+  {
+    "experiment_mode": "single_task/kcat_only",
+    "architecture": "linear",
+    "data": "fold_1",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-kcat",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0006517176113143676,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 64
+  },
+  {
+    "experiment_mode": "single_task/kcat_only",
+    "architecture": "linear",
+    "data": "fold_2",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-kcat",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0006517176113143676,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 64
+  },
+  {
+    "experiment_mode": "single_task/kcat_only",
+    "architecture": "linear",
+    "data": "fold_3",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-kcat",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0006517176113143676,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 64
+  },
+  {
+    "experiment_mode": "single_task/kcat_only",
+    "architecture": "linear",
+    "data": "fold_4",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-kcat",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0006517176113143676,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 64
+  },
+  {
+    "experiment_mode": "single_task/kcat_only",
+    "architecture": "linear",
+    "data": "fold_0",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-kcat",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0006517176113143676,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 64
+  },
+  {
+    "experiment_mode": "single_task/kcat_only",
+    "architecture": "linear",
+    "data": "fold_1",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-kcat",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0006517176113143676,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 64
+  },
+  {
+    "experiment_mode": "single_task/kcat_only",
+    "architecture": "linear",
+    "data": "fold_2",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-kcat",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0006517176113143676,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 64
+  },
+  {
+    "experiment_mode": "single_task/kcat_only",
+    "architecture": "linear",
+    "data": "fold_3",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-kcat",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0006517176113143676,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 64
+  },
+  {
+    "experiment_mode": "single_task/kcat_only",
+    "architecture": "linear",
+    "data": "fold_4",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-kcat",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.0006517176113143676,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 64
+  },
+  {
+    "experiment_mode": "single_task/km_only",
+    "architecture": "linear",
+    "data": "fold_0",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-KM",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 4.176039152288965e-05,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/km_only",
+    "architecture": "linear",
+    "data": "fold_1",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-KM",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 4.176039152288965e-05,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/km_only",
+    "architecture": "linear",
+    "data": "fold_2",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-KM",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 4.176039152288965e-05,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/km_only",
+    "architecture": "linear",
+    "data": "fold_3",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-KM",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 4.176039152288965e-05,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/km_only",
+    "architecture": "linear",
+    "data": "fold_4",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-KM",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 4.176039152288965e-05,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/km_only",
+    "architecture": "linear",
+    "data": "fold_0",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-KM",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 4.176039152288965e-05,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/km_only",
+    "architecture": "linear",
+    "data": "fold_1",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-KM",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 4.176039152288965e-05,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/km_only",
+    "architecture": "linear",
+    "data": "fold_2",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-KM",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 4.176039152288965e-05,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/km_only",
+    "architecture": "linear",
+    "data": "fold_3",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-KM",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 4.176039152288965e-05,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/km_only",
+    "architecture": "linear",
+    "data": "fold_4",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-KM",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 4.176039152288965e-05,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 512,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/ki_only",
+    "architecture": "linear",
+    "data": "fold_0",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-Ki",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00783589188481024,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/ki_only",
+    "architecture": "linear",
+    "data": "fold_1",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-Ki",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00783589188481024,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/ki_only",
+    "architecture": "linear",
+    "data": "fold_2",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-Ki",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00783589188481024,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/ki_only",
+    "architecture": "linear",
+    "data": "fold_3",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-Ki",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00783589188481024,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/ki_only",
+    "architecture": "linear",
+    "data": "fold_4",
+    "+model.lightning_module.ablation_mode": "protein_only",
+    "wandb.group": "Ablation-ProteinOnly-Linear-Ki",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00783589188481024,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/ki_only",
+    "architecture": "linear",
+    "data": "fold_0",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-Ki",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00783589188481024,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/ki_only",
+    "architecture": "linear",
+    "data": "fold_1",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-Ki",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00783589188481024,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/ki_only",
+    "architecture": "linear",
+    "data": "fold_2",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-Ki",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00783589188481024,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/ki_only",
+    "architecture": "linear",
+    "data": "fold_3",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-Ki",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00783589188481024,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 256
+  },
+  {
+    "experiment_mode": "single_task/ki_only",
+    "architecture": "linear",
+    "data": "fold_4",
+    "+model.lightning_module.ablation_mode": "ligand_only",
+    "wandb.group": "Ablation-LigandOnly-Linear-Ki",
+    "extra_tags": [
+      "ablation_exp",
+      "5fcv"
+    ],
+    "trainer.epochs": 20,
+    "model.lightning_module.lr": 0.00783589188481024,
+    "data.batch_size": 64,
+    "architecture.params.dim_1": 256,
+    "architecture.params.dim_2": 256
+  }
+]
